@@ -34,12 +34,15 @@ export default function Home() {
     avatar?: string;
   } | null>(null);
 
+  const [recruiterOrigin, setRecruiterOrigin] = useState<'home' | 'game'>('game');
+
   const handleStartGame = () => {
     setIsLoading(false);
     setIsRecruiterMode(false);
   };
 
-  const handleOpenRecruiter = () => {
+  const handleOpenRecruiter = (origin: 'home' | 'game' = 'game') => {
+    setRecruiterOrigin(origin);
     setIsLoading(false);
     setIsRecruiterMode(true);
   };
@@ -101,7 +104,7 @@ export default function Home() {
     return (
       <LoadingScreen
         onStartGame={handleStartGame}
-        onOpenRecruiter={handleOpenRecruiter}
+        onOpenRecruiter={() => handleOpenRecruiter('home')}
       />
     );
   }
@@ -110,9 +113,15 @@ export default function Home() {
   if (isRecruiterMode) {
     return (
       <RecruiterDossierView
-        onReturnToGame={() => {
+        returnLabel={recruiterOrigin === 'home' ? 'RETURN TO HOME SCREEN' : 'RETURN TO POKÉMON RPG'}
+        onReturn={() => {
           setIsRecruiterMode(false);
-          soundManager.startBGM();
+          if (recruiterOrigin === 'home') {
+            setIsLoading(true);
+            soundManager.stopBGM();
+          } else {
+            soundManager.startBGM();
+          }
         }}
       />
     );
@@ -139,7 +148,7 @@ export default function Home() {
         onOpenModal={handleOpenModal}
         onToggleRecruiter={() => {
           soundManager.stopBGM();
-          setIsRecruiterMode(true);
+          handleOpenRecruiter('game');
         }}
         playerCoords={playerCoords}
       />

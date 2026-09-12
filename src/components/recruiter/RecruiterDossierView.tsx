@@ -23,12 +23,16 @@ const GithubIcon = ({ className }: { className?: string }) => (
 );
 
 interface RecruiterDossierViewProps {
-  onReturnToGame: () => void;
+  onReturn: () => void;
+  returnLabel?: string;
 }
 
-export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({ onReturnToGame }) => {
+export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({
+  onReturn,
+  returnLabel = 'RETURN TO POKÉMON RPG',
+}) => {
   return (
-    <div className="min-h-screen bg-[#0b0f17] text-slate-100 font-sans pb-16">
+    <div className="min-h-screen w-full bg-[#0b0f17] text-slate-100 font-sans pb-16 overflow-y-auto">
       {/* Sticky Header Bar */}
       <header className="sticky top-0 z-40 bg-[#111726]/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 sm:px-8 flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -49,16 +53,16 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({ onRe
           </div>
         </div>
 
-        {/* Back to RPG Game button */}
+        {/* Back navigation button */}
         <button
           onClick={() => {
             soundManager.playSelect();
-            onReturnToGame();
+            onReturn();
           }}
           className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-md cursor-pointer"
         >
           <Gamepad2 className="w-4 h-4" />
-          <span>RETURN TO POKÉMON RPG</span>
+          <span>{returnLabel}</span>
         </button>
       </header>
 
