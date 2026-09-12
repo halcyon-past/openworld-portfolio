@@ -83,9 +83,13 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({ onRe
                   <Trophy className="w-3 h-3" />
                   Hack4Bengal 3.0 Winner
                 </span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-amber-300" />
+                  LeetCode Knight (1868 • Top 6%)
+                </span>
               </div>
               <p className="text-base text-indigo-300 font-medium">
-                Associate Software Developer @ Bristol Myers Squibb | Full Stack & Data Science
+                Associate Software Engineer @ Bristol Myers Squibb
               </p>
             </div>
 
@@ -95,6 +99,13 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({ onRe
 
             {/* Quick Contact Chips */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
+              <a
+                href="tel:+919043150635"
+                className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-medium flex items-center gap-1.5 transition-colors"
+              >
+                <span>📞 +91 9043150635</span>
+              </a>
+
               <a
                 href="mailto:aritrosaha2025@gmail.com"
                 className="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs font-medium flex items-center gap-1.5 transition-colors"

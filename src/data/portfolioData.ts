@@ -73,7 +73,7 @@ export const PORTFOLIO_DATA = {
   trainer: {
     name: "Aritro Saha",
     alias: "Megh",
-    title: "Associate Software Developer",
+    title: "Associate Software Engineer",
     company: "Bristol Myers Squibb",
     idNo: "2025-BMS",
     level: 99,
@@ -82,10 +82,17 @@ export const PORTFOLIO_DATA = {
     pokedexCaught: 6,
     badgesCount: 8,
     location: "Pallet Cloud, Tech Region",
+    phone: "+919043150635",
     email: "aritrosaha2025@gmail.com",
     avatar: "/assets/profile.webp",
-    bio: "Passionate Data Science Engineer with strong footing in Full Stack Development. I bridge the gap between backend resilience, scalable cloud architectures, and intuitive user experiences. When not crafting code, I'm beatboxing, playing football, or building retro browser experiences.",
+    bio: "Associate Software Engineer at Bristol Myers Squibb with a strong background in distributed data pipelines, cloud architecture (AWS/GCP), and AI clinical decision support systems. LeetCode Knight (Peak Rating: 1868, 630+ solved, Top 6% globally), Hack4Bengal 3.0 Winner, and VIT Chennai graduate.",
     quote: "Every exception caught is a step closer to zero-crash production.",
+    cgpa: "8.53 / 10.0",
+    leetcode: {
+      rating: 1868,
+      rank: "Knight Badge (Top 6% Globally)",
+      solved: "630+ Problems"
+    }
   },
 
   projects: [
@@ -93,17 +100,16 @@ export const PORTFOLIO_DATA = {
       id: "quarantine",
       dexNumber: "#001",
       title: "Quarantine",
-      subtitle: "Zero-dependency dead-letter queue and fault-tolerance library for Python loops",
-      description: "Zero-dependency dead-letter queue and fault-tolerance library for Python loops. Safely isolates failing items during multi-hour pipelines without crashing.",
-      overview: "Quarantine is an open-source, zero-dependency Python library that brings dead-letter queue resilience to regular loops and batch data pipelines. When processing thousands of records (e.g., CSV ingestion, scraping, API syncing), an unexpected exception at item #5,247 no longer crashes the entire multi-hour run. quarantine safely isolates the failing item, captures the error and full execution state to disk, and keeps the loop running.",
+      subtitle: "Resilient Error-Handling & Dead-Letter Queue Library for Python ETL",
+      description: "Resilient error-handling library for Python ETL pipelines with dynamic dead-letter queues preventing batch failures for loops of 10,000+ items.",
+      overview: "Quarantine is an open-source, resilient error-handling library for Python ETL pipelines. It implements a dynamic dead-letter queue that prevents batch failures and ensures continuous execution for loops of 10,000+ items. Integrates with AWS, Azure, and GCP to isolate malformed records, reducing debugging and data recovery time by over 40%. Distributed via GitHub Actions CI/CD to PyPI and Conda-Forge.",
       features: [
-        "Zero-Crash Decorators: Wrap sync or async loops with @quarantine to isolate exceptions.",
-        "Atomic On-Disk Isolation: Serializes failed items and full tracebacks atomically to disk (.quarantine/).",
-        "Surgical Replays: Re-run only failed records using 'quarantine retry' or drop into pdb with 'quarantine debug'.",
-        "Circuit Breakers: Automatic circuit breaker tripping via halt_after to prevent cascading outages.",
-        "CLI & Dashboard: Built-in CLI commands and local web dashboard to inspect tracebacks and recovery stats."
+        "Dynamic Dead-Letter Queue: Prevents batch failures and ensures continuous execution for multi-hour loops of 10,000+ items.",
+        "Multi-Cloud Error Isolation: Integrates with AWS, Azure, and GCP to isolate malformed records, reducing debugging time by over 40%.",
+        "Automated Multi-Platform CI/CD: Automated distribution via GitHub Actions to both PyPI and Conda-Forge.",
+        "Production Reliability: Maintains strict semantic versioning and >90% test coverage with surgical replay CLI tooling."
       ],
-      techStack: ["Python 3.9+", "PyPI", "AsyncIO", "CLI", "Dead-Letter Queue", "Fault Tolerance", "Pytest"],
+      techStack: ["Python", "AWS", "Azure", "GCP", "CI/CD", "Conda-Forge", "PyPI", "Pytest"],
       pokemonType: ["Steel", "Poison"],
       color: "#f43f5e",
       image: "/assets/Quarantine.webp",
@@ -112,37 +118,36 @@ export const PORTFOLIO_DATA = {
       liveDemo: "https://pypi.org/project/quarantine-py/",
       docs: "https://quarantine-py.aritro.cloud",
       stats: [
-        { label: "Fault Tolerance", value: 98 },
-        { label: "Isolation Speed", value: 95 },
-        { label: "Reliability", value: 99 },
-        { label: "Code Health", value: 96 }
+        { label: "Loop Resilience", value: 99 },
+        { label: "Isolation Speed", value: 96 },
+        { label: "Test Coverage", value: 92 },
+        { label: "Recovery Boost", value: 95 }
       ]
     },
     {
       id: "structurify",
       dexNumber: "#002",
-      title: "Structurify",
-      subtitle: "AI-powered SaaS that transforms messy spreadsheet data into a clean master schema",
-      description: "Production-ready B2B SaaS platform turning messy spreadsheets into pristine standardized schemas via Google Gemini and GCP serverless fan-out.",
-      overview: "Structurify is a production-ready, event-driven B2B SaaS platform that turns unstructured CSV and XLSX files into a standardized schema using Google Gemini, with a serverless fan-out architecture on GCP for resilient, scalable processing.",
+      title: "Structurify: ETL Data Pipeline",
+      subtitle: "Serverless Fan-Out Architecture with LangGraph, Gemini & GCP",
+      description: "Serverless fan-out architecture on GCP with Cloud Run and Pub/Sub processing up to 1M rows with 99.8% schema validation accuracy.",
+      overview: "Structurify is an enterprise-grade ETL data pipeline with a serverless fan-out architecture on GCP utilizing Cloud Run and Pub/Sub. Decouples API gateways to process datasets of up to 1M rows, eliminating server timeouts and ensuring 99% availability under high-concurrency burst loads. Utilizes a LangGraph and Gemini AI Map-Reduce pipeline with retry state machines, DuckDB aggregation, and Firestore real-time client synchronization.",
       features: [
-        "Strict Schema Enforcement: Enforces exact JSON and Excel structures with reliable type-casting and validation.",
-        "Sandbox Preview Mode: Lets users validate the first 10 rows before launching full cluster workloads.",
-        "Auto-Clean Mode: Infers schema from headers and normalizes capitalization, whitespace, and date formats automatically.",
-        "Serverless Fan-Out Pipeline: Uses Cloud Pub/Sub, Cloud Run workers, and LangGraph map-reduce flow.",
-        "Real-Time Observability: Streams job progress, audit logs, and secure download links through Firestore live updates."
+        "Serverless Fan-Out on GCP: Uses Cloud Run and Pub/Sub to process datasets up to 1M rows with 99% availability under burst loads.",
+        "LangGraph & Gemini Map-Reduce: Fault-tolerant ETL pipeline with dynamic batching and retry state machine achieving 99.8% schema validation accuracy.",
+        "Distributed DuckDB Aggregation: Compiles multi-vendor chunks over 40% faster while tracking atomic LLM token usage in Firestore for enterprise billing.",
+        "Sub-200ms Real-Time Client: Next.js frontend synchronized with Firestore listeners delivering sub-200ms live progress updates authenticated via Firebase Identity Platform."
       ],
-      techStack: ["Next.js 14", "React", "TailwindCSS", "Firebase", "FastAPI", "Python", "LangGraph", "Google Gemini", "GCP"],
+      techStack: ["GCP", "Cloud Run", "Pub/Sub", "LangGraph", "Google Gemini", "DuckDB", "Next.js", "Firebase", "Terraform"],
       pokemonType: ["Psychic", "Electric"],
       color: "#10b981",
       image: "/assets/Structurify.webp",
       github: "https://github.com/halcyon-past/Structurify",
       liveDemo: "https://structurify.aritro.cloud",
       stats: [
-        { label: "Inference Speed", value: 92 },
-        { label: "Schema Strictness", value: 99 },
-        { label: "Cloud Scalability", value: 96 },
-        { label: "Data Quality", value: 94 }
+        { label: "Schema Accuracy", value: 99 },
+        { label: "Throughput (1M Rows)", value: 97 },
+        { label: "Latency (<200ms)", value: 95 },
+        { label: "Availability", value: 99 }
       ]
     },
     {
@@ -255,66 +260,57 @@ export const PORTFOLIO_DATA = {
   experience: [
     {
       id: "bms",
-      role: "Associate Software Developer",
+      role: "Associate Software Engineer",
       company: "Bristol Myers Squibb",
       location: "Hyderabad, India",
-      duration: "July 2025 - Present",
+      duration: "Jul 2025 – Present",
       badgeName: "Enterprise Badge",
       description: [
-        "Architecting robust full-stack applications and automated data pipelines for enterprise biopharma platforms.",
-        "Integrating scalable cloud systems, microservices, and continuous automated verification workflows.",
-        "Championing clean code standards, resilient async exception handling, and high test coverage."
+        "Reduced diagnostic review time for NSCLC cases by 30%, by architecting a medical diagnostic assistant with LLM-driven clinical decision support and system design integration.",
+        "Reduced release cycle time by 40+ engineering hours per cycle, by architecting a company-wide Databricks accelerator with standardized ETL/ELT microservices and YAML-driven CI/CD pipeline generation.",
+        "Owned end-to-end delivery of a self-service LLM marketplace plugin adopted by 20+ internal teams, sharply reducing recurring support tickets by replacing manual deployment requests with automated workflows.",
+        "Scaled data ingestion to handle 5M+ records per hour by building serverless, distributed AWS Lambda pipelines with Glue-crawler metadata enrichment and DynamoDB persistence."
       ],
-      technologies: ["TypeScript", "React", "Python", "Databricks", "Cloud Infrastructure", "CI/CD", "Enterprise Architecture"]
+      technologies: ["Python", "Spark Databricks", "SQL", "AWS Lambda", "AWS S3", "DynamoDB", "AWS Glue", "AWS Bedrock", "SageMaker", "OpenSearch", "Redshift"]
     },
     {
       id: "bajaj",
-      role: "Data Science Intern",
+      role: "Data Science Engineer Intern",
       company: "Bajaj Finserv Health",
-      location: "Pune, India (Remote)",
-      duration: "Feb 2025 - June 2025",
+      location: "Pune, India",
+      duration: "Feb 2025 – Jun 2025",
       badgeName: "HealthTech Badge",
       description: [
-        "Engineered predictive machine learning pipelines and health risk scoring algorithms on large datasets.",
-        "Optimized ETL workflows, reducing pipeline latency and boosting feature engineering throughput.",
-        "Collaborated with cross-functional healthcare product teams to deliver actionable analytics."
+        "Cut OPD claims processing failure rate by 60%, by redesigning a distributed, vision-based NER pipeline scaled to 40,000+ claims/day.",
+        "Designed and implemented a regex-based NER mapping service for ICD-10 codes, eliminating third-party API dependencies and accelerating throughput by 98%.",
+        "Improved P99 backend latency by 35% (800ms to 520ms), by refactoring FastAPI endpoint serialization and adding unit test coverage across critical paths."
       ],
-      technologies: ["Python", "Pandas", "Scikit-Learn", "FastAPI", "SQL", "Predictive Modeling"]
+      technologies: ["Python", "FastAPI", "ElasticSearch", "MongoDB", "Google Gemini", "OpenAI", "Azure DevOps"]
     },
     {
       id: "wipro",
-      role: "Full Stack Developer Intern",
-      company: "Wipro",
+      role: "Software Engineering Intern",
+      company: "WIPRO",
       location: "Kolkata, India",
-      duration: "Oct 2023 - Dec 2023",
+      duration: "Oct 2023 – Dec 2023",
       badgeName: "FullStack Badge",
       description: [
-        "Built responsive web interfaces and integrated RESTful backend services using React and Node.js.",
-        "Implemented secure JWT authentication workflows and optimized relational database queries.",
-        "Participated in agile sprints, daily standups, and rigorous peer code reviews."
+        "Built a 3D visualization engine in Three.js with optimized asset loading, making client-side render times roughly 3x faster.",
+        "Increased deployment frequency by 50%, by automating CI/CD pipelines with Docker and Azure DevOps."
       ],
-      technologies: ["React", "Node.js", "Express", "REST APIs", "MySQL", "JavaScript"]
+      technologies: ["React.js", "Node.js", "Three.js", "Git", "Docker", "Azure"]
     }
   ] as Experience[],
 
   education: [
     {
-      degree: "B.Tech in Electronics and Computer Engineering",
-      institution: "Vellore Institute of Technology, Chennai",
-      year: "2021 - 2025",
+      degree: "Bachelor of Technology in Electronics and Computer Engineering",
+      institution: "Vellore Institute of Technology",
+      year: "Sep 2021 – Jul 2025",
       highlights: [
-        "Graduated with Distinction in Core Computer Science, Operating Systems, and Distributed Computing.",
-        "Capstone: GlideConnect (Virtual gesture control & voice assistant), published in IJIRT research journal.",
-        "Active member of tech innovation clubs and hackathon leadership teams."
-      ]
-    },
-    {
-      degree: "High School (Science & Mathematics)",
-      institution: "Birla Bharati",
-      year: "2021",
-      highlights: [
-        "Focused on Mathematics, Physics, Chemistry, and Computer Science.",
-        "Captain of school football team and lead organizer for annual cultural festivals."
+        "Graduated with CGPA: 8.53 / 10.0 from VIT Chennai, India.",
+        "Published Research: KrishnaVision (Multimodal Virtual Interface for Context-Aware HCI) in IJIRT journal.",
+        "Competitive Programming: LeetCode Knight Badge (Peak Rating: 1868, solved 630+ questions, top 6% globally)."
       ]
     }
   ] as Education[],
@@ -325,7 +321,7 @@ export const PORTFOLIO_DATA = {
       name: "Hack4Bengal Champion",
       gymCity: "Kolkata Arena",
       leaderTitle: "Hackathon Victor",
-      description: "Awarded for winning 1st Place overall at Eastern India's largest hackathon with PAWsitive.",
+      description: "Won 1st Place overall at Eastern India's largest hackathon with PAWsitive.",
       iconColor: "#f59e0b",
       unlocked: true
     },
@@ -333,8 +329,8 @@ export const PORTFOLIO_DATA = {
       id: "bms",
       name: "Enterprise Dev",
       gymCity: "BMS Silicon Gym",
-      leaderTitle: "Associate Developer",
-      description: "Building production-grade biopharma software systems at Bristol Myers Squibb.",
+      leaderTitle: "Associate Software Engineer",
+      description: "Bristol Myers Squibb: Scaled AWS Lambda to 5M+ records/hr, Databricks accelerators, and NSCLC AI assistants.",
       iconColor: "#3b82f6",
       unlocked: true
     },
@@ -343,8 +339,17 @@ export const PORTFOLIO_DATA = {
       name: "VIT Chennai Scholar",
       gymCity: "Vellore Academy",
       leaderTitle: "B.Tech Graduate",
-      description: "Completed B.Tech in Electronics & Computer Engineering with published research.",
+      description: "B.Tech in Electronics & Computer Engineering (CGPA: 8.53/10.0).",
       iconColor: "#10b981",
+      unlocked: true
+    },
+    {
+      id: "leetcode",
+      name: "LeetCode Knight",
+      gymCity: "Algorithm Citadel",
+      leaderTitle: "Peak Rating 1868",
+      description: "Solved 630+ algorithmic problems, placing in the top 6 percentile globally.",
+      iconColor: "#eab308",
       unlocked: true
     },
     {
@@ -352,7 +357,7 @@ export const PORTFOLIO_DATA = {
       name: "PyPI Package Author",
       gymCity: "Python Foundry",
       leaderTitle: "Open Source Creator",
-      description: "Published 'quarantine-py' - zero-crash dead-letter queue resilience for Python.",
+      description: "Published 'quarantine-py' & Conda-Forge package for fault-tolerant Python ETL loops.",
       iconColor: "#ef4444",
       unlocked: true
     },
@@ -361,16 +366,16 @@ export const PORTFOLIO_DATA = {
       name: "GenAI Architect",
       gymCity: "Gemini Citadel",
       leaderTitle: "Agentic AI Specialist",
-      description: "Implemented LangGraph multi-agent systems and Google Gemini multimodal reasoning.",
+      description: "LangGraph map-reduce ETL, Gemini AI dynamic batching, and 99.8% schema accuracy.",
       iconColor: "#8b5cf6",
       unlocked: true
     },
     {
       id: "wasm",
-      name: "3D & WASM Master",
-      gymCity: "Kinematics Studio",
-      leaderTitle: "Three.js Craftsman",
-      description: "Integrated MediaPipe AI face tracking with Three.js rigged procedural meshes.",
+      name: "KrishnaVision Author",
+      gymCity: "IJIRT Publications",
+      leaderTitle: "HCI Researcher",
+      description: "Published multimodal virtual mouse achieving 97.3% accuracy at 22ms latency in IJIRT.",
       iconColor: "#06b6d4",
       unlocked: true
     },
@@ -382,66 +387,56 @@ export const PORTFOLIO_DATA = {
       description: "Mastered vocal percussion, polyrhythmic beatboxing, and acoustic artistry.",
       iconColor: "#ec4899",
       unlocked: true
-    },
-    {
-      id: "arcade",
-      name: "Arcade Champion",
-      gymCity: "Developer Game Corner",
-      leaderTitle: "Retro Minigame Master",
-      description: "Tested Developer Speed Typing and Minimalist Snake with high-score precision.",
-      iconColor: "#eab308",
-      unlocked: true
     }
   ] as GymBadge[],
 
   skillPockets: [
     {
-      category: "Languages",
+      category: "Core Languages",
       pocketName: "Key Items",
       icon: "key",
       items: [
-        { name: "Python", level: "Expert", description: "AsyncIO, PyPI package author, NumPy, Pandas, Scikit-Learn, Pytest", tag: "Core" },
-        { name: "TypeScript", level: "Advanced", description: "Strict type systems, Next.js App Router, modern async patterns", tag: "Frontend" },
-        { name: "JavaScript (ES6+)", level: "Expert", description: "Modern event-driven web architecture, DOM, Web Workers", tag: "Web" },
-        { name: "SQL", level: "Advanced", description: "Relational modeling, query optimization, PostgreSQL, MySQL", tag: "Data" },
-        { name: "C / C++", level: "Intermediate", description: "Data structures, memory allocation, microcontrollers", tag: "Systems" }
+        { name: "Python", level: "Expert", description: "AsyncIO, PyPI package author, ETL pipelines, Pandas, Pytest", tag: "Core" },
+        { name: "SQL", level: "Advanced", description: "Complex queries, Redshift, relational schema modeling", tag: "Data" },
+        { name: "TypeScript", level: "Advanced", description: "Strict type-safe systems, Next.js, asynchronous architectures", tag: "FullStack" },
+        { name: "JavaScript", level: "Expert", description: "Event-driven programming, React.js, Node.js runtime", tag: "Web" },
+        { name: "Spark / PySpark", level: "Advanced", description: "Distributed dataframes, Databricks accelerators, batch transformations", tag: "BigData" }
       ]
     },
     {
-      category: "Frameworks & UI",
-      pocketName: "Poké Balls",
-      icon: "disc",
-      items: [
-        { name: "Next.js 14 / 15", level: "Advanced", description: "Server Components, dynamic routes, layout streaming, SEO", tag: "FullStack" },
-        { name: "React 18 / 19", level: "Expert", description: "Hooks, custom state engines, concurrent rendering, Fiber", tag: "UI" },
-        { name: "FastAPI", level: "Advanced", description: "Asynchronous REST endpoints, Pydantic schemas, OpenAPI", tag: "API" },
-        { name: "Three.js / R3F", level: "Advanced", description: "3D scene graphs, lighting, rigged animations, WebGL", tag: "3D" },
-        { name: "Tailwind CSS", level: "Expert", description: "Responsive layouts, custom retro design systems, modern animations", tag: "Styling" }
-      ]
-    },
-    {
-      category: "Cloud, AI & DevOps",
+      category: "Cloud, AWS & DevOps",
       pocketName: "TMs & HMs",
       icon: "zap",
       items: [
-        { name: "Google Gemini API", level: "Advanced", description: "Multimodal prompts, structured JSON outputs, function calling", tag: "GenAI" },
-        { name: "LangGraph", level: "Advanced", description: "Multi-agent orchestration, map-reduce fan-out pipelines", tag: "Agents" },
-        { name: "Google Cloud Platform", level: "Advanced", description: "Cloud Run, Pub/Sub, Cloud Storage, Serverless workers", tag: "Cloud" },
-        { name: "Databricks", level: "Intermediate", description: "Big data processing, Spark jobs, unified enterprise analytics", tag: "Enterprise" },
-        { name: "Docker", level: "Advanced", description: "Multi-stage container builds, reproducibility, orchestration", tag: "DevOps" },
-        { name: "Git & GitHub Actions", level: "Advanced", description: "CI/CD pipelines, semantic release, automated testing", tag: "Tooling" }
+        { name: "AWS Suite", level: "Expert", description: "Lambda, S3, DynamoDB, Glue, Bedrock, SageMaker, OpenSearch, Redshift", tag: "AWS" },
+        { name: "Spark Databricks", level: "Advanced", description: "Standardized ETL/ELT microservices, YAML-driven CI/CD generation", tag: "Databricks" },
+        { name: "GCP (Google Cloud)", level: "Advanced", description: "Cloud Run serverless fan-out, Pub/Sub message decoupling", tag: "GCP" },
+        { name: "Azure DevOps & Docker", level: "Advanced", description: "Multi-stage containers, automated CI/CD deployment pipelines", tag: "DevOps" },
+        { name: "Terraform & IaC", level: "Intermediate", description: "Declarative cloud infrastructure provisioning and scaling", tag: "Infra" }
       ]
     },
     {
-      category: "Databases & Libraries",
+      category: "AI, ML & Frameworks",
+      pocketName: "Poké Balls",
+      icon: "disc",
+      items: [
+        { name: "LangGraph", level: "Advanced", description: "Fault-tolerant Map-Reduce pipelines, retry state machines", tag: "Agents" },
+        { name: "Google Gemini & OpenAI", level: "Advanced", description: "Clinical decision support, vision-based NER, structured outputs", tag: "GenAI" },
+        { name: "FastAPI", level: "Advanced", description: "High-throughput async APIs, P99 latency optimization, regex NER services", tag: "Backend" },
+        { name: "Next.js & React.js", level: "Expert", description: "Sub-200ms real-time client sync, SSR, modern UI component systems", tag: "Frontend" },
+        { name: "Three.js", level: "Advanced", description: "3D client-side visualization engines with 3x optimized asset loading", tag: "3D" }
+      ]
+    },
+    {
+      category: "Databases & Engines",
       pocketName: "Medicine & Items",
       icon: "shield",
       items: [
-        { name: "MongoDB", level: "Advanced", description: "Document schemas, aggregation pipelines, replica sets", tag: "NoSQL" },
-        { name: "Firebase / Firestore", level: "Advanced", description: "Real-time subscriptions, security rules, offline persistence", tag: "Realtime" },
-        { name: "MediaPipe AI", level: "Advanced", description: "WASM computer vision, face mesh, hand landmarks", tag: "Vision" },
-        { name: "Web Audio API", level: "Advanced", description: "Synthesizer oscillators, gain envelopes, chiptune sound generation", tag: "Audio" },
-        { name: "HTML5 Canvas", level: "Advanced", description: "High performance 60FPS 2D/2.5D game rendering and sprite pipelines", tag: "Canvas" }
+        { name: "DuckDB", level: "Advanced", description: "High-speed distributed in-process SQL OLAP data aggregation", tag: "OLAP" },
+        { name: "DynamoDB & MongoDB", level: "Advanced", description: "High-throughput NoSQL stores, document indexing, claims pipelines", tag: "NoSQL" },
+        { name: "ElasticSearch", level: "Advanced", description: "Distributed document search, NER indexing, healthcare claims", tag: "Search" },
+        { name: "Firebase / Firestore", level: "Advanced", description: "Real-time sync listeners, Identity Platform, token logging", tag: "Realtime" },
+        { name: "PyPI & Conda-Forge", level: "Advanced", description: "Open-source package publishing, semantic versioning, CI/CD", tag: "Packages" }
       ]
     }
   ] as SkillPocket[],

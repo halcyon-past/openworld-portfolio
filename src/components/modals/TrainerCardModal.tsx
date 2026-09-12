@@ -76,8 +76,8 @@ export const TrainerCardModal: React.FC<TrainerCardModalProps> = ({ onClose }) =
 
               <div className="grid grid-cols-2 gap-2 text-[10px] font-silk text-slate-600 pt-1">
                 <div>POKÉDEX: <span className="font-bold text-slate-900">{PORTFOLIO_DATA.trainer.pokedexCaught} CAUGHT</span></div>
-                <div>REGION: <span className="font-bold text-slate-900">PALLET CLOUD</span></div>
-                <div>BADGES: <span className="font-bold text-amber-600">8 / 8 COLLECTED</span></div>
+                <div>CGPA: <span className="font-bold text-indigo-700">{PORTFOLIO_DATA.trainer.cgpa}</span></div>
+                <div>LEETCODE: <span className="font-bold text-amber-600">{PORTFOLIO_DATA.trainer.leetcode.rank} ({PORTFOLIO_DATA.trainer.leetcode.rating})</span></div>
                 <div>STATUS: <span className="font-bold text-emerald-600">ACTIVE PRODUCTION</span></div>
               </div>
 

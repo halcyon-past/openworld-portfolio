@@ -221,9 +221,9 @@ export default function Home() {
 
       {/* Semantic Crawlable Content for Search Engines & Assistive Technologies */}
       <article className="sr-only">
-        <h1>Aritro Saha - Associate Software Developer at Bristol Myers Squibb</h1>
+        <h1>Aritro Saha - Associate Software Engineer at Bristol Myers Squibb</h1>
         <p>
-          Welcome to the open-world retro RPG portfolio of Aritro Saha (Megh). Aritro is an Associate Software Developer at Bristol Myers Squibb, Winner of Hack4Bengal 3.0, and a graduate of Vellore Institute of Technology (VIT Chennai, 2025).
+          Welcome to the open-world retro RPG portfolio of Aritro Saha (Megh). Aritro is an Associate Software Engineer at Bristol Myers Squibb, Winner of Hack4Bengal 3.0, LeetCode Knight (Peak Rating: 1868), and an Electronics and Computer Engineering graduate of Vellore Institute of Technology (VIT Chennai, CGPA: 8.53/10.0).
         </p>
 
         <section>
@@ -231,13 +231,13 @@ export default function Home() {
           <ul>
             <li>
               <h3>Quarantine</h3>
-              <p>Zero-dependency dead-letter queue and fault-tolerance library for Python loops published on PyPI. Isolates exceptions safely without crashing batch data pipelines.</p>
+              <p>Fault-tolerant loop execution and exception isolation library in Python published to PyPI and Conda-Forge. Zero external dependencies, thread-safe, with dead-letter queue recovery mechanism.</p>
               <a href="https://pypi.org/project/quarantine-py/">Quarantine PyPI Package</a>
               <a href="https://github.com/halcyon-past/quarantine">Quarantine GitHub Repository</a>
             </li>
             <li>
               <h3>Structurify</h3>
-              <p>Event-driven B2B SaaS data transformation platform utilizing Google Gemini and GCP serverless fan-out architecture for schema enforcement.</p>
+              <p>Scalable AI pipeline converting unstructured documents into structured relational formats utilizing GCP Cloud Run, Pub/Sub, LangGraph, Gemini, DuckDB, Firestore, and Next.js.</p>
               <a href="https://structurify.aritro.cloud">Structurify Live Demo</a>
               <a href="https://github.com/halcyon-past/Structurify">Structurify GitHub Repository</a>
             </li>
@@ -248,14 +248,14 @@ export default function Home() {
               <a href="https://github.com/halcyon-past/Luffy-Laser-Dodge">Luffy Laser Dodge GitHub Repository</a>
             </li>
             <li>
-              <h3>GlideConnect</h3>
-              <p>VIT Capstone research project published in IJIRT featuring contactless virtual mouse control via hand gesture tracking and Gemini voice assistant Krishna.</p>
-              <a href="https://github.com/halcyon-past/Glide-Connect">GlideConnect GitHub Repository</a>
-              <a href="https://ijirt.org/article?manuscript=180711">IJIRT Research Paper</a>
+              <h3>KrishnaVision: Contactless Multimodal Virtual Interface</h3>
+              <p>VIT Capstone research project published in IJIRT (International Journal of Innovative Research in Technology). Contactless virtual HCI system with 97.3% gesture accuracy at 22ms latency and Gemini-powered assistant.</p>
+              <a href="https://github.com/halcyon-past/Glide-Connect">KrishnaVision GitHub Repository</a>
+              <a href="https://ijirt.org/article?manuscript=180711">IJIRT Research Paper (Paper ID: 180711)</a>
             </li>
             <li>
               <h3>PAWsitive</h3>
-              <p>Overall 1st place winner at Hack4Bengal 3.0. Centralized platform for pet healthcare, blood donor coordination, and emergency rescue clinics.</p>
+              <p>Overall 1st place winner at Hack4Bengal 3.0 among 400+ participants. Centralized platform for pet healthcare, blood donor coordination, and emergency rescue clinics.</p>
               <a href="https://www.bepawsitive.xyz">PAWsitive Platform</a>
               <a href="https://github.com/halcyon-past/PAW-sitive">PAWsitive GitHub Repository</a>
             </li>
@@ -271,26 +271,40 @@ export default function Home() {
         <section>
           <h2>Professional Experience</h2>
           <ul>
-            <li>Associate Software Developer, Bristol Myers Squibb (July 2025 - Present)</li>
-            <li>Data Science Intern, Bajaj Finserv Health (February 2025 - June 2025)</li>
-            <li>Full Stack Developer Intern, Wipro (October 2023 - December 2023)</li>
+            <li>
+              <strong>Bristol Myers Squibb — Associate Software Engineer (July 2025 – Present) | Hyderabad, India</strong>
+              <p>Reduced diagnostic review time for Non-Small Cell Lung Cancer (NSCLC) cases by 30% by developing an internal medical diagnostic assistant with LLM-driven clinical decision support. Reduced release cycle time by 40+ engineering hours per cycle via Databricks accelerator with standardized ETL/ELT microservices and YAML CI/CD pipelines. Delivered self-service LLM marketplace plugin adopted by 20+ internal teams. Scaled data ingestion to 5M+ records/hour via serverless AWS Lambda, Glue crawler, and DynamoDB.</p>
+            </li>
+            <li>
+              <strong>Bajaj Finserv Health — Data Science Engineer Intern (February 2025 – June 2025) | Pune, India</strong>
+              <p>Cut OPD claims failure rate by 60% through a distributed vision NER pipeline scaled to 40,000+ claims/day. Engineered regex NER mapping service for ICD-10 codes eliminating 3rd party APIs and accelerating throughput by 98%. Improved P99 backend latency by 35% (800ms to 520ms) via FastAPI endpoint serialization and unit tests.</p>
+            </li>
+            <li>
+              <strong>WIPRO — Software Engineering Intern (October 2023 – December 2023) | Kolkata, India</strong>
+              <p>Developed 3D visualization engine in Three.js with optimized asset loading reducing client-side render time by 3x. Increased deployment frequency by 50% via automated Docker + Azure DevOps CI/CD pipelines.</p>
+            </li>
           </ul>
         </section>
 
         <section>
           <h2>Education & Credentials</h2>
-          <p>B.Tech in Electronics and Computer Engineering, Vellore Institute of Technology (VIT Chennai), 2021 - 2025.</p>
-          <p>High School, Birla Bharati, 2021.</p>
+          <p>B.Tech in Electronics and Computer Engineering, Vellore Institute of Technology (VIT Chennai), September 2021 – July 2025. CGPA: 8.53 / 10.0.</p>
+          <p>Competitive Programming: LeetCode Knight Badge, Peak Rating: 1868, 630+ problems solved, Top 6% globally.</p>
+          <p>Hack4Bengal 3.0 Winner (PAWsitive - 1st / 400+ participants).</p>
+          <p>Published Paper: KrishnaVision in IJIRT (Paper ID: 180711, May 2025).</p>
         </section>
 
         <section>
           <h2>Technical Skills</h2>
-          <p>Python, TypeScript, JavaScript, SQL, Next.js, React, FastAPI, Three.js, Tailwind CSS, Google Gemini API, LangGraph, GCP, Databricks, Docker, MongoDB, Firestore, MediaPipe.</p>
+          <p>Languages: Python, TypeScript, JavaScript, SQL, C++, C, HTML5/CSS3.</p>
+          <p>Frameworks & Libs: Next.js, React, FastAPI, Node.js, Three.js, Tailwind CSS, LangGraph, PyTorch, MediaPipe, Pandas, NumPy.</p>
+          <p>Cloud & Distributed: AWS (Lambda, S3, DynamoDB, Glue, Bedrock, SageMaker, OpenSearch, Redshift), GCP (Cloud Run, Pub/Sub), Spark Databricks, Docker, Azure DevOps, MongoDB, Elasticsearch, Firestore, DuckDB.</p>
         </section>
 
         <section>
           <h2>Contact Aritro Saha</h2>
           <p>Email: aritrosaha2025@gmail.com</p>
+          <p>Phone: +919043150635</p>
           <p>LinkedIn: https://linkedin.com/in/aritro-saha</p>
           <p>GitHub: https://github.com/halcyon-past</p>
         </section>

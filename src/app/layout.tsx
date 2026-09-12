@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Aritro Saha | GBA Open World RPG Portfolio (FireRed & Emerald Style)",
   description:
-    "Play through the interactive open-world retro Pokémon RPG portfolio of Aritro Saha (Associate Software Developer at Bristol Myers Squibb & Hack4Bengal 3.0 Winner). Explore full-stack and data science projects, skills, 8 Gym Badges, and playable minigames.",
+    "Play through the interactive open-world retro Pokémon RPG portfolio of Aritro Saha (Associate Software Engineer at Bristol Myers Squibb & Hack4Bengal 3.0 Winner). Explore full-stack and data science projects, skills, 8 Gym Badges, and playable minigames.",
   applicationName: "Aritro Saha Pokémon RPG Portfolio",
   authors: [{ name: "Aritro Saha", url: "https://linkedin.com/in/aritro-saha" }],
   generator: "Next.js",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "Pokemon Emerald Portfolio",
     "RPG Portfolio",
     "Interactive Portfolio",
-    "Associate Software Developer",
+    "Associate Software Engineer",
     "Bristol Myers Squibb",
     "Hack4Bengal Winner",
     "Quarantine Python",
@@ -93,7 +93,7 @@ const jsonLd = {
       "@id": `${SITE_URL}/#person`,
       name: "Aritro Saha",
       alternateName: "Megh",
-      jobTitle: "Associate Software Developer",
+      jobTitle: "Associate Software Engineer",
       worksFor: {
         "@type": "Organization",
         name: "Bristol Myers Squibb",
@@ -112,7 +112,7 @@ const jsonLd = {
         "https://siliconsync.aritro.cloud",
       ],
       description:
-        "Associate Software Developer at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, and AI engineering.",
+        "Associate Software Engineer at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, and AI engineering.",
     },
     {
       "@type": "WebSite",
