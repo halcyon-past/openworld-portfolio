@@ -75,50 +75,67 @@ class SoundManager {
 
         // Categorize available system voices
         const enVoices = voices.filter((v) => v.lang.startsWith('en'));
-        const femaleVoice = enVoices.find((v) => /female|samantha|zira|victoria|karen|moira|fiona/i.test(v.name));
-        const maleVoice = enVoices.find((v) => /male|daniel|david|george|alex|fred|oliver|arthur/i.test(v.name));
+        
+        // Specific male voice detection with known deep, masculine identifiers across macOS, Windows, Android, Linux, Chrome
+        const deepMaleVoice = enVoices.find((v) => 
+          /daniel|grandpa|fred|alex|eddy|reed|rocko|ralph|albert|david|george|arthur|guy|james|mark|en-us-wavenet-d|en-us-wavenet-b|en-us-standard-b|en-us-standard-d/i.test(v.name)
+        );
+        const maleVoice = enVoices.find((v) => 
+          /male|daniel|grandpa|fred|alex|eddy|reed|rocko|ralph|albert|david|george|arthur|aman|rishi|guy|james|mark|en-us-wavenet-d|en-us-wavenet-b|en-us-standard-b|en-us-standard-d/i.test(v.name)
+        );
+        const youngMaleVoice = enVoices.find((v) => 
+          /eddy|reed|rocko|aman|rishi|alex|daniel/i.test(v.name)
+        ) || maleVoice;
+
+        const femaleVoice = enVoices.find((v) => 
+          /female|samantha|zira|victoria|karen|moira|fiona|sandy|shelley|tara|tessa|flo|grandma/i.test(v.name)
+        );
         const naturalVoice = enVoices.find((v) => /natural|online|google/i.test(v.name));
+
+        // Non-female fallback for male characters
+        const fallbackMale = enVoices.find((v) => !/female|samantha|zira|victoria|karen|moira|fiona|sandy|shelley|tara|tessa|flo|grandma/i.test(v.name)) || null;
 
         // Distinct voice profiles for every character
         switch (speakerType) {
-          case 'scientist': // Prof. Oak (Distinguished, wise, low resonant tone)
-            utterance.voice = maleVoice || enVoices[0] || null;
-            utterance.pitch = 0.75;
-            utterance.rate = 0.88;
+          case 'scientist': // Dr. / Prof. Oak (Distinguished, deep, elderly/mentor masculine resonance)
+            utterance.voice = deepMaleVoice || maleVoice || fallbackMale || null;
+            utterance.pitch = 0.55; // Deep baritone
+            utterance.rate = 0.84;  // Deliberate, dignified professorial cadence
             break;
 
           case 'nurse': // Nurse Joy (Sweet, bright, cheerful, high tone)
-            utterance.voice = femaleVoice || enVoices[1] || null;
+            utterance.voice = femaleVoice || enVoices[0] || null;
             utterance.pitch = 1.45;
             utterance.rate = 1.08;
             break;
 
-          case 'clerk': // Shop Clerk (Polite, helpful, crisp, upbeat)
+          case 'clerk': // Shop Clerk (Polite, crisp, upbeat)
             utterance.voice = naturalVoice || femaleVoice || enVoices[0] || null;
             utterance.pitch = 1.2;
             utterance.rate = 1.15;
             break;
 
-          case 'gymleader': // Aritro Saha (Tech Lead / Gym Leader - firm, tech-savvy, calm, confident)
-            utterance.voice = maleVoice || enVoices[0] || null;
-            utterance.pitch = 0.95;
-            utterance.rate = 1.0;
+          case 'gymleader': // Aritro Saha (Tech Lead / Gym Leader - firm, confident, manly young developer tone)
+            utterance.voice = youngMaleVoice || maleVoice || fallbackMale || null;
+            utterance.pitch = 0.68; // Rich masculine baritone
+            utterance.rate = 0.95;  // Clear, confident pace
             break;
 
-          case 'arcade': // Arcade Host (Energetic, high tempo, loud)
-            utterance.voice = naturalVoice || maleVoice || enVoices[0] || null;
-            utterance.pitch = 1.25;
+          case 'arcade': // Arcade Host (Energetic, high tempo)
+            utterance.voice = naturalVoice || maleVoice || fallbackMale || null;
+            utterance.pitch = 1.15;
             utterance.rate = 1.22;
             break;
 
           case 'sign': // Public announcement / bulletin narrator
-            utterance.voice = naturalVoice || enVoices[0] || null;
-            utterance.pitch = 1.0;
+            utterance.voice = naturalVoice || fallbackMale || null;
+            utterance.pitch = 0.85;
             utterance.rate = 0.95;
             break;
 
           default:
-            utterance.pitch = 1.0;
+            utterance.voice = fallbackMale || null;
+            utterance.pitch = 0.8;
             utterance.rate = 1.0;
             break;
         }
@@ -154,10 +171,10 @@ class SoundManager {
       const gain = this.ctx.createGain();
       const t = this.ctx.currentTime;
 
-      let baseFreq = 520;
-      if (speakerType === 'scientist') baseFreq = 380;
+      let baseFreq = 480;
+      if (speakerType === 'scientist') baseFreq = 220; // Deep low-frequency professor rumble
+      else if (speakerType === 'gymleader') baseFreq = 260; // Deep masculine punch
       else if (speakerType === 'nurse') baseFreq = 680;
-      else if (speakerType === 'gymleader') baseFreq = 320;
       else if (speakerType === 'arcade') baseFreq = 620;
       else if (speakerType === 'pet') baseFreq = 840;
 
