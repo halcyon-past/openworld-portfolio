@@ -10,7 +10,7 @@ interface ContactModalProps {
 }
 
 export const ContactModal: React.FC<ContactModalProps> = ({ onClose }) => {
-  const handleBeatbox = (type: 'kick' | 'snare' | 'hihat' | 'scratch') => {
+  const handleBeatbox = (type: 'kick' | 'snare' | 'hihat' | 'scratch' | 'throatbass' | 'click') => {
     soundManager.playBeatboxSound(type);
   };
 
@@ -111,30 +111,48 @@ export const ContactModal: React.FC<ContactModalProps> = ({ onClose }) => {
               When taking breaks between engineering pipelines, Aritro creates vocal rhythms and beatbox drops. Tap each pad below to synthesize retro drum hits!
             </p>
 
-            <div className="grid grid-cols-4 gap-2 pt-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
               <button
                 onClick={() => handleBeatbox('kick')}
-                className="py-2.5 px-2 bg-red-600 hover:bg-red-500 active:scale-95 text-white rounded font-pixel text-[10px] font-bold transition-all cursor-pointer shadow-sm"
+                className="py-2.5 px-2 bg-red-600 hover:bg-red-500 active:scale-95 text-white rounded font-pixel text-[9px] sm:text-[10px] font-bold transition-all cursor-pointer shadow-sm flex flex-col items-center gap-0.5"
               >
-                KICK 💥
+                <span>LIP KICK 💥</span>
+                <span className="text-[7px] text-red-200 font-silk">&quot;B&quot; Plosive</span>
               </button>
               <button
                 onClick={() => handleBeatbox('snare')}
-                className="py-2.5 px-2 bg-amber-600 hover:bg-amber-500 active:scale-95 text-white rounded font-pixel text-[10px] font-bold transition-all cursor-pointer shadow-sm"
+                className="py-2.5 px-2 bg-amber-600 hover:bg-amber-500 active:scale-95 text-white rounded font-pixel text-[9px] sm:text-[10px] font-bold transition-all cursor-pointer shadow-sm flex flex-col items-center gap-0.5"
               >
-                SNARE ⚡
+                <span>K-SNARE ⚡</span>
+                <span className="text-[7px] text-amber-200 font-silk">&quot;Psh&quot; Snap</span>
               </button>
               <button
                 onClick={() => handleBeatbox('hihat')}
-                className="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white rounded font-pixel text-[10px] font-bold transition-all cursor-pointer shadow-sm"
+                className="py-2.5 px-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white rounded font-pixel text-[9px] sm:text-[10px] font-bold transition-all cursor-pointer shadow-sm flex flex-col items-center gap-0.5"
               >
-                HI-HAT 🎵
+                <span>HI-HAT 🎵</span>
+                <span className="text-[7px] text-emerald-200 font-silk">&quot;Ts&quot; Crisp</span>
               </button>
               <button
                 onClick={() => handleBeatbox('scratch')}
-                className="py-2.5 px-2 bg-purple-600 hover:bg-purple-500 active:scale-95 text-white rounded font-pixel text-[10px] font-bold transition-all cursor-pointer shadow-sm"
+                className="py-2.5 px-2 bg-purple-600 hover:bg-purple-500 active:scale-95 text-white rounded font-pixel text-[9px] sm:text-[10px] font-bold transition-all cursor-pointer shadow-sm flex flex-col items-center gap-0.5"
               >
-                SCRATCH 💿
+                <span>SCRATCH 💿</span>
+                <span className="text-[7px] text-purple-200 font-silk">Vocal Turntable</span>
+              </button>
+              <button
+                onClick={() => handleBeatbox('throatbass')}
+                className="py-2.5 px-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white rounded font-pixel text-[9px] sm:text-[10px] font-bold transition-all cursor-pointer shadow-sm flex flex-col items-center gap-0.5"
+              >
+                <span>THROAT BASS 🔊</span>
+                <span className="text-[7px] text-blue-200 font-silk">Sub Harmonic</span>
+              </button>
+              <button
+                onClick={() => handleBeatbox('click')}
+                className="py-2.5 px-2 bg-pink-600 hover:bg-pink-500 active:scale-95 text-white rounded font-pixel text-[9px] sm:text-[10px] font-bold transition-all cursor-pointer shadow-sm flex flex-col items-center gap-0.5"
+              >
+                <span>TONGUE CLICK 🎯</span>
+                <span className="text-[7px] text-pink-200 font-silk">&quot;Ka&quot; Rimshot</span>
               </button>
             </div>
           </div>
