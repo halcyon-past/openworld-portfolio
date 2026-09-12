@@ -406,11 +406,11 @@ export class GameEngine {
   }
 
   private triggerBuilding(trigger: BuildingTrigger) {
-    soundManager.playWarp();
-
     if (trigger.targetModal && this.onModalOpen) {
+      soundManager.playWarp();
       this.onModalOpen(trigger.targetModal);
     } else if (trigger.dialogueText && this.onDialogue) {
+      soundManager.playSelect();
       this.onDialogue({
         speaker: trigger.name,
         lines: trigger.dialogueText,

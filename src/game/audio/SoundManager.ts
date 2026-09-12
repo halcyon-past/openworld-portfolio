@@ -156,15 +156,15 @@ class SoundManager {
             utterance.rate = 1.15;
             break;
 
-          case 'sign': // Public announcement / bulletin narrator
-            utterance.voice = naturalVoice || nonFemaleVoices[0] || null;
-            utterance.pitch = 0.9;
-            utterance.rate = 0.95;
+          case 'sign': // Public announcement / town notice board narrator (crisp, modern, neutral guide voice)
+            utterance.voice = naturalVoice || femaleVoice || aritroVoices[0] || null;
+            utterance.pitch = 1.05; // Bright, clear, neutral public system announcement tone
+            utterance.rate = 1.02;  // Fluent, informative reading speed
             break;
 
           default:
-            utterance.voice = nonFemaleVoices[0] || null;
-            utterance.pitch = 0.9;
+            utterance.voice = naturalVoice || aritroVoices[0] || null;
+            utterance.pitch = 1.0;
             utterance.rate = 1.0;
             break;
         }

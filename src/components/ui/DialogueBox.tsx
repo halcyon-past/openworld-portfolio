@@ -126,6 +126,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
             {avatar === 'gymleader' && '⚡'}
             {avatar === 'arcade' && '🕹️'}
             {avatar === 'pet' && '🐶'}
+            {avatar === 'sign' && '📜'}
           </div>
         )}
 
