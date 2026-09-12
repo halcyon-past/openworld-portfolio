@@ -30,7 +30,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Aritro Saha | GBA Open World RPG Portfolio (FireRed & Emerald Style)",
+    default: "Aritro Saha | Pokémon RPG Portfolio",
     template: "%s | Aritro Saha Portfolio",
   },
   description:
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
     "Aritro Saha Portfolio",
     "Aritro Saha BMS",
     "Aritro Saha Bristol Myers Squibb",
-    "Pokemon FireRed Portfolio",
-    "Pokemon Emerald Portfolio",
+    "Pokemon RPG Portfolio",
+    "Pokemon Developer Portfolio",
     "RPG Portfolio",
     "Interactive Portfolio",
     "Associate Software Engineer",
@@ -75,9 +75,9 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Aritro Saha | Pokémon FireRed & Emerald RPG Portfolio",
+    title: "Aritro Saha | Pokémon RPG Portfolio",
     description:
-      "Step into an authentic GBA retro Pokémon RPG open world showcasing Aritro Saha's projects, engineering achievements at Bristol Myers Squibb, and interactive developer minigames.",
+      "Step into an authentic retro Pokémon RPG open world showcasing Aritro Saha's projects, engineering achievements at Bristol Myers Squibb, and interactive developer minigames.",
     url: SITE_URL,
     siteName: "Aritro Saha Portfolio",
     locale: "en_US",
@@ -93,9 +93,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aritro Saha | Pokémon FireRed & Emerald RPG Portfolio",
+    title: "Aritro Saha | Pokémon RPG Portfolio",
     description:
-      "Interactive retro open-world portfolio styled after Pokémon FireRed & Emerald. Discover projects, experience at BMS, and playable arcade minigames.",
+      "Interactive retro open-world Pokémon RPG portfolio. Discover projects, experience at BMS, and playable arcade minigames.",
     creator: "@halcyon_past",
     images: ["/assets/profile.webp"],
   },
@@ -185,9 +185,9 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,
-      name: "Aritro Saha GBA RPG Portfolio",
+      name: "Aritro Saha Pokémon RPG Portfolio",
       description:
-        "Open-world retro RPG portfolio in the style of Pokémon FireRed and Emerald.",
+        "Interactive open-world retro Pokémon RPG portfolio of Aritro Saha.",
       publisher: {
         "@id": `${SITE_URL}/#person`,
       },
