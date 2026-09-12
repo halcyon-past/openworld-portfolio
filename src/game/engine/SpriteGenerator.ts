@@ -1887,6 +1887,174 @@ export class SpriteGenerator {
     this.cache.set(key, c);
     return c;
   }
+
+  /**
+   * Generates a 2.5D Mega Jumbotron Outdoor Town Screen (96x64 px)
+   * Displays rotating project previews, animated scanlines, neon bezels, and live status lights
+   */
+  public getMegaJumbotronTV(): HTMLCanvasElement {
+    const key = 'bldg_jumbotron_frame';
+    if (this.cache.has(key)) return this.cache.get(key)!;
+
+    const [c, ctx] = this.createCanvas(96, 68);
+
+    // 1. Heavy Industrial Ground Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
+    ctx.beginPath();
+    ctx.ellipse(48, 62, 44, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Heavy Dual Support Steel Pillars
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(20, 48, 10, 16);
+    ctx.fillRect(66, 48, 10, 16);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(26, 48, 4, 16);
+    ctx.fillRect(72, 48, 4, 16);
+    // Steel bolts
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(21, 60, 2, 2);
+    ctx.fillRect(27, 60, 2, 2);
+    ctx.fillRect(67, 60, 2, 2);
+    ctx.fillRect(73, 60, 2, 2);
+
+    // 3. Main Monitor Chassis / Heavy Bezel
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.roundRect(4, 4, 88, 48, 5);
+    ctx.fill();
+
+    // Bezel metallic border highlight
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Top Brand Bar: "ARITRO TECH TV • LIVE SHOWCASE"
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(6, 6, 84, 5);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 4px monospace';
+    ctx.fillText('⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡', 12, 10);
+
+    // Live ON-AIR blinking LED
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(84, 8.5, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner Screen Housing Border (Screen area: 8x12 to 88x48 -> 80x36)
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(8, 12, 80, 36);
+
+    // Dual speakers underneath display
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(10, 49, 76, 2);
+    for (let x = 12; x < 84; x += 4) {
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x, 49, 2, 2);
+    }
+
+    this.cache.set(key, c);
+    return c;
+  }
+
+  /**
+   * Generates a 2.5D Animated Marble Town Water Fountain (64x64 px)
+   */
+  public getTownFountain(): HTMLCanvasElement {
+    const key = 'scenery_fountain_base';
+    if (this.cache.has(key)) return this.cache.get(key)!;
+
+    const [c, ctx] = this.createCanvas(64, 52);
+
+    // 1. Circular Ground Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+    ctx.beginPath();
+    ctx.ellipse(32, 44, 28, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Outer Stone Basin Ring
+    ctx.fillStyle = '#64748b';
+    ctx.beginPath();
+    ctx.ellipse(32, 36, 28, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner Basin Rim
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.ellipse(32, 34, 26, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Basin Water Body
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.ellipse(32, 35, 23, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. Central Pedestal
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(28, 18, 8, 16);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(28, 18, 3, 16);
+
+    // Upper Basin
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.ellipse(32, 18, 12, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.ellipse(32, 17, 10, 3.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Spouting Gem Orb at Apex
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(32, 10, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(31, 8, 2, 2);
+
+    this.cache.set(key, c);
+    return c;
+  }
+
+  /**
+   * Generates a Cozy 2.5D Park Wooden Bench (32x24 px)
+   */
+  public getParkBench(): HTMLCanvasElement {
+    const key = 'tile_park_bench';
+    if (this.cache.has(key)) return this.cache.get(key)!;
+
+    const [c, ctx] = this.createCanvas(32, 24);
+
+    // Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+    ctx.fillRect(2, 18, 28, 4);
+
+    // Cast Iron Legs
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(4, 10, 3, 11);
+    ctx.fillRect(25, 10, 3, 11);
+
+    // Wooden Slats Backrest
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(2, 4, 28, 3);
+    ctx.fillRect(2, 8, 28, 3);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(2, 4, 28, 1);
+    ctx.fillRect(2, 8, 28, 1);
+
+    // Wooden Slats Seat
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(2, 12, 28, 4);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(2, 12, 28, 1);
+
+    this.cache.set(key, c);
+    return c;
+  }
 }
 
 export const spriteGenerator = new SpriteGenerator();

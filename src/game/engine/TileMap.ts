@@ -119,6 +119,18 @@ export class TileMap {
     this.markSolidBox(26, 14, 4, 3);
     // Gym (5x4): x: 14..18, y: 22..25
     this.markSolidBox(14, 22, 5, 4);
+
+    // 8. Mark solid footprints for new interactive town scenery
+    // Mega Jumbotron TV (6x3): x: 10..15, y: 13..15
+    this.markSolidBox(10, 13, 6, 3);
+    // Northern Park Grand Fountain (4x3): x: 11..14, y: 5..7
+    this.markSolidBox(11, 5, 4, 3);
+    // Town Square Bench (2x1): x: 9..10, y: 16
+    this.markSolidBox(9, 16, 2, 1);
+    // Northern Garden Bench (2x1): x: 15..16, y: 6
+    this.markSolidBox(15, 6, 2, 1);
+    // Lakeside Scenic Bench (2x1): x: 5..6, y: 23
+    this.markSolidBox(5, 23, 2, 1);
   }
 
   private markSolidBox(startX: number, startY: number, w: number, h: number) {
@@ -269,6 +281,94 @@ export class TileMap {
         dialogueText: [
           "NOTICE: Silicon Gym - Bristol Myers Squibb.",
           "'Home of 8 coveted badges, enterprise pipelines, and Hack4Bengal champions!'"
+        ]
+      },
+      // Town Square Mega Jumbotron TV (Front triggers at x: 12 & 13, y: 16)
+      {
+        id: 'trigger_tv_1',
+        name: 'Mega Jumbotron TV',
+        x: 12,
+        y: 16,
+        type: 'tv',
+        targetModal: 'pokedex',
+        dialogueText: [
+          "⚡ PALLET CLOUD MEGA JUMBOTRON ⚡",
+          "Broadcasting live project showcases from Aritro's software engineering portfolio!",
+          "Press [A] to cycle channels, or access the terminal inside the Pokédex Center for live demos."
+        ]
+      },
+      {
+        id: 'trigger_tv_2',
+        name: 'Mega Jumbotron TV',
+        x: 13,
+        y: 16,
+        type: 'tv',
+        targetModal: 'pokedex',
+        dialogueText: [
+          "⚡ PALLET CLOUD MEGA JUMBOTRON ⚡",
+          "Broadcasting live project showcases from Aritro's software engineering portfolio!",
+          "Press [A] to cycle channels, or access the terminal inside the Pokédex Center for live demos."
+        ]
+      },
+      // Pallet Cloud Wishing Fountain (Front triggers at x: 12 & 13, y: 8)
+      {
+        id: 'trigger_fountain_1',
+        name: 'Pallet Cloud Wishing Fountain',
+        x: 12,
+        y: 8,
+        type: 'fountain',
+        dialogueText: [
+          "You approached the sparkling Pallet Cloud Wishing Fountain.",
+          "You tossed in 100 PokéDollars and made a wish for bug-free production deployments!",
+          "✨ A refreshing azure mist restored your Pokémon and coding spirit to 100%! ✨"
+        ]
+      },
+      {
+        id: 'trigger_fountain_2',
+        name: 'Pallet Cloud Wishing Fountain',
+        x: 13,
+        y: 8,
+        type: 'fountain',
+        dialogueText: [
+          "You approached the sparkling Pallet Cloud Wishing Fountain.",
+          "You tossed in 100 PokéDollars and made a wish for bug-free production deployments!",
+          "✨ A refreshing azure mist restored your Pokémon and coding spirit to 100%! ✨"
+        ]
+      },
+      // Town Square Viewing Bench (Front trigger at x: 9, y: 17)
+      {
+        id: 'trigger_bench_town',
+        name: 'Town Square Bench',
+        x: 9,
+        y: 17,
+        type: 'bench',
+        dialogueText: [
+          "You took a seat on the cozy Town Square Bench.",
+          "From here you have a front-row view of the outdoor Mega Jumbotron showcasing Aritro's projects!"
+        ]
+      },
+      // Northern Garden Bench (Front trigger at x: 15, y: 7)
+      {
+        id: 'trigger_bench_garden',
+        name: 'Northern Garden Bench',
+        x: 15,
+        y: 7,
+        type: 'bench',
+        dialogueText: [
+          "You rested on the wooden garden bench by the fountain.",
+          "Listening to the gentle splash of water melts away all stress. Focus and clarity fully restored!"
+        ]
+      },
+      // Lakeside Scenic Bench (Front trigger at x: 5, y: 24)
+      {
+        id: 'trigger_bench_lake',
+        name: 'Lakeside Scenic Bench',
+        x: 5,
+        y: 24,
+        type: 'bench',
+        dialogueText: [
+          "You sat on the scenic bench overlooking the tranquil blue waters.",
+          "'In distributed systems as in life: isolate faults, embrace resilience, and keep moving forward.'"
         ]
       }
     ];
@@ -454,10 +554,10 @@ export class TileMap {
       });
     }
 
-    // Decorative natural trees
+    // Decorative natural trees (framed around town plaza and fountain)
     const decorativeTrees: [number, number][] = [
-      [10, 3], [12, 3], [28, 3],
-      [2, 13], [13, 13], [22, 13],
+      [9, 3], [16, 3], [28, 3],
+      [2, 13], [22, 13],
       [8, 22], [22, 22], [28, 24]
     ];
     for (const [tx, ty] of decorativeTrees) {
@@ -502,6 +602,37 @@ export class TileMap {
     items.push({
       baseY: 26 * TILE_SIZE,
       draw: (ctx) => ctx.drawImage(spriteGenerator.getSiliconGym(), 14 * TILE_SIZE, 22 * TILE_SIZE),
+    });
+
+    // --- Interactive Scenery Objects ---
+    // Town Square Mega Jumbotron TV (x: 10, y: 12, width: 96px = 6 tiles, base Y: 16 * TILE_SIZE)
+    items.push({
+      baseY: 16 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getMegaJumbotronTV(), 10 * TILE_SIZE, 12 * TILE_SIZE),
+    });
+
+    // Northern Park Grand Wishing Fountain (x: 11, y: 5, width: 64px = 4 tiles, base Y: 8 * TILE_SIZE)
+    items.push({
+      baseY: 8 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getTownFountain(), 11 * TILE_SIZE, 5 * TILE_SIZE),
+    });
+
+    // Town Square Viewing Bench (x: 9, y: 16, width: 32px = 2 tiles)
+    items.push({
+      baseY: 16.8 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 9 * TILE_SIZE, 15.5 * TILE_SIZE),
+    });
+
+    // Northern Garden Rest Bench (x: 15, y: 6)
+    items.push({
+      baseY: 6.8 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 15 * TILE_SIZE, 5.5 * TILE_SIZE),
+    });
+
+    // Lakeside Scenic Bench (x: 5, y: 23)
+    items.push({
+      baseY: 23.8 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 5 * TILE_SIZE, 22.5 * TILE_SIZE),
     });
 
     return items;

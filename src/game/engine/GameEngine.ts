@@ -3,6 +3,60 @@ import { tileMap, MAP_WIDTH, MAP_HEIGHT } from './TileMap';
 import { TILE_SIZE, spriteGenerator } from './SpriteGenerator';
 import { soundManager } from '../audio/SoundManager';
 
+export interface ShowcaseProject {
+  title: string;
+  category: string;
+  imageSrc: string;
+  img?: HTMLImageElement;
+  tagline: string;
+  badge: string;
+}
+
+export const SHOWCASE_PROJECTS: ShowcaseProject[] = [
+  {
+    title: 'Quarantine',
+    category: 'Python ETL Resilience',
+    imageSrc: '/assets/Quarantine.webp',
+    tagline: 'Dynamic dead-letter queue for 10K+ loops',
+    badge: 'PYPI • 10K+ LOOPS'
+  },
+  {
+    title: 'Structurify',
+    category: 'GCP Serverless ETL Pipeline',
+    imageSrc: '/assets/Structurify.webp',
+    tagline: 'LangGraph & Gemini Map-Reduce architecture',
+    badge: 'GCP • 1M ROWS'
+  },
+  {
+    title: 'PAWsitive',
+    category: 'Pet Emergency Healthcare',
+    imageSrc: '/assets/Pawsitive.webp',
+    tagline: 'Hack4Bengal 3.0 Champion Blood Donor Hub',
+    badge: 'WINNER • EMERGENCY'
+  },
+  {
+    title: 'GlideConnect',
+    category: 'Accessible Public Transit Hub',
+    imageSrc: '/assets/GlideConnect.webp',
+    tagline: 'Live crowdsourced transit navigation & routes',
+    badge: 'TRANSIT • MAPS'
+  },
+  {
+    title: 'Luffy Laser Dodge',
+    category: 'Interactive 3D WASM Game',
+    imageSrc: '/assets/luffy-laser-dodge.webp',
+    tagline: 'Webcam AI head-tracking via MediaPipe WASM',
+    badge: 'THREE.JS • WASM'
+  },
+  {
+    title: 'EduHelper',
+    category: 'Multi-Agent AI Study Assistant',
+    imageSrc: '/assets/Eduhelper.webp',
+    tagline: 'Adaptive AI tutor with structured memory',
+    badge: 'AI • EDTECH'
+  }
+];
+
 export class GameEngine {
   public state: GameState;
   private canvas: HTMLCanvasElement | null = null;
@@ -12,6 +66,11 @@ export class GameEngine {
   private keysPressed: Set<string> = new Set();
   private targetTile: Position | null = null;
   private currentPath: Position[] = [];
+
+  // Live Jumbotron TV Showcase State
+  public tvIndex: number = 0;
+  public tvTimer: number = 0;
+  public showcaseProjects: ShowcaseProject[] = SHOWCASE_PROJECTS;
 
   // UI Event Callbacks
   public onModalOpen?: (modal: string) => void;
@@ -61,6 +120,15 @@ export class GameEngine {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d')!;
     this.ctx.imageSmoothingEnabled = false;
+
+    // Preload project thumbnail images for outdoor Mega Jumbotron TV
+    if (typeof window !== 'undefined') {
+      this.showcaseProjects.forEach((proj) => {
+        const img = new Image();
+        img.src = proj.imageSrc;
+        proj.img = img;
+      });
+    }
 
     this.setupInputs();
     this.startLoop();
@@ -406,6 +474,60 @@ export class GameEngine {
   }
 
   private triggerBuilding(trigger: BuildingTrigger) {
+    // 1. Mega Jumbotron TV Interaction: cycle showcase on demand & announce broadcast
+    if (trigger.type === 'tv') {
+      this.tvIndex = (this.tvIndex + 1) % this.showcaseProjects.length;
+      this.tvTimer = 0;
+      soundManager.playFanfare();
+      const proj = this.showcaseProjects[this.tvIndex];
+      if (this.onDialogue) {
+        this.onDialogue({
+          speaker: 'Town Square Jumbotron',
+          lines: [
+            `⚡ NOW BROADCASTING: ${proj.title} [${proj.badge}] ⚡`,
+            `"${proj.tagline}"`,
+            `Category: ${proj.category}`,
+            "Press [A] to cycle channels, or enter the Pokédex Center to explore live demos and source code!"
+          ],
+          avatar: 'arcade'
+        });
+      }
+      return;
+    }
+
+    // 2. Wishing Fountain Interaction: toss coin & receive developer blessing
+    if (trigger.type === 'fountain') {
+      soundManager.playFanfare();
+      if (this.onDialogue) {
+        this.onDialogue({
+          speaker: 'Pallet Cloud Wishing Fountain',
+          lines: trigger.dialogueText || [
+            "You approached the sparkling Pallet Cloud Wishing Fountain.",
+            "You tossed in 100 PokéDollars and made a wish for bug-free production deployments!",
+            "✨ A refreshing azure mist restored your Pokémon and coding spirit to 100%! ✨"
+          ],
+          avatar: 'nurse'
+        });
+      }
+      return;
+    }
+
+    // 3. Park Benches: take a relaxing breather
+    if (trigger.type === 'bench') {
+      soundManager.playSelect();
+      if (this.onDialogue) {
+        this.onDialogue({
+          speaker: trigger.name,
+          lines: trigger.dialogueText || [
+            "You sat down on the comfortable bench and enjoyed the serene view."
+          ],
+          avatar: 'sign'
+        });
+      }
+      return;
+    }
+
+    // Standard building doors & signposts
     if (trigger.targetModal && this.onModalOpen) {
       soundManager.playWarp();
       this.onModalOpen(trigger.targetModal);
@@ -456,6 +578,13 @@ export class GameEngine {
   }
 
   private update(dt: number) {
+    // Continuous TV showcase timer rotation
+    this.tvTimer += dt;
+    if (this.tvTimer >= 5.0) {
+      this.tvTimer = 0;
+      this.tvIndex = (this.tvIndex + 1) % this.showcaseProjects.length;
+    }
+
     if (this.isDialogueActive || this.isModalActive) {
       this.keysPressed.clear();
       this.targetTile = null;
@@ -724,6 +853,12 @@ export class GameEngine {
       item.draw(ctx);
     }
 
+    // Render live dynamic outdoor Mega Jumbotron TV screen
+    this.renderTvScreen(ctx);
+
+    // Render animated Town Fountain water spray & ripples
+    this.renderFountainSpray(ctx);
+
     // Floating interaction prompt badge when facing/standing at building or NPC
     let targetX = player.x;
     let targetY = player.y;
@@ -737,8 +872,22 @@ export class GameEngine {
       (npc) => (npc.x === targetX && npc.y === targetY) || (Math.hypot(npc.x - player.x, npc.y - player.y) <= 1)
     );
 
-    if (nearbyTrigger?.targetModal || nearbyNpc) {
-      const promptText = nearbyTrigger ? '▲ [A] ENTER' : '▲ [A] TALK';
+    if (nearbyTrigger || nearbyNpc) {
+      let promptText = '▲ [A] INTERACT';
+      if (nearbyNpc) {
+        promptText = '▲ [A] TALK';
+      } else if (nearbyTrigger?.type === 'tv') {
+        promptText = '▲ [A] CYCLE TV';
+      } else if (nearbyTrigger?.type === 'fountain') {
+        promptText = '▲ [A] WISH';
+      } else if (nearbyTrigger?.type === 'bench') {
+        promptText = '▲ [A] REST';
+      } else if (nearbyTrigger?.type === 'sign') {
+        promptText = '▲ [A] READ';
+      } else if (nearbyTrigger?.targetModal) {
+        promptText = '▲ [A] ENTER';
+      }
+
       const promptX = playerPx + 16;
       const promptY = playerPy - 10 + Math.sin(performance.now() / 200) * 2;
 
@@ -796,6 +945,147 @@ export class GameEngine {
     grad.addColorStop(1, 'rgba(3, 7, 18, 0.45)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  /**
+   * Renders the live project showcase content inside the outdoor Mega Jumbotron TV
+   */
+  private renderTvScreen(ctx: CanvasRenderingContext2D) {
+    const screenX = 10 * TILE_SIZE + 8;  // 168
+    const screenY = 12 * TILE_SIZE + 12; // 204
+    const screenW = 80;
+    const screenH = 36;
+
+    const proj = this.showcaseProjects[this.tvIndex];
+    if (!proj) return;
+
+    ctx.save();
+
+    // Screen clipping with subtle rounded corners
+    ctx.beginPath();
+    ctx.roundRect(screenX, screenY, screenW, screenH, 2);
+    ctx.clip();
+
+    // 1. Draw Project Thumbnail Image or High-Tech Circuit Gradient
+    if (proj.img && proj.img.complete && proj.img.naturalWidth > 0) {
+      ctx.drawImage(proj.img, screenX, screenY, screenW, screenH);
+    } else {
+      const grad = ctx.createLinearGradient(screenX, screenY, screenX, screenY + screenH);
+      grad.addColorStop(0, '#0f172a');
+      grad.addColorStop(1, '#0284c7');
+      ctx.fillStyle = grad;
+      ctx.fillRect(screenX, screenY, screenW, screenH);
+
+      // Tech grid lines
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+      ctx.lineWidth = 1;
+      for (let x = screenX; x < screenX + screenW; x += 10) {
+        ctx.beginPath();
+        ctx.moveTo(x, screenY);
+        ctx.lineTo(x, screenY + screenH);
+        ctx.stroke();
+      }
+    }
+
+    // 2. CRT Scanline Overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.26)';
+    for (let y = screenY; y < screenY + screenH; y += 2) {
+      ctx.fillRect(screenX, y, screenW, 1);
+    }
+
+    // 3. Screen Glass Reflection Glare
+    const glareGrad = ctx.createLinearGradient(screenX, screenY, screenX + screenW, screenY + screenH);
+    glareGrad.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+    glareGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.04)');
+    glareGrad.addColorStop(1, 'rgba(0, 0, 0, 0.2)');
+    ctx.fillStyle = glareGrad;
+    ctx.fillRect(screenX, screenY, screenW, screenH);
+
+    // 4. Top Status Header (Channel & Blinking Live Indicator)
+    const isBlinkOn = Math.floor(performance.now() / 450) % 2 === 0;
+    // Channel Tag
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+    ctx.fillRect(screenX + 2, screenY + 2, 28, 6);
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 4px monospace';
+    ctx.fillText(`CH 0${this.tvIndex + 1}/0${this.showcaseProjects.length}`, screenX + 4, screenY + 6.5);
+
+    // Live Badge
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+    ctx.fillRect(screenX + screenW - 24, screenY + 2, 22, 6);
+    if (isBlinkOn) {
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(screenX + screenW - 20, screenY + 5, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 4px monospace';
+    ctx.fillText('LIVE', screenX + screenW - 16, screenY + 6.5);
+
+    // 5. Lower Third Broadcast Banner
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.fillRect(screenX, screenY + screenH - 11, screenW, 11);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(screenX, screenY + screenH - 11, screenW, 1);
+
+    // Project Title
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 5px monospace';
+    const displayTitle = proj.title.length > 18 ? proj.title.slice(0, 16) + '..' : proj.title;
+    ctx.fillText(displayTitle, screenX + 3, screenY + screenH - 6);
+
+    // Project Tech Highlight Badge
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = 'bold 4px monospace';
+    ctx.fillText(proj.badge, screenX + 3, screenY + screenH - 2);
+
+    // 6. Slide Countdown Progress Bar
+    const progress = Math.min(1, this.tvTimer / 5.0);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(screenX, screenY + screenH - 1, Math.floor(screenW * progress), 1);
+
+    ctx.restore();
+  }
+
+  /**
+   * Renders animated water spray and pool ripples for the Pallet Cloud Wishing Fountain
+   */
+  private renderFountainSpray(ctx: CanvasRenderingContext2D) {
+    const apexX = 11 * TILE_SIZE + 32; // 208
+    const apexY = 5 * TILE_SIZE + 10;  // 90
+    const time = performance.now() / 180;
+
+    ctx.save();
+
+    // 1. Spouting Water Droplets (shooting upward and arching down into basin)
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.85)';
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const loop = (time + i * 0.4) % 2;
+      const progress = loop / 2;
+      const r = progress * 10;
+      const x = apexX + Math.cos(angle) * r;
+      const y = apexY - Math.sin(progress * Math.PI) * 6 + progress * 9;
+
+      ctx.fillRect(Math.floor(x), Math.floor(y), 1.5, 1.5);
+    }
+
+    // 2. Sparkling Gem Highlight at Top
+    const sparkle = (Math.sin(time * 3) + 1) * 0.5;
+    ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + sparkle * 0.6})`;
+    ctx.fillRect(apexX - 1, apexY - 2, 2, 2);
+
+    // 3. Basin Water Ripples
+    const rippleTime = (time * 0.8) % 3;
+    const rippleR = 8 + rippleTime * 5;
+    ctx.strokeStyle = `rgba(186, 230, 253, ${Math.max(0, 0.4 - rippleTime * 0.12)})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(apexX, 5 * TILE_SIZE + 35, rippleR, rippleR * 0.4, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.restore();
   }
 }
 

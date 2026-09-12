@@ -22,7 +22,7 @@ export interface BuildingTrigger {
   name: string;
   x: number;
   y: number;
-  type: 'pokedex' | 'gym' | 'mart' | 'lab' | 'arcade' | 'house' | 'sign' | 'football';
+  type: 'pokedex' | 'gym' | 'mart' | 'lab' | 'arcade' | 'house' | 'sign' | 'football' | 'tv' | 'fountain' | 'bench';
   targetModal?: 'pokedex' | 'trainercard' | 'bag' | 'townmap' | 'arcade' | 'contact' | 'dialogue';
   dialogueText?: string[];
 }
