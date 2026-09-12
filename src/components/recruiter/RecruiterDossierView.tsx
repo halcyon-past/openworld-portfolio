@@ -96,11 +96,11 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({ onRe
             {/* Quick Contact Chips */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
               <a
-                href="mailto:aritrosaha10@gmail.com"
+                href="mailto:aritrosaha2025@gmail.com"
                 className="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs font-medium flex items-center gap-1.5 transition-colors"
               >
                 <Mail className="w-3.5 h-3.5" />
-                <span>aritrosaha10@gmail.com</span>
+                <span>aritrosaha2025@gmail.com</span>
               </a>
 
               {PORTFOLIO_DATA.socials.map((s) => (

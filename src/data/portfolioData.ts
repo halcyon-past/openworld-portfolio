@@ -82,6 +82,7 @@ export const PORTFOLIO_DATA = {
     pokedexCaught: 6,
     badgesCount: 8,
     location: "Pallet Cloud, Tech Region",
+    email: "aritrosaha2025@gmail.com",
     avatar: "/assets/profile.webp",
     bio: "Passionate Data Science Engineer with strong footing in Full Stack Development. I bridge the gap between backend resilience, scalable cloud architectures, and intuitive user experiences. When not crafting code, I'm beatboxing, playing football, or building retro browser experiences.",
     quote: "Every exception caught is a step closer to zero-crash production.",

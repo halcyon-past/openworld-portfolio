@@ -83,10 +83,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({ onClose }) => {
           <div className="bg-white p-3.5 rounded-lg border-2 border-slate-300 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div>
               <div className="text-xs font-bold text-slate-900">Direct Developer Dispatch</div>
-              <div className="text-[10px] text-slate-600 font-silk">aritrosaha10@gmail.com</div>
+              <div className="text-[10px] text-slate-600 font-silk">aritrosaha2025@gmail.com</div>
             </div>
             <a
-              href="mailto:aritrosaha10@gmail.com"
+              href="mailto:aritrosaha2025@gmail.com"
               onClick={() => soundManager.playSelect()}
               className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >

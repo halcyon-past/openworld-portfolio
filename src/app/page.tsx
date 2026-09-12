@@ -286,7 +286,7 @@ export default function Home() {
 
         <section>
           <h2>Contact Aritro Saha</h2>
-          <p>Email: aritrosaha10@gmail.com</p>
+          <p>Email: aritrosaha2025@gmail.com</p>
           <p>LinkedIn: https://linkedin.com/in/aritro-saha</p>
           <p>GitHub: https://github.com/halcyon-past</p>
         </section>
