@@ -51,7 +51,7 @@ class SoundManager {
   // --- Voice & Dialogue Speech Synthesis ---
 
   /**
-   * Character speech synthesis using Web Speech API with fallback to character pitch bleeps
+   * Character speech synthesis using Web Speech API with specific voice selections and pitch modulation
    */
   public speakText(text: string, speakerType: string = 'default') {
     if (this.isMuted) return;
@@ -61,41 +61,65 @@ class SoundManager {
         window.speechSynthesis.cancel(); // Stop any pending speech
 
         // Clean text of game brackets/emojis
-        const cleanText = text.replace(/\[.*?\]/g, '').trim();
+        const cleanText = text.replace(/\[.*?\]/g, '').replace(/[*_#~]/g, '').trim();
         if (!cleanText) return;
 
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.rate = 1.05;
+        // If Pixel Pup (pet), play playful synth bark instead of reading text literally
+        if (speakerType === 'pet') {
+          this.playTextBeep('pet');
+          return;
+        }
 
-        // Custom pitch & timbre per character
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        const voices = window.speechSynthesis.getVoices();
+
+        // Categorize available system voices
+        const enVoices = voices.filter((v) => v.lang.startsWith('en'));
+        const femaleVoice = enVoices.find((v) => /female|samantha|zira|victoria|karen|moira|fiona/i.test(v.name));
+        const maleVoice = enVoices.find((v) => /male|daniel|david|george|alex|fred|oliver|arthur/i.test(v.name));
+        const naturalVoice = enVoices.find((v) => /natural|online|google/i.test(v.name));
+
+        // Distinct voice profiles for every character
         switch (speakerType) {
-          case 'scientist': // Prof. Oak (distinguished, slightly lower pitch)
-            utterance.pitch = 0.85;
-            utterance.rate = 0.98;
+          case 'scientist': // Prof. Oak (Distinguished, wise, low resonant tone)
+            utterance.voice = maleVoice || enVoices[0] || null;
+            utterance.pitch = 0.75;
+            utterance.rate = 0.88;
             break;
-          case 'nurse': // Nurse Joy (cheerful, higher pitch)
-            utterance.pitch = 1.35;
-            utterance.rate = 1.1;
+
+          case 'nurse': // Nurse Joy (Sweet, bright, cheerful, high tone)
+            utterance.voice = femaleVoice || enVoices[1] || null;
+            utterance.pitch = 1.45;
+            utterance.rate = 1.08;
             break;
-          case 'clerk': // Shop clerk (polite, mid-high)
-            utterance.pitch = 1.15;
-            utterance.rate = 1.1;
+
+          case 'clerk': // Shop Clerk (Polite, helpful, crisp, upbeat)
+            utterance.voice = naturalVoice || femaleVoice || enVoices[0] || null;
+            utterance.pitch = 1.2;
+            utterance.rate = 1.15;
             break;
-          case 'gymleader': // BMS Tech Leader (firm, confident)
-            utterance.pitch = 0.8;
+
+          case 'gymleader': // Aritro Saha (Tech Lead / Gym Leader - firm, tech-savvy, calm, confident)
+            utterance.voice = maleVoice || enVoices[0] || null;
+            utterance.pitch = 0.95;
             utterance.rate = 1.0;
             break;
-          case 'arcade': // Arcade host (energetic, fast)
+
+          case 'arcade': // Arcade Host (Energetic, high tempo, loud)
+            utterance.voice = naturalVoice || maleVoice || enVoices[0] || null;
             utterance.pitch = 1.25;
-            utterance.rate = 1.2;
+            utterance.rate = 1.22;
             break;
-          case 'pet': // Pet pup
-            utterance.pitch = 1.6;
-            utterance.rate = 1.3;
+
+          case 'sign': // Public announcement / bulletin narrator
+            utterance.voice = naturalVoice || enVoices[0] || null;
+            utterance.pitch = 1.0;
+            utterance.rate = 0.95;
             break;
+
           default:
             utterance.pitch = 1.0;
-            utterance.rate = 1.05;
+            utterance.rate = 1.0;
             break;
         }
 

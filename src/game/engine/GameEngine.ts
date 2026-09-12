@@ -310,7 +310,8 @@ export class GameEngine {
     } else if (trigger.dialogueText && this.onDialogue) {
       this.onDialogue({
         speaker: trigger.name,
-        lines: trigger.dialogueText
+        lines: trigger.dialogueText,
+        avatar: trigger.type === 'sign' ? 'sign' : trigger.type
       });
     }
   }
@@ -330,7 +331,8 @@ export class GameEngine {
         lines: [
           "GOOOOAL! You kicked the soccer ball across Aritro's lawn!",
           "When Aritro isn't coding enterprise pipelines, he's on the football pitch or beatboxing!"
-        ]
+        ],
+        avatar: 'arcade'
       });
     }
   }
