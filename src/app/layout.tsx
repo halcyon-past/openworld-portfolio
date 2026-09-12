@@ -16,30 +16,116 @@ const silkscreen = Silkscreen({
   display: "swap",
 });
 
+const SITE_URL = "https://openworld.aritro.cloud";
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://aritro.cloud'),
-  title: "Aritro Saha | GBA Open World RPG Portfolio",
+  metadataBase: new URL(SITE_URL),
+  title: "Aritro Saha | GBA Open World RPG Portfolio (FireRed & Emerald Style)",
   description:
-    "Explore the open-world retro RPG portfolio of Aritro Saha (Associate Software Developer at Bristol Myers Squibb & Hack4Bengal 3.0 Winner) styled after Pokémon FireRed and Emerald.",
+    "Play through the interactive open-world retro Pokémon RPG portfolio of Aritro Saha (Associate Software Developer at Bristol Myers Squibb & Hack4Bengal 3.0 Winner). Explore full-stack and data science projects, skills, 8 Gym Badges, and playable minigames.",
+  applicationName: "Aritro Saha Pokémon RPG Portfolio",
+  authors: [{ name: "Aritro Saha", url: "https://linkedin.com/in/aritro-saha" }],
+  generator: "Next.js",
   keywords: [
     "Aritro Saha",
-    "Portfolio",
-    "Pokemon FireRed",
-    "Pokemon Emerald",
+    "Aritro Saha Portfolio",
+    "Pokemon FireRed Portfolio",
+    "Pokemon Emerald Portfolio",
     "RPG Portfolio",
-    "Next.js",
-    "Software Engineer",
+    "Interactive Portfolio",
+    "Associate Software Developer",
     "Bristol Myers Squibb",
-    "Hack4Bengal",
-    "Data Science",
+    "Hack4Bengal Winner",
+    "Quarantine Python",
+    "Structurify",
+    "Next.js Portfolio",
+    "Full Stack Developer",
+    "Data Science Engineer",
+    "VIT Chennai",
   ],
-  authors: [{ name: "Aritro Saha" }],
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
     title: "Aritro Saha | Pokémon FireRed & Emerald RPG Portfolio",
-    description: "Interactive open-world retro Pokémon RPG portfolio exploring projects, skills, and experience.",
+    description:
+      "Step into an authentic GBA retro Pokémon RPG open world showcasing Aritro Saha's projects, engineering achievements at Bristol Myers Squibb, and interactive developer minigames.",
+    url: SITE_URL,
+    siteName: "Aritro Saha Portfolio",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/assets/profile.webp",
+        width: 800,
+        height: 800,
+        alt: "Aritro Saha - Associate Software Developer at Bristol Myers Squibb",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aritro Saha | Pokémon FireRed & Emerald RPG Portfolio",
+    description:
+      "Interactive retro open-world portfolio styled after Pokémon FireRed & Emerald. Discover projects, experience at BMS, and playable arcade minigames.",
+    creator: "@halcyon_past",
     images: ["/assets/profile.webp"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+// JSON-LD Structured Data for Googlebot and search engines
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: "Aritro Saha",
+      alternateName: "Megh",
+      jobTitle: "Associate Software Developer",
+      worksFor: {
+        "@type": "Organization",
+        name: "Bristol Myers Squibb",
+      },
+      alumniOf: {
+        "@type": "EducationalOrganization",
+        name: "Vellore Institute of Technology, Chennai",
+      },
+      url: SITE_URL,
+      image: `${SITE_URL}/assets/profile.webp`,
+      sameAs: [
+        "https://linkedin.com/in/aritro-saha",
+        "https://github.com/halcyon-past",
+        "https://www.youtube.com/@veripyed",
+        "https://instagram.com/halcyon-past",
+        "https://siliconsync.aritro.cloud",
+      ],
+      description:
+        "Associate Software Developer at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, and AI engineering.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: "Aritro Saha GBA RPG Portfolio",
+      description:
+        "Open-world retro RPG portfolio in the style of Pokémon FireRed and Emerald.",
+      publisher: {
+        "@id": `${SITE_URL}/#person`,
+      },
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -49,7 +135,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${pressStart.variable} ${silkscreen.variable} h-full`}>
-      <body className="h-full bg-[#0d131a] text-slate-100 overflow-hidden select-none font-sans">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <body className="h-full bg-[#070b10] text-slate-100 overflow-hidden select-none font-sans">
         {children}
       </body>
     </html>
