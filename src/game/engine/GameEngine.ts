@@ -138,15 +138,18 @@ export class GameEngine {
   public handleCanvasClick(clientX: number, clientY: number, rect: DOMRect) {
     if (!this.canvas) return;
 
-    // Convert screen coordinates to world tile coordinates
+    // Convert screen coordinates to world tile coordinates with zoom scaling
     const scaleX = this.canvas.width / rect.width;
     const scaleY = this.canvas.height / rect.height;
 
     const screenX = (clientX - rect.left) * scaleX;
     const screenY = (clientY - rect.top) * scaleY;
 
-    const worldX = screenX + (this.state.camera.x - this.canvas.width / 2);
-    const worldY = screenY + (this.state.camera.y - this.canvas.height / 2);
+    // Responsive retro zoom factor (1.5x on desktop, 1.25x on smaller screens)
+    const zoom = Math.max(1.2, Math.min(1.8, Math.round((this.canvas.height / 540) * 10) / 10));
+
+    const worldX = (screenX - this.canvas.width / 2) / zoom + this.state.camera.x;
+    const worldY = (screenY - this.canvas.height / 2) / zoom + this.state.camera.y;
 
     const tileX = Math.floor(worldX / TILE_SIZE);
     const tileY = Math.floor(worldY / TILE_SIZE);
@@ -478,12 +481,14 @@ export class GameEngine {
     ctx.fillStyle = '#070b10';
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Apply Camera Transform
+    // Apply Camera Transform with HD Pixel-Art Zoom
+    const zoom = Math.max(1.2, Math.min(1.8, Math.round((this.canvas.height / 540) * 10) / 10));
+
     ctx.save();
-    ctx.translate(
-      Math.floor(this.canvas.width / 2 - camera.x),
-      Math.floor(this.canvas.height / 2 - camera.y)
-    );
+    // Center viewport and scale
+    ctx.translate(Math.floor(this.canvas.width / 2), Math.floor(this.canvas.height / 2));
+    ctx.scale(zoom, zoom);
+    ctx.translate(Math.floor(-camera.x), Math.floor(-camera.y));
 
     // 1. Render Flat Base Terrain (Grass, Paths, Water, Flowers, Cliffs, Stairs)
     const animFrame = Math.floor(performance.now() / 33);

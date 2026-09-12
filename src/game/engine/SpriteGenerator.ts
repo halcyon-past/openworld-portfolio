@@ -17,51 +17,90 @@ export class SpriteGenerator {
     return [c, ctx];
   }
 
-  // --- Tiles ---
+  // --- Rich Stylized HD Tiles ---
 
   public getGrassTile(): HTMLCanvasElement {
-    const key = 'tile_grass';
+    const key = 'tile_grass_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
-    // Base Emerald/FireRed green
-    ctx.fillStyle = '#4ade80'; // vibrant grass green
+    // Base lush emerald green with gradient depth
+    ctx.fillStyle = '#22c55e';
     ctx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
 
-    // Subtle grass texture pixels
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(4, 6, 4, 4);
-    ctx.fillRect(20, 10, 4, 4);
-    ctx.fillRect(12, 22, 4, 4);
-    ctx.fillRect(24, 26, 4, 4);
+    // Deep meadow under-shading
+    ctx.fillStyle = '#16a34a';
+    ctx.fillRect(0, 0, TILE_SIZE, 3);
+    ctx.fillRect(0, 16, TILE_SIZE, 2);
 
+    // Multiple layered grass blade clusters
+    const darkBlades = [
+      [2, 6], [3, 5], [6, 18], [7, 17], [14, 8], [15, 7],
+      [22, 12], [23, 11], [18, 24], [19, 23], [26, 4], [27, 3],
+      [10, 26], [11, 25], [28, 22], [29, 21], [4, 12], [12, 14]
+    ];
+    ctx.fillStyle = '#15803d';
+    for (const [x, y] of darkBlades) {
+      ctx.fillRect(x, y, 2, 4);
+      ctx.fillRect(x + 1, y - 1, 2, 3);
+    }
+
+    // Bright sunlit dewdrop highlights
+    const brightBlades = [
+      [3, 4], [7, 16], [15, 6], [23, 10], [19, 22], [27, 2],
+      [11, 24], [29, 20], [8, 8], [24, 18], [16, 16]
+    ];
     ctx.fillStyle = '#86efac';
-    ctx.fillRect(6, 4, 2, 2);
-    ctx.fillRect(22, 8, 2, 2);
-    ctx.fillRect(14, 20, 2, 2);
+    for (const [x, y] of brightBlades) {
+      ctx.fillRect(x, y, 2, 2);
+    }
+
+    // Extra micro-pixel noise for texture depth
+    ctx.fillStyle = '#4ade80';
+    for (let x = 1; x < TILE_SIZE; x += 4) {
+      for (let y = 2; y < TILE_SIZE; y += 5) {
+        ctx.fillRect((x * 7) % TILE_SIZE, (y * 11) % TILE_SIZE, 1, 2);
+      }
+    }
 
     this.cache.set(key, c);
     return c;
   }
 
   public getTallGrassTile(frame: number = 0): HTMLCanvasElement {
-    const key = `tile_tallgrass_${frame % 2}`;
+    const key = `tile_tallgrass_hd_${frame % 2}`;
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
     ctx.drawImage(this.getGrassTile(), 0, 0);
 
-    // Tall wild grass blades
-    ctx.fillStyle = '#15803d';
-    const offset = (frame % 2) * 2;
-    for (let x = 2; x < TILE_SIZE - 4; x += 6) {
-      ctx.fillRect(x + offset, 8, 3, 20);
-      ctx.fillRect(x + 2 + offset, 4, 2, 24);
+    const sway = (frame % 2) * 2;
+
+    // Layer 1: Dark background wild grass silhouettes
+    ctx.fillStyle = '#14532d';
+    for (let x = 2; x < TILE_SIZE - 2; x += 5) {
+      ctx.fillRect(x + sway, 6, 3, 26);
+      ctx.fillRect(x - 1 + sway, 10, 2, 22);
     }
 
-    ctx.fillStyle = '#86efac';
+    // Layer 2: Vibrant wild blade stalks with tapered tips
+    ctx.fillStyle = '#15803d';
+    for (let x = 1; x < TILE_SIZE - 2; x += 5) {
+      ctx.fillRect(x + sway, 8, 3, 24);
+      ctx.fillRect(x + 1 + sway, 4, 2, 6);
+      ctx.fillRect(x + 2 + sway, 2, 1, 4);
+    }
+
+    // Layer 3: Sunlit blade highlights & seed pods
+    ctx.fillStyle = '#4ade80';
+    for (let x = 2; x < TILE_SIZE - 3; x += 5) {
+      ctx.fillRect(x + sway, 4, 1, 8);
+      ctx.fillRect(x + 1 + sway, 2, 1, 3);
+    }
+
+    ctx.fillStyle = '#bbf7d0';
     for (let x = 3; x < TILE_SIZE - 4; x += 6) {
-      ctx.fillRect(x + offset, 4, 2, 6);
+      ctx.fillRect(x + sway, 1, 2, 2); // Pollen / flower tip
     }
 
     this.cache.set(key, c);
@@ -69,43 +108,86 @@ export class SpriteGenerator {
   }
 
   public getPathTile(): HTMLCanvasElement {
-    const key = 'tile_path';
+    const key = 'tile_path_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
-    ctx.fillStyle = '#eab308'; // Warm sandy dirt
+    // Base warm cobblestone / sandy terracotta dirt
+    ctx.fillStyle = '#d97706';
     ctx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
 
-    ctx.fillStyle = '#ca8a04';
-    ctx.fillRect(0, 0, TILE_SIZE, 2);
-    ctx.fillRect(0, TILE_SIZE - 2, TILE_SIZE, 2);
-    ctx.fillRect(6, 12, 4, 4);
-    ctx.fillRect(18, 6, 4, 4);
-    ctx.fillRect(22, 20, 4, 4);
+    // Stone paving blocks with chiseled mortar grooves
+    const stones = [
+      { x: 1, y: 1, w: 14, h: 9 },
+      { x: 17, y: 1, w: 14, h: 9 },
+      { x: 1, y: 11, w: 9, h: 9 },
+      { x: 12, y: 11, w: 12, h: 9 },
+      { x: 26, y: 11, w: 5, h: 9 },
+      { x: 1, y: 21, w: 14, h: 10 },
+      { x: 17, y: 21, w: 14, h: 10 },
+    ];
 
-    ctx.fillStyle = '#fde047';
-    ctx.fillRect(8, 14, 2, 2);
-    ctx.fillRect(20, 8, 2, 2);
+    // Mortar groove lines (dark shadow)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
+
+    for (const s of stones) {
+      // Stone body
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(s.x, s.y, s.w, s.h);
+
+      // Stone top/left bevel highlight
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(s.x, s.y, s.w, 1);
+      ctx.fillRect(s.x, s.y, 1, s.h);
+
+      // Stone bottom/right bevel shadow
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(s.x, s.y + s.h - 1, s.w, 1);
+      ctx.fillRect(s.x + s.w - 1, s.y, 1, s.h);
+
+      // Speckled pebble texture
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(s.x + 3, s.y + 3, 2, 2);
+      ctx.fillRect(s.x + s.w - 4, s.y + s.h - 4, 2, 2);
+    }
 
     this.cache.set(key, c);
     return c;
   }
 
   public getWaterTile(frame: number = 0): HTMLCanvasElement {
-    const key = `tile_water_${frame % 4}`;
+    const key = `tile_water_hd_${frame % 4}`;
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
-    ctx.fillStyle = '#38bdf8'; // Sky blue water
+    // Deep crystal ocean base gradient
+    ctx.fillStyle = '#0284c7';
     ctx.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
 
-    // Animated ripple lines
-    ctx.fillStyle = '#7dd3fc';
-    const wave = (frame % 4) * 8;
-    ctx.fillRect((wave) % TILE_SIZE, 8, 10, 2);
-    ctx.fillRect((wave + 16) % TILE_SIZE, 20, 12, 2);
+    // Deep water depth bands
+    ctx.fillStyle = '#0369a1';
+    ctx.fillRect(0, 4, TILE_SIZE, 8);
+    ctx.fillRect(0, 20, TILE_SIZE, 8);
 
-    ctx.fillStyle = '#0284c7';
+    // Animated water caustics & gentle crest ripples
+    const offset1 = (frame % 4) * 8;
+    const offset2 = ((frame + 2) % 4) * 8;
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect((offset1) % TILE_SIZE, 6, 12, 3);
+    ctx.fillRect((offset1 + 18) % TILE_SIZE, 10, 10, 2);
+    ctx.fillRect((offset2) % TILE_SIZE, 22, 14, 3);
+    ctx.fillRect((offset2 + 16) % TILE_SIZE, 18, 8, 2);
+
+    // Brilliant white foam sparkle glints
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect((offset1 + 4) % TILE_SIZE, 7, 3, 1);
+    ctx.fillRect((offset2 + 5) % TILE_SIZE, 23, 4, 1);
+    ctx.fillRect((offset1 + 22) % TILE_SIZE, 11, 2, 1);
+
+    // Translucent shoreline edge gradient
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
     ctx.fillRect(0, 0, TILE_SIZE, 2);
     ctx.fillRect(0, TILE_SIZE - 2, TILE_SIZE, 2);
 
@@ -114,70 +196,146 @@ export class SpriteGenerator {
   }
 
   public getFenceTile(): HTMLCanvasElement {
-    const key = 'tile_fence';
+    const key = 'tile_fence_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
     ctx.drawImage(this.getGrassTile(), 0, 0);
 
-    // Wooden post and rails
-    ctx.fillStyle = '#854d0e';
-    ctx.fillRect(4, 6, 6, 22);
-    ctx.fillRect(22, 6, 6, 22);
-    ctx.fillRect(0, 10, TILE_SIZE, 4);
-    ctx.fillRect(0, 20, TILE_SIZE, 4);
+    // Ground cast shadow under fence
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+    ctx.fillRect(2, 28, 10, 3);
+    ctx.fillRect(20, 28, 10, 3);
 
-    ctx.fillStyle = '#a16207';
-    ctx.fillRect(4, 6, 2, 22);
-    ctx.fillRect(0, 10, TILE_SIZE, 2);
+    // 2.5D Wooden Posts with grain and bevel
+    const posts = [4, 22];
+    for (const px of posts) {
+      // Post main body
+      ctx.fillStyle = '#854d0e';
+      ctx.fillRect(px, 4, 7, 24);
+
+      // Post left highlight
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(px, 4, 2, 24);
+
+      // Post right shadow
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(px + 5, 4, 2, 24);
+
+      // Post top point
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(px + 2, 2, 3, 2);
+      ctx.fillStyle = '#d97706';
+      ctx.fillRect(px + 1, 3, 5, 1);
+    }
+
+    // Horizontal Rails with bevel
+    const rails = [10, 20];
+    for (const ry of rails) {
+      // Rail shadow underneath
+      ctx.fillStyle = 'rgba(0,0,0,0.3)';
+      ctx.fillRect(0, ry + 4, TILE_SIZE, 2);
+
+      // Rail body
+      ctx.fillStyle = '#a16207';
+      ctx.fillRect(0, ry, TILE_SIZE, 4);
+
+      // Rail top highlight
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(0, ry, TILE_SIZE, 1);
+
+      // Rail bottom shadow
+      ctx.fillStyle = '#713f12';
+      ctx.fillRect(0, ry + 3, TILE_SIZE, 1);
+    }
 
     this.cache.set(key, c);
     return c;
   }
 
   public getSignTile(): HTMLCanvasElement {
-    const key = 'tile_sign';
+    const key = 'tile_sign_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
     ctx.drawImage(this.getGrassTile(), 0, 0);
 
-    // Wooden post
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(14, 14, 4, 18);
+    // Sign ground shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+    ctx.fillRect(10, 28, 12, 3);
 
-    // Wooden sign board
-    ctx.fillStyle = '#b45309';
-    ctx.fillRect(4, 4, 24, 16);
-    ctx.fillStyle = '#d97706';
-    ctx.fillRect(6, 6, 20, 12);
+    // Wooden sturdy post
     ctx.fillStyle = '#78350f';
-    ctx.fillRect(8, 9, 16, 2);
-    ctx.fillRect(8, 13, 12, 2);
+    ctx.fillRect(13, 14, 6, 16);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(13, 14, 2, 16);
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(17, 14, 2, 16);
+
+    // Signboard outer wood rim
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(2, 2, 28, 18);
+
+    // Signboard face
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(4, 4, 24, 14);
+
+    // Paper notice pinned to board
+    ctx.fillStyle = '#fef3c7';
+    ctx.fillRect(6, 6, 20, 10);
+    // Gold thumbtack
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(15, 5, 2, 2);
+
+    // Micro text lines
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(8, 9, 16, 1);
+    ctx.fillRect(8, 11, 14, 1);
+    ctx.fillRect(8, 13, 10, 1);
 
     this.cache.set(key, c);
     return c;
   }
 
   public getFlowerTile(type: 'red' | 'blue' | 'yellow'): HTMLCanvasElement {
-    const key = `tile_flower_${type}`;
+    const key = `tile_flower_hd_${type}`;
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
     ctx.drawImage(this.getGrassTile(), 0, 0);
 
-    const colors = {
-      red: '#ef4444',
-      blue: '#3b82f6',
-      yellow: '#eab308',
-    };
+    const petals = {
+      red: { base: '#dc2626', light: '#f87171', center: '#fef08a' },
+      blue: { base: '#2563eb', light: '#60a5fa', center: '#ffffff' },
+      yellow: { base: '#d97706', light: '#fde047', center: '#ffffff' },
+    }[type];
 
-    ctx.fillStyle = colors[type];
-    ctx.fillRect(6, 8, 6, 6);
-    ctx.fillRect(20, 16, 6, 6);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(8, 10, 2, 2);
-    ctx.fillRect(22, 18, 2, 2);
+    const clusters = [
+      { cx: 9, cy: 11 },
+      { cx: 23, cy: 19 },
+      { cx: 14, cy: 23 },
+    ];
+
+    for (const cl of clusters) {
+      // Stems & green leaf blades
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(cl.cx - 1, cl.cy + 3, 2, 4);
+      ctx.fillRect(cl.cx + 1, cl.cy + 4, 3, 2);
+
+      // Petals (4-leaf blossom)
+      ctx.fillStyle = petals.base;
+      ctx.fillRect(cl.cx - 3, cl.cy - 1, 7, 4);
+      ctx.fillRect(cl.cx - 1, cl.cy - 3, 4, 7);
+
+      // Petal highlights
+      ctx.fillStyle = petals.light;
+      ctx.fillRect(cl.cx - 2, cl.cy - 2, 2, 2);
+      ctx.fillRect(cl.cx + 1, cl.cy - 2, 2, 2);
+
+      // Flower golden pollen center
+      ctx.fillStyle = petals.center;
+      ctx.fillRect(cl.cx, cl.cy, 2, 2);
+    }
 
     this.cache.set(key, c);
     return c;
@@ -247,39 +405,100 @@ export class SpriteGenerator {
   }
 
   public getTreeTile(): HTMLCanvasElement {
-    const key = 'tile_tree_64';
+    const key = 'tile_tree_64_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     // Big GBA tree (64x64 = 2x2 tiles)
     const [c, ctx] = this.createCanvas(64, 64);
 
-    // Tree shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    // 1. 2.5D Directional Ground Cast Shadow (deep realistic drop shadow)
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
     ctx.beginPath();
-    ctx.ellipse(32, 54, 24, 8, 0, 0, Math.PI * 2);
+    ctx.ellipse(36, 56, 26, 7, 0.15, 0, Math.PI * 2);
     ctx.fill();
 
-    // Trunk
+    // 2. Volumetric Wood Trunk & Roots
+    // Roots spreading into ground
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(20, 52, 24, 6);
     ctx.fillStyle = '#78350f';
-    ctx.fillRect(26, 36, 12, 22);
-    ctx.fillStyle = '#92400e';
-    ctx.fillRect(26, 36, 4, 22);
+    ctx.fillRect(22, 50, 20, 8);
 
-    // Leaves canopy (layered emerald green)
-    ctx.fillStyle = '#15803d'; // dark shadow
-    ctx.beginPath();
-    ctx.arc(32, 28, 26, 0, Math.PI * 2);
-    ctx.fill();
+    // Main Trunk with vertical bark grooves
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(25, 34, 14, 22);
 
-    ctx.fillStyle = '#16a34a'; // mid tone
-    ctx.beginPath();
-    ctx.arc(32, 24, 22, 0, Math.PI * 2);
-    ctx.fill();
+    // Left lit trunk edge
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(25, 34, 3, 22);
 
-    ctx.fillStyle = '#4ade80'; // highlight
-    ctx.beginPath();
-    ctx.arc(28, 18, 14, 0, Math.PI * 2);
-    ctx.fill();
+    // Right dark bark groove & shadow
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(35, 34, 4, 22);
+    ctx.fillRect(30, 38, 2, 14);
+
+    // 3. Volumetric Multi-Clustered Leaf Canopy (FireRed / Octopath style lush foliage)
+    // Deep Under-Canopy Shadow Spheres
+    const darkSpheres = [
+      { x: 22, y: 28, r: 16 },
+      { x: 42, y: 28, r: 16 },
+      { x: 32, y: 32, r: 17 },
+      { x: 32, y: 18, r: 18 },
+    ];
+    ctx.fillStyle = '#14532d'; // Deepest forest green
+    for (const s of darkSpheres) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Mid-tone Foliage Clusters
+    const midSpheres = [
+      { x: 21, y: 26, r: 14 },
+      { x: 41, y: 26, r: 14 },
+      { x: 32, y: 16, r: 16 },
+      { x: 25, y: 14, r: 13 },
+      { x: 39, y: 14, r: 13 },
+    ];
+    ctx.fillStyle = '#16a34a'; // Vibrant leaf mid-tone
+    for (const s of midSpheres) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Upper Sunlit Leaf Highlights (Top-Left 135deg sunlight)
+    const litSpheres = [
+      { x: 19, y: 23, r: 11 },
+      { x: 38, y: 22, r: 10 },
+      { x: 29, y: 13, r: 13 },
+      { x: 24, y: 10, r: 9 },
+    ];
+    ctx.fillStyle = '#22c55e';
+    for (const s of litSpheres) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Intense Crest Highlights & Leaf Tufts
+    const topHighlights = [
+      { x: 27, y: 8, r: 7 },
+      { x: 18, y: 20, r: 6 },
+      { x: 36, y: 19, r: 5 },
+    ];
+    ctx.fillStyle = '#86efac';
+    for (const s of topHighlights) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Leaf tuft texture pixels across canopy
+    ctx.fillStyle = '#bbf7d0';
+    ctx.fillRect(26, 6, 3, 2);
+    ctx.fillRect(16, 18, 3, 2);
+    ctx.fillRect(34, 17, 3, 2);
 
     this.cache.set(key, c);
     return c;
@@ -315,188 +534,273 @@ export class SpriteGenerator {
   // --- Character Sprites (Player & NPCs) ---
 
   /**
-   * Generates a volumetric 2.5D character sprite in 4 directions with walk animation and light/shadow facets
+   * Generates a high-detail stylized 2.5D character sprite in 4 directions with natural walk animation
    */
   public getCharacterSprite(
     type: string,
     direction: 'down' | 'up' | 'left' | 'right',
     stepFrame: number
   ): HTMLCanvasElement {
-    const key = `char_25d_${type}_${direction}_${stepFrame % 4}`;
+    const key = `char_hd_${type}_${direction}_${stepFrame % 4}`;
     if (this.cache.has(key)) return this.cache.get(key)!;
 
-    const [c, ctx] = this.createCanvas(32, 34);
+    const [c, ctx] = this.createCanvas(32, 36);
 
     // Config colors per character type
     const palette = this.getCharacterPalette(type);
 
-    // Step wobble offset: 0=idle, 1=left foot, 2=idle, 3=right foot
+    // Step cycle: 0=idle, 1=left foot forward, 2=idle, 3=right foot forward
     const frame = stepFrame % 4;
     const legOffset = frame === 1 ? -2 : frame === 3 ? 2 : 0;
     const bob = frame === 1 || frame === 3 ? -1 : 0;
+    const armSwing = frame === 1 ? 2 : frame === 3 ? -2 : 0;
 
-    // 2.5D Directional Ground Cast Shadow (Slanted towards bottom-right 135deg)
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+    // 1. Soft Elliptical Ground Contact Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.42)';
     ctx.beginPath();
-    ctx.ellipse(17, 30, 9, 3.5, 0.2, 0, Math.PI * 2);
+    ctx.ellipse(16, 32, 10, 4, 0.15, 0, Math.PI * 2);
     ctx.fill();
 
     if (direction === 'down') {
-      // 2.5D Legs with shading
+      // --- LEGS & PANTS ---
       ctx.fillStyle = palette.pants;
-      ctx.fillRect(11 + legOffset, 20 + bob, 4, 8);
-      ctx.fillRect(17 - legOffset, 20 + bob, 4, 8);
-      // Leg shadow facet
-      ctx.fillStyle = 'rgba(0,0,0,0.2)';
-      ctx.fillRect(14 + legOffset, 20 + bob, 1, 8);
-      ctx.fillRect(20 - legOffset, 20 + bob, 1, 8);
-
-      // Shoes (2.5D bevel)
-      ctx.fillStyle = palette.shoes;
-      ctx.fillRect(10 + legOffset, 27 + bob, 5, 3);
-      ctx.fillRect(17 - legOffset, 27 + bob, 5, 3);
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillRect(10 + legOffset, 29 + bob, 5, 1);
-      ctx.fillRect(17 - legOffset, 29 + bob, 5, 1);
-
-      // Torso / Jacket (Volumetric cylinder)
-      ctx.fillStyle = palette.shirt;
-      ctx.fillRect(9, 13 + bob, 14, 9);
-      // Light highlight on left side
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-      ctx.fillRect(10, 13 + bob, 3, 9);
-      // Dark shading on right side
+      ctx.fillRect(10 + legOffset, 20 + bob, 5, 8);
+      ctx.fillRect(17 - legOffset, 20 + bob, 5, 8);
+      // Pants creases / inner shadow
       ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-      ctx.fillRect(20, 13 + bob, 3, 9);
+      ctx.fillRect(13 + legOffset, 20 + bob, 2, 8);
+      ctx.fillRect(17 - legOffset, 20 + bob, 2, 8);
 
-      // Collar / Inner Accent
-      ctx.fillStyle = palette.accent;
-      ctx.fillRect(14, 13 + bob, 4, 8);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(15, 15 + bob, 2, 2);
+      // --- SNEAKERS / SHOES ---
+      // Left shoe
+      ctx.fillStyle = palette.shoes;
+      ctx.fillRect(9 + legOffset, 27 + bob, 6, 4);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(9 + legOffset, 29 + bob, 6, 2); // White rubber sole
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(11 + legOffset, 28 + bob, 2, 1); // Shoe accent lace
 
-      // Head & Face (Volumetric)
-      ctx.fillStyle = palette.skin;
-      ctx.fillRect(10, 7 + bob, 12, 7);
-      // Face shadow cast by cap brim
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
-      ctx.fillRect(10, 7 + bob, 12, 2);
+      // Right shoe
+      ctx.fillStyle = palette.shoes;
+      ctx.fillRect(17 - legOffset, 27 + bob, 6, 4);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(17 - legOffset, 29 + bob, 6, 2);
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(19 - legOffset, 28 + bob, 2, 1);
 
-      // Expressive Pixel Eyes with highlights
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(12, 10 + bob, 2, 3);
-      ctx.fillRect(18, 10 + bob, 2, 3);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(12, 10 + bob, 1, 1);
-      ctx.fillRect(18, 10 + bob, 1, 1);
+      // --- TORSO / JACKET ---
+      // Outer Jacket
+      ctx.fillStyle = palette.shirt;
+      ctx.fillRect(8, 13 + bob, 16, 8);
 
-      // Hair wisps
-      ctx.fillStyle = palette.hair;
-      ctx.fillRect(9, 9 + bob, 2, 4);
-      ctx.fillRect(21, 9 + bob, 2, 4);
-
-      // 2.5D Cap / Hair (Cylindrical curved crown)
-      ctx.fillStyle = palette.hat;
-      ctx.fillRect(8, 3 + bob, 16, 5);
-      ctx.fillRect(9, 2 + bob, 14, 2);
-      // Cap highlight
+      // Jacket Left Highlight (Lit side)
       ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-      ctx.fillRect(10, 2 + bob, 5, 4);
-      // Cap side shadow
+      ctx.fillRect(9, 13 + bob, 4, 8);
+
+      // Jacket Right Shadow
       ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-      ctx.fillRect(20, 3 + bob, 4, 5);
+      ctx.fillRect(20, 13 + bob, 4, 8);
 
-      // 2.5D Overhanging Visor Brim
-      ctx.fillStyle = palette.hatBrim;
-      ctx.fillRect(8, 7 + bob, 16, 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(14, 4 + bob, 4, 2); // Trainer emblem / badge
-    } else if (direction === 'up') {
-      // Back view (Shows 3D backpack)
-      ctx.fillStyle = palette.pants;
-      ctx.fillRect(11 - legOffset, 20 + bob, 4, 8);
-      ctx.fillRect(17 + legOffset, 20 + bob, 4, 8);
-      ctx.fillStyle = palette.shoes;
-      ctx.fillRect(11 - legOffset, 27 + bob, 4, 3);
-      ctx.fillRect(17 + legOffset, 27 + bob, 4, 3);
-
-      // Jacket back
-      ctx.fillStyle = palette.shirt;
-      ctx.fillRect(9, 13 + bob, 14, 9);
-
-      // 3D Backpack with depth & strap
+      // Inner Shirt / Undershirt
       ctx.fillStyle = palette.accent;
-      ctx.fillRect(11, 13 + bob, 10, 8);
-      ctx.fillStyle = 'rgba(0,0,0,0.2)';
-      ctx.fillRect(18, 13 + bob, 3, 8);
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(13, 16 + bob, 6, 2); // Zipper flap
+      ctx.fillRect(14, 14 + bob, 4, 7);
 
-      // Back of head & hair
+      // Belt with silver buckle
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(9, 20 + bob, 14, 2);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(15, 20 + bob, 2, 2);
+
+      // Swinging Arms & Hands
+      ctx.fillStyle = palette.shirt;
+      ctx.fillRect(6, 14 + bob - armSwing, 3, 5);
+      ctx.fillRect(23, 14 + bob + armSwing, 3, 5);
+      ctx.fillStyle = palette.skin;
+      ctx.fillRect(6, 19 + bob - armSwing, 3, 3); // Hands
+      ctx.fillRect(23, 19 + bob + armSwing, 3, 3);
+
+      // --- HEAD & FACE ---
+      // Neck
+      ctx.fillStyle = palette.skin;
+      ctx.fillRect(14, 12 + bob, 4, 2);
+
+      // Face base
+      ctx.fillStyle = palette.skin;
+      ctx.fillRect(9, 6 + bob, 14, 8);
+
+      // Cheek blush
+      ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
+      ctx.fillRect(10, 10 + bob, 3, 2);
+      ctx.fillRect(19, 10 + bob, 3, 2);
+
+      // Expressive Anime Eyes with Catchlight
+      ctx.fillStyle = '#0f172a'; // Eye contour
+      ctx.fillRect(11, 8 + bob, 3, 4);
+      ctx.fillRect(18, 8 + bob, 3, 4);
+      ctx.fillStyle = '#38bdf8'; // Iris
+      ctx.fillRect(12, 9 + bob, 2, 3);
+      ctx.fillRect(19, 9 + bob, 2, 3);
+      ctx.fillStyle = '#ffffff'; // White catchlight
+      ctx.fillRect(12, 8 + bob, 1, 2);
+      ctx.fillRect(19, 8 + bob, 1, 2);
+
+      // Smile
+      ctx.fillStyle = '#9a3412';
+      ctx.fillRect(15, 12 + bob, 2, 1);
+
+      // Sideburn hair locks
       ctx.fillStyle = palette.hair;
-      ctx.fillRect(10, 8 + bob, 12, 6);
+      ctx.fillRect(8, 7 + bob, 2, 5);
+      ctx.fillRect(22, 7 + bob, 2, 5);
 
-      // Hat back
+      // --- 2.5D TRAINER CAP / HAIR ---
+      // Volumetric Cap Crown
       ctx.fillStyle = palette.hat;
-      ctx.fillRect(9, 2 + bob, 14, 7);
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.fillRect(18, 2 + bob, 5, 7);
+      ctx.fillRect(7, 2 + bob, 18, 5);
+      ctx.fillRect(9, 1 + bob, 14, 2);
+
+      // Cap lit highlight
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.fillRect(9, 2 + bob, 6, 4);
+
+      // Cap shadow side
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.fillRect(20, 2 + bob, 5, 5);
+
+      // Front Curved Visor Brim (Casts shadow on forehead)
+      ctx.fillStyle = palette.hatBrim;
+      ctx.fillRect(6, 6 + bob, 20, 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.fillRect(9, 7 + bob, 14, 1); // Drop shadow on forehead
+
+      // White Pokéball emblem on cap
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(16, 4 + bob, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (direction === 'up') {
+      // --- BACK VIEW (Shows 3D Travel Pack) ---
+      // Pants & Shoes
+      ctx.fillStyle = palette.pants;
+      ctx.fillRect(10 - legOffset, 20 + bob, 5, 8);
+      ctx.fillRect(17 + legOffset, 20 + bob, 5, 8);
+      ctx.fillStyle = palette.shoes;
+      ctx.fillRect(9 - legOffset, 27 + bob, 6, 4);
+      ctx.fillRect(17 + legOffset, 27 + bob, 6, 4);
+
+      // Jacket Back
+      ctx.fillStyle = palette.shirt;
+      ctx.fillRect(8, 13 + bob, 16, 8);
+
+      // 3D Bulging Backpack
+      ctx.fillStyle = palette.accent;
+      ctx.fillRect(10, 13 + bob, 12, 8);
+      // Backpack side shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.fillRect(18, 13 + bob, 4, 8);
+      // Zipper pocket & straps
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(12, 17 + bob, 8, 2);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(10, 13 + bob, 2, 8);
+      ctx.fillRect(20, 13 + bob, 2, 8);
+
+      // Arms swinging
+      ctx.fillStyle = palette.shirt;
+      ctx.fillRect(6, 14 + bob + armSwing, 3, 6);
+      ctx.fillRect(23, 14 + bob - armSwing, 3, 6);
+
+      // Back of head & spiky hair
+      ctx.fillStyle = palette.hair;
+      ctx.fillRect(9, 7 + bob, 14, 6);
+      ctx.fillRect(8, 10 + bob, 2, 4);
+      ctx.fillRect(22, 10 + bob, 2, 4);
+
+      // Back of Cap with adjustment strap
+      ctx.fillStyle = palette.hat;
+      ctx.fillRect(8, 2 + bob, 16, 6);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(14, 6 + bob, 4, 2); // Strap hole
     } else if (direction === 'left') {
-      // Left profile
+      // --- LEFT PROFILE VIEW ---
+      // Pants & Shoes
       ctx.fillStyle = palette.pants;
-      ctx.fillRect(13 + legOffset, 20 + bob, 5, 8);
+      ctx.fillRect(12 + legOffset, 20 + bob, 6, 8);
       ctx.fillStyle = palette.shoes;
-      ctx.fillRect(10 + legOffset, 27 + bob, 7, 3);
+      ctx.fillRect(9 + legOffset, 27 + bob, 8, 4);
 
+      // Torso & Arm
       ctx.fillStyle = palette.shirt;
-      ctx.fillRect(12, 13 + bob, 9, 9);
-      // 3D Backpack on back
+      ctx.fillRect(11, 13 + bob, 10, 8);
+      // Backpack on rear
       ctx.fillStyle = palette.accent;
-      ctx.fillRect(17, 13 + bob, 5, 8);
+      ctx.fillRect(18, 13 + bob, 5, 8);
 
+      // Left Arm
+      ctx.fillStyle = palette.shirt;
+      ctx.fillRect(12, 14 + bob + armSwing, 4, 5);
       ctx.fillStyle = palette.skin;
-      ctx.fillRect(11, 7 + bob, 9, 7);
-      // Left eye
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(12, 10 + bob, 2, 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(12, 10 + bob, 1, 1);
+      ctx.fillRect(12, 19 + bob + armSwing, 3, 3);
 
-      // Hat & forward visor
+      // Head & Left Eye
+      ctx.fillStyle = palette.skin;
+      ctx.fillRect(10, 6 + bob, 10, 8);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(11, 8 + bob, 2, 4);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(11, 9 + bob, 2, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(11, 8 + bob, 1, 1);
+
+      // Hair
+      ctx.fillStyle = palette.hair;
+      ctx.fillRect(15, 7 + bob, 5, 6);
+
+      // Cap with prominent forward visor
       ctx.fillStyle = palette.hat;
-      ctx.fillRect(10, 3 + bob, 11, 5);
+      ctx.fillRect(9, 2 + bob, 12, 5);
       ctx.fillStyle = palette.hatBrim;
-      ctx.fillRect(7, 7 + bob, 10, 2); // Visor sticking forward
+      ctx.fillRect(6, 6 + bob, 11, 2); // Sticking out left
     } else if (direction === 'right') {
-      // Right profile (Lit side)
+      // --- RIGHT PROFILE VIEW (Lit Side) ---
+      // Pants & Shoes
       ctx.fillStyle = palette.pants;
-      ctx.fillRect(14 - legOffset, 20 + bob, 5, 8);
+      ctx.fillRect(14 - legOffset, 20 + bob, 6, 8);
       ctx.fillStyle = palette.shoes;
-      ctx.fillRect(15 - legOffset, 27 + bob, 7, 3);
+      ctx.fillRect(15 - legOffset, 27 + bob, 8, 4);
 
+      // Torso & Arm
       ctx.fillStyle = palette.shirt;
-      ctx.fillRect(11, 13 + bob, 9, 9);
-      // Light highlight
-      ctx.fillStyle = 'rgba(255,255,255,0.2)';
-      ctx.fillRect(15, 13 + bob, 3, 9);
-
-      // Backpack on far side
+      ctx.fillRect(11, 13 + bob, 10, 8);
+      // Backpack on rear (far side)
       ctx.fillStyle = palette.accent;
-      ctx.fillRect(10, 13 + bob, 4, 7);
+      ctx.fillRect(9, 13 + bob, 4, 8);
 
+      // Right Arm
+      ctx.fillStyle = palette.shirt;
+      ctx.fillRect(16, 14 + bob - armSwing, 4, 5);
       ctx.fillStyle = palette.skin;
-      ctx.fillRect(12, 7 + bob, 9, 7);
-      // Right eye
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(18, 10 + bob, 2, 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(18, 10 + bob, 1, 1);
+      ctx.fillRect(17, 19 + bob - armSwing, 3, 3);
 
-      // Hat & forward visor
+      // Head & Right Eye
+      ctx.fillStyle = palette.skin;
+      ctx.fillRect(12, 6 + bob, 10, 8);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(19, 8 + bob, 2, 4);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(19, 9 + bob, 2, 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(19, 8 + bob, 1, 1);
+
+      // Hair
+      ctx.fillStyle = palette.hair;
+      ctx.fillRect(12, 7 + bob, 5, 6);
+
+      // Cap with prominent forward visor
       ctx.fillStyle = palette.hat;
-      ctx.fillRect(11, 3 + bob, 11, 5);
+      ctx.fillRect(11, 2 + bob, 12, 5);
       ctx.fillStyle = palette.hatBrim;
-      ctx.fillRect(15, 7 + bob, 10, 2); // Visor sticking forward
+      ctx.fillRect(15, 6 + bob, 11, 2); // Sticking out right
     }
 
     this.cache.set(key, c);
@@ -600,38 +904,48 @@ export class SpriteGenerator {
 
   // --- 2.5D Volumetric Oblique Buildings ---
 
+  // --- Ultra-Detailed Stylized 2.5D Buildings ---
+
   /**
-   * Generates a 4x3 tile 2.5D Pokémon Center (Projects Hub)
+   * Generates an Ultra-Detailed 4x3 tile 2.5D Pokémon Center
    * Width: 128px, Height: 96px
    */
   public getPokemonCenter(): HTMLCanvasElement {
-    const key = 'bld_25d_poke_center';
+    const key = 'bld_25d_poke_center_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(128, 96);
 
-    // 2.5D Soft Ground Shadow beneath building
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+    // 1. Soft Ambient Ground Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(64, 92, 60, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(64, 92, 62, 10, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2.5D Right Lateral Wall (shaded face showing depth)
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(116, 36, 8, 56);
+    // 2. Right Lateral Wall (Cast shadow side, showing building depth)
     ctx.fillStyle = '#64748b';
-    ctx.fillRect(116, 76, 8, 16);
+    ctx.fillRect(116, 36, 8, 56);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(116, 76, 8, 16); // Wainscot shadow
 
-    // Front Wall (Primary lit facade)
+    // 3. Front Facade Wall (Primary lit white stucco)
     ctx.fillStyle = '#f8fafc';
     ctx.fillRect(8, 36, 108, 56);
-    // Lower stone wainscot
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(8, 76, 108, 16);
 
-    // 2.5D Overhanging Red Slanted Roof
-    // Main roof face (slanted towards viewer)
-    ctx.fillStyle = '#dc2626';
+    // Subtle stone brick grid on white facade
+    ctx.fillStyle = '#e2e8f0';
+    for (let y = 38; y < 74; y += 8) {
+      ctx.fillRect(8, y, 108, 1);
+    }
+
+    // Lower Chiseled Cobblestone Wainscot
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(8, 76, 108, 16);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(8, 76, 108, 2); // Wainscot shelf lip
+
+    // 4. Detailed 2.5D Slanted Red Roof with Individual Shingles
+    ctx.fillStyle = '#b91c1c'; // Roof base shadow
     ctx.beginPath();
     ctx.moveTo(4, 38);
     ctx.lineTo(24, 6);
@@ -640,8 +954,33 @@ export class SpriteGenerator {
     ctx.closePath();
     ctx.fill();
 
-    // 2.5D Right Roof Chamfer / Shade (Darker red)
-    ctx.fillStyle = '#991b1b';
+    // Tiered shingle rows on roof
+    const shingleRows = [
+      { y: 8, x1: 23, x2: 105, h: 5 },
+      { y: 14, x1: 19, x2: 109, h: 5 },
+      { y: 20, x1: 15, x2: 113, h: 5 },
+      { y: 26, x1: 11, x2: 117, h: 5 },
+      { y: 32, x1: 7, x2: 121, h: 5 },
+    ];
+
+    for (const r of shingleRows) {
+      // Row body
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(r.x1, r.y, r.x2 - r.x1, r.h);
+
+      // Shingle top highlight lip
+      ctx.fillStyle = '#f87171';
+      ctx.fillRect(r.x1, r.y, r.x2 - r.x1, 1);
+
+      // Vertical shingle seam lines
+      ctx.fillStyle = '#991b1b';
+      for (let sx = r.x1 + 8; sx < r.x2 - 4; sx += 12) {
+        ctx.fillRect(sx, r.y, 1, r.h);
+      }
+    }
+
+    // Right Roof Chamfer Shading (Dark crimson)
+    ctx.fillStyle = '#7f1d1d';
     ctx.beginPath();
     ctx.moveTo(104, 6);
     ctx.lineTo(112, 10);
@@ -650,97 +989,127 @@ export class SpriteGenerator {
     ctx.closePath();
     ctx.fill();
 
-    // Roof Highlight ridge
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(24, 6, 80, 4);
-
-    // White Roof Overhang Eaves (creates 3D shelf)
+    // White Roof Overhang Cornice / Eaves
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(2, 36, 124, 5);
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(2, 40, 124, 2); // Eave underside shadow
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(2, 40, 124, 2); // Eave underside deep shadow
 
-    // 2.5D Iconic Pokéball Center Marquee (Pops off roof)
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    // 5. 3D Glowing Glass Pokéball Emblem Sign
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.beginPath();
     ctx.arc(64, 23, 16, 0, Math.PI * 2);
-    ctx.fill(); // Cast shadow on roof
+    ctx.fill(); // Sign shadow
 
-    ctx.fillStyle = '#ffffff';
+    // Chrome outer ring
+    ctx.fillStyle = '#e2e8f0';
     ctx.beginPath();
     ctx.arc(64, 21, 15, 0, Math.PI * 2);
     ctx.fill();
+
+    // Red upper half
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
-    ctx.arc(64, 21, 14, Math.PI, 0);
+    ctx.arc(64, 21, 13, Math.PI, 0);
     ctx.fill();
+
+    // White lower half
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.arc(64, 21, 4.5, 0, Math.PI * 2);
+    ctx.arc(64, 21, 13, 0, Math.PI);
     ctx.fill();
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 2;
-    ctx.stroke();
 
-    // 2.5D Recessed Glass Entrance (Dark inner arch)
+    // Center divider band & glowing button
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(46, 50, 36, 44); // Recessed door frame
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(49, 53, 30, 41);
+    ctx.fillRect(51, 20, 26, 2);
+    ctx.beginPath();
+    ctx.arc(64, 21, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8'; // Glowing blue inner button
+    ctx.beginPath();
+    ctx.arc(64, 21, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(63, 20, 1, 1); // Catchlight
+
+    // 6. 2.5D Recessed Glass Automatic Doors
+    ctx.fillStyle = '#0f172a'; // Deep door recess arch
+    ctx.fillRect(45, 48, 38, 46);
+
+    ctx.fillStyle = '#38bdf8'; // Crystal blue glass
+    ctx.fillRect(48, 51, 32, 43);
+
+    // Dark door frame dividers
     ctx.fillStyle = '#0284c7';
-    ctx.fillRect(63, 53, 2, 41);
-    // Glass specular reflection
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.fillRect(63, 51, 2, 43);
+    ctx.fillRect(48, 72, 32, 2);
+
+    // Diagonal Glass Specular Sheen
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
     ctx.beginPath();
-    ctx.moveTo(50, 90);
-    ctx.lineTo(75, 54);
-    ctx.lineTo(67, 54);
-    ctx.lineTo(49, 80);
+    ctx.moveTo(49, 93);
+    ctx.lineTo(76, 52);
+    ctx.lineTo(70, 52);
+    ctx.lineTo(49, 83);
+    ctx.closePath();
     ctx.fill();
 
-    // 2.5D Bay Windows with bevels
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(14, 46, 24, 26);
-    ctx.fillRect(86, 46, 24, 26);
-    ctx.fillStyle = '#7dd3fc';
-    ctx.fillRect(16, 48, 20, 22);
-    ctx.fillRect(88, 48, 20, 22);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(18, 50, 4, 18);
-    ctx.fillRect(90, 50, 4, 18);
+    // 7. Architectural Bay Windows with Interior Warm Light
+    const windows = [14, 86];
+    for (const wx of windows) {
+      // Outer bevel frame
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(wx - 1, 45, 26, 26);
+
+      // Glass window panes
+      ctx.fillStyle = '#7dd3fc';
+      ctx.fillRect(wx, 46, 24, 24);
+
+      // Window mullions
+      ctx.fillStyle = '#0369a1';
+      ctx.fillRect(wx + 11, 46, 2, 24);
+      ctx.fillRect(wx, 57, 24, 2);
+
+      // Specular glare
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fillRect(wx + 2, 48, 4, 18);
+    }
 
     this.cache.set(key, c);
     return c;
   }
 
   /**
-   * Generates a 4x3 tile 2.5D Poké Mart (Skill Mart)
+   * Generates an Ultra-Detailed 4x3 tile 2.5D Poké Mart
    * Width: 128px, Height: 96px
    */
   public getPokeMart(): HTMLCanvasElement {
-    const key = 'bld_25d_poke_mart';
+    const key = 'bld_25d_poke_mart_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(128, 96);
 
-    // 2.5D Soft Ground Shadow
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+    // 1. Ground Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(64, 92, 60, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(64, 92, 62, 10, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Right Lateral Wall (shaded face)
-    ctx.fillStyle = '#94a3b8';
+    // 2. Right Lateral Wall (depth facet)
+    ctx.fillStyle = '#64748b';
     ctx.fillRect(116, 36, 8, 56);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(116, 76, 8, 16);
 
-    // Front Wall
+    // 3. Front Wall
     ctx.fillStyle = '#f8fafc';
     ctx.fillRect(8, 36, 108, 56);
     ctx.fillStyle = '#cbd5e1';
     ctx.fillRect(8, 76, 108, 16);
 
-    // 2.5D Pitched Blue Roof
-    ctx.fillStyle = '#2563eb';
+    // 4. 2.5D Pitched Blue Shingle Roof
+    ctx.fillStyle = '#1e3a8a';
     ctx.beginPath();
     ctx.moveTo(4, 38);
     ctx.lineTo(24, 6);
@@ -749,8 +1118,27 @@ export class SpriteGenerator {
     ctx.closePath();
     ctx.fill();
 
-    // Right roof shadow facet
-    ctx.fillStyle = '#1e40af';
+    const martShingleRows = [
+      { y: 8, x1: 23, x2: 105, h: 5 },
+      { y: 14, x1: 19, x2: 109, h: 5 },
+      { y: 20, x1: 15, x2: 113, h: 5 },
+      { y: 26, x1: 11, x2: 117, h: 5 },
+      { y: 32, x1: 7, x2: 121, h: 5 },
+    ];
+
+    for (const r of martShingleRows) {
+      ctx.fillStyle = '#2563eb';
+      ctx.fillRect(r.x1, r.y, r.x2 - r.x1, r.h);
+      ctx.fillStyle = '#60a5fa';
+      ctx.fillRect(r.x1, r.y, r.x2 - r.x1, 1);
+      ctx.fillStyle = '#1d4ed8';
+      for (let sx = r.x1 + 8; sx < r.x2 - 4; sx += 12) {
+        ctx.fillRect(sx, r.y, 1, r.h);
+      }
+    }
+
+    // Right roof shadow
+    ctx.fillStyle = '#172554';
     ctx.beginPath();
     ctx.moveTo(104, 6);
     ctx.lineTo(112, 10);
@@ -762,66 +1150,81 @@ export class SpriteGenerator {
     // Yellow Roof Trim with 3D eave
     ctx.fillStyle = '#facc15';
     ctx.fillRect(2, 36, 124, 5);
-    ctx.fillStyle = '#ca8a04';
+    ctx.fillStyle = '#a16207';
     ctx.fillRect(2, 40, 124, 2);
 
-    // 2.5D Extruded "MART" Marquee
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.fillRect(42, 14, 46, 20); // Marquee shadow
+    // 5. 2.5D Extruded "MART" Marquee Box
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.fillRect(40, 14, 48, 20); // Box shadow
     ctx.fillStyle = '#1e3a8a';
-    ctx.fillRect(40, 12, 46, 20);
+    ctx.fillRect(38, 12, 48, 20);
     ctx.fillStyle = '#3b82f6';
-    ctx.fillRect(42, 14, 42, 16);
+    ctx.fillRect(40, 14, 44, 16);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(40, 14, 44, 1); // Gold top border
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 10px monospace';
     ctx.fillText('MART', 48, 26);
 
-    // 2.5D Recessed Automatic Doors
+    // 6. Recessed Doors & Showcase
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(50, 50, 28, 44);
+    ctx.fillRect(48, 48, 32, 46);
     ctx.fillStyle = '#93c5fd';
-    ctx.fillRect(52, 53, 24, 41);
+    ctx.fillRect(50, 51, 28, 43);
     ctx.fillStyle = '#1d4ed8';
-    ctx.fillRect(63, 53, 2, 41);
+    ctx.fillRect(63, 51, 2, 43);
 
-    // Showcase Glass Displays
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(14, 48, 26, 24);
-    ctx.fillRect(88, 48, 26, 24);
-    ctx.fillStyle = '#bfdbfe';
-    ctx.fillRect(16, 50, 22, 20);
-    ctx.fillRect(90, 50, 22, 20);
+    // Showcase Displays
+    const martWindows = [14, 86];
+    for (const wx of martWindows) {
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(wx - 1, 47, 26, 26);
+      ctx.fillStyle = '#bfdbfe';
+      ctx.fillRect(wx, 48, 24, 24);
+      // Items on display shelf
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(wx + 3, 62, 5, 5); // Pokéball
+      ctx.fillStyle = '#8b5cf6';
+      ctx.fillRect(wx + 10, 60, 4, 7); // Potion
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(wx + 16, 62, 5, 5); // TM
+    }
 
     this.cache.set(key, c);
     return c;
   }
 
   /**
-   * Generates a 5x4 tile 2.5D Silicon Gym (BMS Arena)
+   * Generates an Ultra-Detailed 5x4 tile 2.5D Silicon Gym (BMS Arena)
    * Width: 160px, Height: 128px
    */
   public getSiliconGym(): HTMLCanvasElement {
-    const key = 'bld_25d_silicon_gym';
+    const key = 'bld_25d_silicon_gym_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(160, 128);
 
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
+    // 1. Massive Ground Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.5)';
     ctx.beginPath();
-    ctx.ellipse(80, 124, 76, 12, 0, 0, Math.PI * 2);
+    ctx.ellipse(80, 124, 78, 12, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Right lateral shaded stone wall
-    ctx.fillStyle = '#1e293b';
+    // 2. Lateral Wall (Right side in shadow)
+    ctx.fillStyle = '#0f172a';
     ctx.fillRect(146, 38, 10, 86);
 
-    // Front stone wall
-    ctx.fillStyle = '#334155';
-    ctx.fillRect(8, 38, 138, 86);
-
-    // 2.5D Grand Pediment / Triangular Portico Roof
+    // 3. Front Chiseled Granite Wall
     ctx.fillStyle = '#1e293b';
+    ctx.fillRect(8, 38, 138, 86);
+    // Stone block masonry grooves
+    ctx.fillStyle = '#334155';
+    for (let y = 42; y < 120; y += 12) {
+      ctx.fillRect(8, y, 138, 1);
+    }
+
+    // 4. 2.5D Grand Pediment / Triangular Temple Portico
+    ctx.fillStyle = '#0f172a';
     ctx.beginPath();
     ctx.moveTo(2, 40);
     ctx.lineTo(80, 4);
@@ -829,57 +1232,86 @@ export class SpriteGenerator {
     ctx.closePath();
     ctx.fill();
 
-    // Portico Overhang Eaves
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(0, 38, 156, 6);
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(0, 43, 156, 3); // Deep shadow under roof cornice
+    // Portico Pediment Inner Relief
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.moveTo(12, 38);
+    ctx.lineTo(80, 8);
+    ctx.lineTo(144, 38);
+    ctx.closePath();
+    ctx.fill();
 
-    // 2.5D Volumetric Pillars (Curved lighting)
-    const pillarPositions = [14, 44, 102, 132];
-    for (const px of pillarPositions) {
-      // Pillar shadow cast behind
-      ctx.fillStyle = 'rgba(0,0,0,0.3)';
-      ctx.fillRect(px + 4, 46, 18, 78);
-      // Main pillar
-      ctx.fillStyle = '#64748b';
-      ctx.fillRect(px, 46, 16, 78);
-      // Left highlight
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillRect(px, 46, 4, 78);
-      // Right shadow
+    // Portico Cornice & Dentil moldings
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(0, 38, 156, 6);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(0, 38, 156, 1); // White marble top highlight
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(0, 44, 156, 3); // Deep frieze shadow
+
+    // 5. 4 Grand Classical Fluted Pillars
+    const gymPillars = [14, 44, 102, 132];
+    for (const px of gymPillars) {
+      // Cast shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(px + 4, 46, 20, 78);
+
+      // Fluted pillar shaft
       ctx.fillStyle = '#475569';
-      ctx.fillRect(px + 12, 46, 4, 78);
-      // Pillar capital & base
+      ctx.fillRect(px, 46, 16, 78);
+      // Fluted vertical ridges (3D cylinder gradient)
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(px, 46, 3, 78);
       ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(px + 4, 46, 4, 78); // Peak specular
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(px + 12, 46, 4, 78);
+
+      // Corinthian / Ionic capital & base
+      ctx.fillStyle = '#e2e8f0';
       ctx.fillRect(px - 2, 44, 20, 4);
       ctx.fillRect(px - 2, 120, 20, 4);
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(px - 1, 46, 18, 1);
     }
 
-    // Gold Gym Emblem Shield
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    // 6. Gold Embossed Crest (BMS Enterprise Leader Badge)
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
     ctx.beginPath();
-    ctx.arc(80, 24, 15, 0, Math.PI * 2);
+    ctx.arc(80, 24, 16, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#f59e0b';
+
+    ctx.fillStyle = '#b45309'; // Bronze bevel rim
     ctx.beginPath();
-    ctx.arc(80, 22, 14, 0, Math.PI * 2);
+    ctx.arc(80, 22, 15, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#fef08a';
+
+    ctx.fillStyle = '#f59e0b'; // Gold field
     ctx.beginPath();
-    ctx.arc(77, 19, 4, 0, Math.PI * 2);
-    ctx.fill(); // Specular shine
+    ctx.arc(80, 22, 13, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#fef08a'; // Specular gleam
+    ctx.beginPath();
+    ctx.arc(77, 18, 4, 0, Math.PI * 2);
+    ctx.fill();
+
     ctx.fillStyle = '#1e293b';
     ctx.font = 'bold 11px monospace';
     ctx.fillText('BMS', 71, 26);
 
-    // 2.5D Recessed Double Doors with Brass Hardware
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(66, 74, 28, 50);
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(68, 76, 24, 48);
-    ctx.fillStyle = '#fbbf24';
-    ctx.fillRect(72, 98, 4, 10);
+    // 7. Grand Heavy Bronze Double Doors
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(66, 72, 28, 52);
+
+    ctx.fillStyle = '#78350f'; // Heavy dark wood/bronze
+    ctx.fillRect(68, 74, 24, 50);
+
+    // Paneled bronze door studs
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(72, 80, 4, 4);
+    ctx.fillRect(84, 80, 4, 4);
+    ctx.fillRect(72, 98, 4, 10); // Brass pull handles
     ctx.fillRect(84, 98, 4, 10);
 
     this.cache.set(key, c);
@@ -887,172 +1319,214 @@ export class SpriteGenerator {
   }
 
   /**
-   * Generates a 5x3 tile 2.5D Research Lab (Prof. Aritro's Lab)
+   * Generates an Ultra-Detailed 5x3 tile 2.5D Research Lab (Prof. Aritro's Lab)
    * Width: 160px, Height: 96px
    */
   public getResearchLab(): HTMLCanvasElement {
-    const key = 'bld_25d_research_lab';
+    const key = 'bld_25d_research_lab_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(160, 96);
 
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+    // 1. Ground Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(80, 92, 74, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(80, 92, 76, 10, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Right lateral wall
-    ctx.fillStyle = '#94a3b8';
+    // 2. Right Lateral Wall
+    ctx.fillStyle = '#64748b';
     ctx.fillRect(146, 32, 10, 60);
 
-    // Front high-tech wall
+    // 3. Front High-Tech Cleanroom Wall
     ctx.fillStyle = '#f1f5f9';
     ctx.fillRect(8, 32, 138, 60);
+    // Brushed aluminum seam lines
+    ctx.fillStyle = '#cbd5e1';
+    for (let x = 8; x < 146; x += 18) {
+      ctx.fillRect(x, 32, 1, 60);
+    }
 
-    // 2.5D Flat Roof with 3D AC Vents & High-Tech Antenna
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(4, 20, 150, 14);
+    // 4. 2.5D Tech Rooftop with Solar Array & AC Chillers
     ctx.fillStyle = '#334155';
-    ctx.fillRect(4, 30, 150, 4); // Roof overhang shadow
+    ctx.fillRect(4, 20, 150, 14);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(4, 31, 150, 4); // Eave shadow
 
-    // 3D Rooftop AC Unit
-    ctx.fillStyle = '#64748b';
-    ctx.fillRect(20, 10, 24, 12);
+    // 3D Solar Panel Array on roof
+    for (let x = 16; x < 60; x += 14) {
+      ctx.fillStyle = '#1e3a8a';
+      ctx.fillRect(x, 8, 12, 12);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x + 1, 9, 10, 1);
+      ctx.fillRect(x + 5, 8, 1, 12);
+    }
+
+    // High-Tech Communications Mast & Satellite Dish
     ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(20, 10, 24, 3);
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(24, 14, 16, 2);
-    ctx.fillRect(24, 18, 16, 2);
-
-    // Tech Antenna Mast with blinking beacon
-    ctx.fillStyle = '#64748b';
     ctx.fillRect(130, 2, 4, 20);
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(129, 0, 6, 5); // Warning Beacon
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.arc(126, 12, 8, -Math.PI / 2, Math.PI / 2);
+    ctx.fill();
 
-    // Signboard "AI LAB"
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    // Blinking Aeronautical Warning Beacon
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(129, 0, 6, 5);
+    ctx.fillStyle = '#fca5a5';
+    ctx.fillRect(131, 1, 2, 2);
+
+    // 5. Backlit Acrylic "AI LAB" Sign
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.fillRect(58, 25, 44, 16);
     ctx.fillStyle = '#0284c7';
     ctx.fillRect(56, 23, 44, 16);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(57, 24, 42, 1); // Neon top tube
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 10px monospace';
     ctx.fillText('AI LAB', 62, 35);
 
-    // 2.5D Recessed Glass Portal
-    ctx.fillStyle = '#0f172a';
+    // 6. Sliding Air-Lock Doors
+    ctx.fillStyle = '#020617';
     ctx.fillRect(66, 48, 28, 44);
     ctx.fillStyle = '#38bdf8';
     ctx.fillRect(68, 50, 24, 42);
     ctx.fillStyle = '#0284c7';
     ctx.fillRect(79, 50, 2, 42);
 
-    // Server Window bays with glowing green terminal racks
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(16, 44, 38, 28);
-    ctx.fillRect(104, 44, 38, 28);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(20, 48, 30, 4);
-    ctx.fillRect(20, 56, 30, 4);
-    ctx.fillRect(20, 64, 30, 4);
-    ctx.fillRect(108, 48, 30, 4);
-    ctx.fillRect(108, 56, 30, 4);
-    ctx.fillRect(108, 64, 30, 4);
+    // 7. Server Room Windows with Pulsing Multi-Color LED Racks
+    const serverBays = [16, 104];
+    for (const bx of serverBays) {
+      ctx.fillStyle = '#020617';
+      ctx.fillRect(bx, 44, 38, 28);
+
+      // Server rack chassis
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(bx + 2, 46, 34, 24);
+
+      // Green & Cyan Activity LEDs
+      for (let y = 48; y < 68; y += 4) {
+        ctx.fillStyle = '#22c55e';
+        ctx.fillRect(bx + 4, y, 16, 2);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(bx + 22, y, 12, 2);
+      }
+    }
 
     this.cache.set(key, c);
     return c;
   }
 
   /**
-   * Generates a 4x3 tile 2.5D Developer Arcade
+   * Generates an Ultra-Detailed 4x3 tile 2.5D Developer Arcade
    * Width: 128px, Height: 96px
    */
   public getArcadeBuilding(): HTMLCanvasElement {
-    const key = 'bld_25d_arcade';
+    const key = 'bld_25d_arcade_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(128, 96);
 
-    // Ground Shadow
+    // 1. Ground Shadow
     ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(64, 92, 60, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(64, 92, 62, 10, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Right lateral wall
+    // 2. Right Lateral Wall
     ctx.fillStyle = '#0f172a';
     ctx.fillRect(116, 32, 8, 60);
 
-    // Dark cyberpunk neon wall
+    // 3. Cyberpunk Dark Purple Concrete Wall
     ctx.fillStyle = '#1e1b4b';
     ctx.fillRect(8, 32, 108, 60);
 
-    // 2.5D Striped Neon Awning
+    // 4. 2.5D Animated Striped Neon Awning with Scalloped Edge
     ctx.fillStyle = '#8b5cf6';
     ctx.fillRect(2, 20, 124, 16);
     ctx.fillStyle = '#ec4899';
     for (let x = 2; x < 124; x += 16) {
       ctx.fillRect(x, 20, 8, 16);
     }
-    // Awning underside shadow
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    ctx.fillRect(2, 34, 124, 4);
+    // Neon glow line along awning lip
+    ctx.fillStyle = '#f472b6';
+    ctx.fillRect(2, 35, 124, 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(2, 37, 124, 4); // Shadow underneath
 
-    // Neon "ARCADE" Marquee Sign
-    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    // 5. Glowing Neon "ARCADE" Marquee Sign
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
     ctx.fillRect(36, 8, 56, 16);
-    ctx.fillStyle = '#f43f5e';
+    ctx.fillStyle = '#831843';
     ctx.fillRect(34, 6, 56, 16);
+    ctx.fillStyle = '#f43f5e';
+    ctx.fillRect(35, 7, 54, 14);
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 10px monospace';
     ctx.fillText('ARCADE', 42, 18);
 
-    // Glowing Entrance
-    ctx.fillStyle = '#0f172a';
+    // 6. Holographic Entrance Portal
+    ctx.fillStyle = '#020617';
     ctx.fillRect(48, 48, 32, 44);
     ctx.fillStyle = '#a855f7';
     ctx.fillRect(50, 50, 28, 42);
+    ctx.fillStyle = '#c084fc';
+    ctx.fillRect(53, 53, 22, 2); // Neon overhead tube
 
-    // Illuminated Game Cabinets inside windows
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(14, 46, 26, 28);
-    ctx.fillRect(88, 46, 26, 28);
-    ctx.fillStyle = '#0284c7';
-    ctx.fillRect(16, 48, 22, 24);
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(90, 48, 22, 24);
+    // 7. Glass Showcase with Detailed Pixel Retro Arcade Cabinets
+    const arcadeWindows = [14, 88];
+    for (const wx of arcadeWindows) {
+      ctx.fillStyle = '#020617';
+      ctx.fillRect(wx, 46, 26, 28);
+
+      // Arcade Cabinet Silhouette (Angled CRT marquee)
+      ctx.fillStyle = '#312e81';
+      ctx.fillRect(wx + 3, 50, 20, 22);
+      ctx.fillStyle = '#f59e0b'; // Glowing Marquee
+      ctx.fillRect(wx + 5, 51, 16, 4);
+      ctx.fillStyle = '#38bdf8'; // Glowing CRT screen
+      ctx.fillRect(wx + 5, 57, 16, 10);
+      ctx.fillStyle = '#ef4444'; // Joystick knob
+      ctx.fillRect(wx + 9, 69, 3, 3);
+    }
 
     this.cache.set(key, c);
     return c;
   }
 
   /**
-   * Generates a 4x3 tile 2.5D Cozy House
+   * Generates an Ultra-Detailed 4x3 tile 2.5D Cozy House
    * Width: 128px, Height: 96px
    */
   public getHouseBuilding(): HTMLCanvasElement {
-    const key = 'bld_25d_house';
+    const key = 'bld_25d_house_hd';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(128, 96);
 
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.4)';
+    // 1. Soft Ground Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(64, 92, 60, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(64, 92, 62, 10, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Right lateral shaded wall
-    ctx.fillStyle = '#cbd5e1';
+    // 2. Right Lateral Wall
+    ctx.fillStyle = '#94a3b8';
     ctx.fillRect(116, 36, 8, 56);
 
-    // Front Wall
+    // 3. Front Stucco Siding Wall
     ctx.fillStyle = '#f1f5f9';
     ctx.fillRect(8, 36, 108, 56);
 
-    // 2.5D Brown Tiled Roof with Overhang
-    ctx.fillStyle = '#c2410c';
+    // Wood siding plank horizontal lines
+    ctx.fillStyle = '#cbd5e1';
+    for (let y = 40; y < 90; y += 6) {
+      ctx.fillRect(8, y, 108, 1);
+    }
+
+    // 4. 2.5D Terracotta Clay Shingle Roof
+    ctx.fillStyle = '#7c2d12';
     ctx.beginPath();
     ctx.moveTo(4, 38);
     ctx.lineTo(24, 6);
@@ -1061,8 +1535,27 @@ export class SpriteGenerator {
     ctx.closePath();
     ctx.fill();
 
+    const houseShingleRows = [
+      { y: 8, x1: 23, x2: 105, h: 5 },
+      { y: 14, x1: 19, x2: 109, h: 5 },
+      { y: 20, x1: 15, x2: 113, h: 5 },
+      { y: 26, x1: 11, x2: 117, h: 5 },
+      { y: 32, x1: 7, x2: 121, h: 5 },
+    ];
+
+    for (const r of houseShingleRows) {
+      ctx.fillStyle = '#c2410c';
+      ctx.fillRect(r.x1, r.y, r.x2 - r.x1, r.h);
+      ctx.fillStyle = '#fb923c';
+      ctx.fillRect(r.x1, r.y, r.x2 - r.x1, 1);
+      ctx.fillStyle = '#9a3412';
+      for (let sx = r.x1 + 8; sx < r.x2 - 4; sx += 10) {
+        ctx.fillRect(sx, r.y, 1, r.h);
+      }
+    }
+
     // Right roof shadow facet
-    ctx.fillStyle = '#9a3412';
+    ctx.fillStyle = '#431407';
     ctx.beginPath();
     ctx.moveTo(104, 6);
     ctx.lineTo(112, 10);
@@ -1074,37 +1567,59 @@ export class SpriteGenerator {
     // Roof Eave Overhang
     ctx.fillStyle = '#ea580c';
     ctx.fillRect(2, 36, 124, 5);
-    ctx.fillStyle = '#7c2d12';
+    ctx.fillStyle = '#431407';
     ctx.fillRect(2, 40, 124, 2);
 
-    // 3D Brick Chimney
+    // 5. 3D Red Brick Chimney with Mortar Lines
     ctx.fillStyle = '#9a3412';
     ctx.fillRect(92, 2, 14, 20);
     ctx.fillStyle = '#7c2d12';
-    ctx.fillRect(102, 2, 4, 20); // Chimney shadow side
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(90, 0, 18, 3); // Chimney cap
+    ctx.fillRect(102, 2, 4, 20); // Shadow facet
+    ctx.fillStyle = '#fed7aa';
+    ctx.fillRect(92, 6, 10, 1); // Mortar line
+    ctx.fillRect(92, 12, 10, 1);
+    ctx.fillRect(92, 17, 10, 1);
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(90, 0, 18, 3); // Chimney stone cap
 
-    // Wooden door with brass knob
-    ctx.fillStyle = '#0f172a';
+    // 6. Charming Paneled Wooden Door with Brass Fixtures
+    ctx.fillStyle = '#020617';
     ctx.fillRect(50, 52, 28, 40);
     ctx.fillStyle = '#78350f';
     ctx.fillRect(52, 54, 24, 38);
-    ctx.fillStyle = '#fbbf24';
-    ctx.fillRect(70, 74, 3, 3);
 
-    // Cozy lit windows with red curtains
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(16, 46, 24, 24);
-    ctx.fillRect(88, 46, 24, 24);
-    ctx.fillStyle = '#fef08a';
-    ctx.fillRect(18, 48, 20, 20);
-    ctx.fillRect(90, 48, 20, 20);
-    ctx.fillStyle = '#dc2626'; // curtains
-    ctx.fillRect(18, 48, 4, 20);
-    ctx.fillRect(34, 48, 4, 20);
-    ctx.fillRect(90, 48, 4, 20);
-    ctx.fillRect(106, 48, 4, 20);
+    // Door wood panels
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(54, 56, 9, 14);
+    ctx.fillRect(65, 56, 9, 14);
+    ctx.fillRect(54, 74, 9, 14);
+    ctx.fillRect(65, 74, 9, 14);
+
+    // Brass doorknob & letter slot
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(70, 72, 3, 3);
+    ctx.fillRect(57, 85, 14, 2);
+
+    // 7. Warm Glowing Windows with Plaid Red Curtains
+    const houseWindows = [16, 88];
+    for (const wx of houseWindows) {
+      ctx.fillStyle = '#020617';
+      ctx.fillRect(wx - 1, 45, 26, 26);
+      ctx.fillStyle = '#fef08a'; // Warm amber interior light
+      ctx.fillRect(wx, 46, 24, 24);
+
+      // Red ruffled curtains
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(wx, 46, 5, 24);
+      ctx.fillRect(wx + 19, 46, 5, 24);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(wx, 46, 24, 4); // Valance
+
+      // Window cross muntins
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(wx + 11, 46, 2, 24);
+      ctx.fillRect(wx, 57, 24, 2);
+    }
 
     this.cache.set(key, c);
     return c;
