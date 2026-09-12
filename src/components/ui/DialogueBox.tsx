@@ -39,7 +39,8 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
       charIdx++;
       if (charIdx <= fullText.length) {
         setDisplayedText(fullText.slice(0, charIdx));
-        if (charIdx % 3 === 0) {
+        // Only play typewriter audio blips if speech synthesis is not active, preventing muddy audio overlap
+        if (charIdx % 3 === 0 && !soundManager.isVoiceSpeaking()) {
           soundManager.playTextBeep(avatar || 'default');
         }
       } else {

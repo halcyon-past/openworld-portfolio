@@ -13,7 +13,7 @@ class SoundManager {
   private currentNoteIndex: number = 0;
 
   constructor() {
-    // AudioContext initialized upon user gesture
+    this.initSpeechVoices();
   }
 
   private initContext() {
@@ -48,7 +48,28 @@ class SoundManager {
     return this.isMuted;
   }
 
-  // --- Voice & Dialogue Speech Synthesis ---
+  private isSpeaking: boolean = false;
+  private cachedVoices: SpeechSynthesisVoice[] = [];
+
+  private initSpeechVoices() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const updateVoices = () => {
+        try {
+          this.cachedVoices = window.speechSynthesis.getVoices();
+        } catch {
+          // ignore
+        }
+      };
+      updateVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = updateVoices;
+      }
+    }
+  }
+
+  public isVoiceSpeaking(): boolean {
+    return this.isSpeaking;
+  }
 
   /**
    * Character speech synthesis using Web Speech API with specific voice selections and pitch modulation
@@ -59,6 +80,7 @@ class SoundManager {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel(); // Stop any pending speech
+        this.isSpeaking = false;
 
         // Clean text of game brackets/emojis
         const cleanText = text.replace(/\[.*?\]/g, '').replace(/[*_#~]/g, '').trim();
@@ -71,84 +93,104 @@ class SoundManager {
         }
 
         const utterance = new SpeechSynthesisUtterance(cleanText);
-        const voices = window.speechSynthesis.getVoices();
+        const voices = this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
 
         // Categorize available system voices
         const enVoices = voices.filter((v) => v.lang.startsWith('en'));
-        
-        // Specific male voice detection with known deep, masculine identifiers across macOS, Windows, Android, Linux, Chrome
-        const deepMaleVoice = enVoices.find((v) => 
-          /daniel|grandpa|fred|alex|eddy|reed|rocko|ralph|albert|david|george|arthur|guy|james|mark|en-us-wavenet-d|en-us-wavenet-b|en-us-standard-b|en-us-standard-d/i.test(v.name)
+
+        // Strict non-female voices filter
+        const nonFemaleVoices = enVoices.filter((v) => 
+          !/female|woman|girl|samantha|zira|victoria|karen|moira|fiona|sandy|shelley|tara|tessa|flo|grandma|kathy|agnes|vicki|allison|ava|susan|zoe/i.test(v.name)
         );
-        const maleVoice = enVoices.find((v) => 
-          /male|daniel|grandpa|fred|alex|eddy|reed|rocko|ralph|albert|david|george|arthur|aman|rishi|guy|james|mark|en-us-wavenet-d|en-us-wavenet-b|en-us-standard-b|en-us-standard-d/i.test(v.name)
-        );
-        const youngMaleVoice = enVoices.find((v) => 
-          /eddy|reed|rocko|aman|rishi|alex|daniel/i.test(v.name)
-        ) || maleVoice;
+
+        // Explicit masculine voice targets
+        // For Dr. Oak: mature, resonant, authoritative male voice
+        const oakVoices = [
+          ...nonFemaleVoices.filter((v) => /daniel|oliver|arthur|george|grandpa|guy|en-gb|natural/i.test(v.name)),
+          ...nonFemaleVoices.filter((v) => /alex|david|mark|albert|wavenet-d|standard-d/i.test(v.name)),
+          ...nonFemaleVoices
+        ];
+
+        // For Aritro: confident, modern young tech lead male voice
+        const aritroVoices = [
+          ...nonFemaleVoices.filter((v) => /eddy|reed|rocko|rishi|aman|alex|daniel|aaron|guy|wavenet-b|standard-b/i.test(v.name)),
+          ...nonFemaleVoices.filter((v) => /male|david|mark|en-us/i.test(v.name)),
+          ...nonFemaleVoices
+        ];
 
         const femaleVoice = enVoices.find((v) => 
-          /female|samantha|zira|victoria|karen|moira|fiona|sandy|shelley|tara|tessa|flo|grandma/i.test(v.name)
+          /female|woman|samantha|zira|victoria|karen|moira|fiona|sandy|shelley|tara|tessa|flo|grandma/i.test(v.name)
         );
         const naturalVoice = enVoices.find((v) => /natural|online|google/i.test(v.name));
 
-        // Non-female fallback for male characters
-        const fallbackMale = enVoices.find((v) => !/female|samantha|zira|victoria|karen|moira|fiona|sandy|shelley|tara|tessa|flo|grandma/i.test(v.name)) || null;
-
         // Distinct voice profiles for every character
         switch (speakerType) {
-          case 'scientist': // Dr. / Prof. Oak (Distinguished, deep, elderly/mentor masculine resonance)
-            utterance.voice = deepMaleVoice || maleVoice || fallbackMale || null;
-            utterance.pitch = 0.55; // Deep baritone
-            utterance.rate = 0.84;  // Deliberate, dignified professorial cadence
+          case 'scientist': // Dr. / Prof. Oak (Distinguished, wise, clear elder scholar)
+            // Pitch set to 0.82 (NOT over-lowered) to preserve vocal tract clarity and phoneme intelligibility
+            utterance.voice = oakVoices[0] || null;
+            utterance.pitch = 0.82;
+            utterance.rate = 0.92;
             break;
 
           case 'nurse': // Nurse Joy (Sweet, bright, cheerful, high tone)
             utterance.voice = femaleVoice || enVoices[0] || null;
-            utterance.pitch = 1.45;
-            utterance.rate = 1.08;
+            utterance.pitch = 1.35;
+            utterance.rate = 1.05;
             break;
 
           case 'clerk': // Shop Clerk (Polite, crisp, upbeat)
             utterance.voice = naturalVoice || femaleVoice || enVoices[0] || null;
-            utterance.pitch = 1.2;
+            utterance.pitch = 1.15;
+            utterance.rate = 1.1;
+            break;
+
+          case 'gymleader': // Aritro Saha (Natural masculine young developer voice)
+            // Voice strictly selected from nonFemale / young male voices, pitch 0.88 for natural human baritone
+            utterance.voice = aritroVoices[0] || null;
+            utterance.pitch = 0.88;
+            utterance.rate = 0.98;
+            break;
+
+          case 'arcade': // Arcade Host (Energetic, upbeat)
+            utterance.voice = naturalVoice || nonFemaleVoices[0] || null;
+            utterance.pitch = 1.1;
             utterance.rate = 1.15;
             break;
 
-          case 'gymleader': // Aritro Saha (Tech Lead / Gym Leader - firm, confident, manly young developer tone)
-            utterance.voice = youngMaleVoice || maleVoice || fallbackMale || null;
-            utterance.pitch = 0.68; // Rich masculine baritone
-            utterance.rate = 0.95;  // Clear, confident pace
-            break;
-
-          case 'arcade': // Arcade Host (Energetic, high tempo)
-            utterance.voice = naturalVoice || maleVoice || fallbackMale || null;
-            utterance.pitch = 1.15;
-            utterance.rate = 1.22;
-            break;
-
           case 'sign': // Public announcement / bulletin narrator
-            utterance.voice = naturalVoice || fallbackMale || null;
-            utterance.pitch = 0.85;
+            utterance.voice = naturalVoice || nonFemaleVoices[0] || null;
+            utterance.pitch = 0.9;
             utterance.rate = 0.95;
             break;
 
           default:
-            utterance.voice = fallbackMale || null;
-            utterance.pitch = 0.8;
+            utterance.voice = nonFemaleVoices[0] || null;
+            utterance.pitch = 0.9;
             utterance.rate = 1.0;
             break;
         }
 
-        utterance.volume = 0.85;
+        utterance.volume = 0.95;
+
+        utterance.onstart = () => {
+          this.isSpeaking = true;
+        };
+        utterance.onend = () => {
+          this.isSpeaking = false;
+        };
+        utterance.onerror = () => {
+          this.isSpeaking = false;
+        };
+
         window.speechSynthesis.speak(utterance);
       } catch {
-        // Fallback to audio bleeps
+        this.isSpeaking = false;
       }
     }
   }
 
   public stopSpeaking() {
+    this.isSpeaking = false;
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
