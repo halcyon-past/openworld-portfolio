@@ -487,15 +487,10 @@ export class GameEngine {
         player.subY = 0;
         player.isMoving = false;
 
-        // Check if stepped into door or wild grass
+        // Check if stepped into wild grass
         const cell = tileMap.grid[player.y]?.[player.x];
         if (cell?.type === 'tallgrass' && Math.random() < 0.08) {
           this.triggerGrassEncounter();
-        }
-
-        const trigger = tileMap.getTriggerAt(player.x, player.y);
-        if (trigger && trigger.targetModal) {
-          this.triggerBuilding(trigger);
         }
       }
     } else {
@@ -727,6 +722,44 @@ export class GameEngine {
 
     for (const item of renderables) {
       item.draw(ctx);
+    }
+
+    // Floating interaction prompt badge when facing/standing at building or NPC
+    let targetX = player.x;
+    let targetY = player.y;
+    if (player.direction === 'up') targetY -= 1;
+    else if (player.direction === 'down') targetY += 1;
+    else if (player.direction === 'left') targetX -= 1;
+    else if (player.direction === 'right') targetX += 1;
+
+    const nearbyTrigger = tileMap.getTriggerAt(targetX, targetY) || tileMap.getTriggerAt(player.x, player.y);
+    const nearbyNpc = tileMap.npcs.find(
+      (npc) => (npc.x === targetX && npc.y === targetY) || (Math.hypot(npc.x - player.x, npc.y - player.y) <= 1)
+    );
+
+    if (nearbyTrigger?.targetModal || nearbyNpc) {
+      const promptText = nearbyTrigger ? '▲ [A] ENTER' : '▲ [A] TALK';
+      const promptX = playerPx + 16;
+      const promptY = playerPy - 10 + Math.sin(performance.now() / 200) * 2;
+
+      ctx.save();
+      ctx.font = 'bold 8px monospace';
+      const textWidth = ctx.measureText(promptText).width;
+      const pad = 4;
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(promptX - textWidth / 2 - pad, promptY - 8, textWidth + pad * 2, 12, 4);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(promptText, promptX, promptY - 2);
+      ctx.restore();
     }
 
     // Render tap-to-walk target waypoint marker if traveling

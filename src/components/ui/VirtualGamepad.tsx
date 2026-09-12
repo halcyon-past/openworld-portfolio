@@ -287,16 +287,6 @@ export const VirtualGamepad: React.FC<VirtualGamepadProps> = ({ onDirection, onA
             <span className="text-[7px] text-emerald-300 font-bold mt-1 tracking-wider">TALK / A</span>
           </div>
         </div>
-
-        {/* START Button */}
-        <button
-          onTouchStart={(e) => { e.preventDefault(); triggerHaptic(15); onAction('START'); }}
-          onClick={() => { triggerHaptic(15); onAction('START'); }}
-          className="px-3.5 py-1.5 bg-slate-900/90 border border-slate-600 rounded-md text-[8px] text-slate-200 font-silk active:bg-slate-800 shadow-md cursor-pointer backdrop-blur-xs flex items-center gap-1.5 touch-manipulation"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-          <span>START MENU</span>
-        </button>
       </div>
 
     </div>

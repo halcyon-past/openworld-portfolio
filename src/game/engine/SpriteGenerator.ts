@@ -541,6 +541,10 @@ export class SpriteGenerator {
     direction: 'down' | 'up' | 'left' | 'right',
     stepFrame: number
   ): HTMLCanvasElement {
+    if (type === 'pet') {
+      return this.getPetSprite(direction, stepFrame);
+    }
+
     const key = `char_hd_${type}_${direction}_${stepFrame % 4}`;
     if (this.cache.has(key)) return this.cache.get(key)!;
 
@@ -801,6 +805,265 @@ export class SpriteGenerator {
       ctx.fillRect(11, 2 + bob, 12, 5);
       ctx.fillStyle = palette.hatBrim;
       ctx.fillRect(15, 6 + bob, 11, 2); // Sticking out right
+    }
+
+    this.cache.set(key, c);
+    return c;
+  }
+
+  /**
+   * Generates an authentic 4-legged golden puppy / canine companion (Pixel Pup)
+   * Featuring floppy ears, animated paws, wagging tail, shiny eyes, and red collar
+   */
+  public getPetSprite(
+    direction: 'down' | 'up' | 'left' | 'right',
+    stepFrame: number
+  ): HTMLCanvasElement {
+    const frame = stepFrame % 4;
+    const key = `char_hd_pixelpup_${direction}_${frame}`;
+    if (this.cache.has(key)) return this.cache.get(key)!;
+
+    const [c, ctx] = this.createCanvas(32, 36);
+
+    // Dynamic animation offsets
+    const bob = frame === 1 || frame === 3 ? -1 : 0;
+    const pawOffset = frame === 1 ? -2 : frame === 3 ? 2 : 0;
+    const tailWag = frame === 1 ? -2 : frame === 3 ? 2 : 0;
+
+    // 1. Soft Ground Contact Shadow
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
+    ctx.beginPath();
+    ctx.ellipse(16, 32, 10, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Color Palette - Golden Retriever / Puppy tones
+    const furMain = '#f59e0b';      // Rich golden amber fur
+    const furHighlight = '#fbbf24'; // Light top coat highlight
+    const furDark = '#b45309';      // Underbelly / deep shading
+    const furCream = '#fef3c7';     // Muzzle & chest cream fluff
+    const collarRed = '#ef4444';    // Vibrant red collar
+    const collarTag = '#facc15';    // Gold bell / medal tag
+    const noseBlack = '#1e1b4b';    // Dark nose & eye outline
+
+    if (direction === 'down') {
+      // Wagging tail visible in background behind body
+      ctx.fillStyle = furDark;
+      ctx.fillRect(15 + tailWag, 18, 3, 5);
+
+      // Back paws
+      ctx.fillStyle = furDark;
+      ctx.fillRect(8, 27 + bob, 4, 4);
+      ctx.fillRect(20, 27 + bob, 4, 4);
+
+      // Puppy Torso / Body (compact quadruped form)
+      ctx.fillStyle = furMain;
+      ctx.beginPath();
+      ctx.roundRect(9, 18 + bob, 14, 11, 4);
+      ctx.fill();
+
+      // Fluffy Cream Chest
+      ctx.fillStyle = furCream;
+      ctx.beginPath();
+      ctx.roundRect(12, 19 + bob, 8, 8, 3);
+      ctx.fill();
+
+      // Front 2 Paws (animated walk cycle)
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(10 + pawOffset, 27 + bob, 4, 4);
+      ctx.fillRect(18 - pawOffset, 27 + bob, 4, 4);
+      // Paw pads / claws accent
+      ctx.fillStyle = furDark;
+      ctx.fillRect(10 + pawOffset, 30 + bob, 4, 1);
+      ctx.fillRect(18 - pawOffset, 30 + bob, 4, 1);
+
+      // Red Collar & Golden Tag
+      ctx.fillStyle = collarRed;
+      ctx.fillRect(10, 16 + bob, 12, 3);
+      ctx.fillStyle = collarTag;
+      ctx.fillRect(15, 18 + bob, 2, 2);
+
+      // Big Cute Puppy Head
+      ctx.fillStyle = furMain;
+      ctx.beginPath();
+      ctx.roundRect(8, 8 + bob, 16, 11, 5);
+      ctx.fill();
+
+      // Head top coat highlight
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(11, 8 + bob, 10, 3);
+
+      // Floppy Puppy Ears (hanging down at sides)
+      ctx.fillStyle = furDark;
+      ctx.beginPath();
+      ctx.roundRect(6, 9 + bob, 4, 9, 2); // Left ear
+      ctx.roundRect(22, 9 + bob, 4, 9, 2); // Right ear
+      ctx.fill();
+
+      // Cream Muzzle / Snout
+      ctx.fillStyle = furCream;
+      ctx.beginPath();
+      ctx.roundRect(11, 13 + bob, 10, 5, 3);
+      ctx.fill();
+
+      // Cute Black Button Nose
+      ctx.fillStyle = noseBlack;
+      ctx.fillRect(14, 13 + bob, 4, 2);
+      ctx.fillStyle = '#f43f5e'; // Tiny pink tongue tip
+      ctx.fillRect(15, 16 + bob, 2, 1);
+
+      // Big Sparkling Puppy Eyes
+      ctx.fillStyle = noseBlack;
+      ctx.fillRect(11, 11 + bob, 3, 3);
+      ctx.fillRect(18, 11 + bob, 3, 3);
+      // Eye Highlights (Kawaii sparkle)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(11, 11 + bob, 1, 1);
+      ctx.fillRect(18, 11 + bob, 1, 1);
+    } else if (direction === 'up') {
+      // Tail prominently standing up and wagging
+      ctx.fillStyle = furMain;
+      ctx.fillRect(14 + tailWag, 14, 4, 7);
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(15 + tailWag, 12, 3, 4);
+
+      // Rear quadruped body
+      ctx.fillStyle = furDark;
+      ctx.beginPath();
+      ctx.roundRect(9, 18 + bob, 14, 10, 4);
+      ctx.fill();
+
+      // 4 Paws walking from behind
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(8 - pawOffset, 27 + bob, 4, 4);
+      ctx.fillRect(20 + pawOffset, 27 + bob, 4, 4);
+      ctx.fillStyle = furDark;
+      ctx.fillRect(11 + pawOffset, 26 + bob, 4, 4);
+      ctx.fillRect(17 - pawOffset, 26 + bob, 4, 4);
+
+      // Red Collar rim
+      ctx.fillStyle = collarRed;
+      ctx.fillRect(10, 16 + bob, 12, 3);
+
+      // Back of Puppy Head & Ears
+      ctx.fillStyle = furMain;
+      ctx.beginPath();
+      ctx.roundRect(8, 7 + bob, 16, 11, 5);
+      ctx.fill();
+
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(11, 8 + bob, 10, 4);
+
+      // Floppy Ears visible from behind
+      ctx.fillStyle = furDark;
+      ctx.beginPath();
+      ctx.roundRect(6, 8 + bob, 4, 9, 2);
+      ctx.roundRect(22, 8 + bob, 4, 9, 2);
+      ctx.fill();
+    } else if (direction === 'left') {
+      // Wagging tail pointing back to right
+      ctx.fillStyle = furMain;
+      ctx.fillRect(22, 17 + bob + tailWag, 5, 4);
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(24, 16 + bob + tailWag, 4, 3);
+
+      // Quadruped Horizontal Body
+      ctx.fillStyle = furDark;
+      ctx.fillRect(12, 19 + bob, 12, 8);
+      ctx.fillStyle = furMain;
+      ctx.beginPath();
+      ctx.roundRect(10, 17 + bob, 13, 9, 3);
+      ctx.fill();
+
+      // Front & Back 4 Paws in profile
+      ctx.fillStyle = furDark;
+      ctx.fillRect(10 - pawOffset, 26 + bob, 3, 5); // Back leg 1
+      ctx.fillRect(21 + pawOffset, 26 + bob, 3, 5); // Back leg 2
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(8 + pawOffset, 27 + bob, 4, 4);  // Front leg 1
+      ctx.fillRect(19 - pawOffset, 27 + bob, 4, 4); // Front leg 2
+
+      // Red Collar
+      ctx.fillStyle = collarRed;
+      ctx.fillRect(11, 16 + bob, 3, 7);
+      ctx.fillStyle = collarTag;
+      ctx.fillRect(10, 19 + bob, 2, 2);
+
+      // Puppy Head facing left
+      ctx.fillStyle = furMain;
+      ctx.beginPath();
+      ctx.roundRect(6, 9 + bob, 12, 10, 4);
+      ctx.fill();
+
+      // Floppy Ear hanging back
+      ctx.fillStyle = furDark;
+      ctx.beginPath();
+      ctx.roundRect(13, 9 + bob, 4, 9, 2);
+      ctx.fill();
+
+      // Left Snout & Nose
+      ctx.fillStyle = furCream;
+      ctx.fillRect(3, 14 + bob, 5, 4);
+      ctx.fillStyle = noseBlack;
+      ctx.fillRect(2, 13 + bob, 3, 3);
+
+      // Left Big Eye
+      ctx.fillStyle = noseBlack;
+      ctx.fillRect(7, 11 + bob, 3, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(7, 11 + bob, 1, 1);
+    } else {
+      // direction === 'right'
+      // Wagging tail pointing back to left
+      ctx.fillStyle = furMain;
+      ctx.fillRect(5, 17 + bob + tailWag, 5, 4);
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(4, 16 + bob + tailWag, 4, 3);
+
+      // Quadruped Horizontal Body
+      ctx.fillStyle = furDark;
+      ctx.fillRect(8, 19 + bob, 12, 8);
+      ctx.fillStyle = furMain;
+      ctx.beginPath();
+      ctx.roundRect(9, 17 + bob, 13, 9, 3);
+      ctx.fill();
+
+      // Front & Back 4 Paws in profile
+      ctx.fillStyle = furDark;
+      ctx.fillRect(19 + pawOffset, 26 + bob, 3, 5); // Back leg 1
+      ctx.fillRect(8 - pawOffset, 26 + bob, 3, 5);  // Back leg 2
+      ctx.fillStyle = furHighlight;
+      ctx.fillRect(20 - pawOffset, 27 + bob, 4, 4); // Front leg 1
+      ctx.fillRect(9 + pawOffset, 27 + bob, 4, 4);  // Front leg 2
+
+      // Red Collar
+      ctx.fillStyle = collarRed;
+      ctx.fillRect(18, 16 + bob, 3, 7);
+      ctx.fillStyle = collarTag;
+      ctx.fillRect(20, 19 + bob, 2, 2);
+
+      // Puppy Head facing right
+      ctx.fillStyle = furMain;
+      ctx.beginPath();
+      ctx.roundRect(14, 9 + bob, 12, 10, 4);
+      ctx.fill();
+
+      // Floppy Ear hanging back
+      ctx.fillStyle = furDark;
+      ctx.beginPath();
+      ctx.roundRect(15, 9 + bob, 4, 9, 2);
+      ctx.fill();
+
+      // Right Snout & Nose
+      ctx.fillStyle = furCream;
+      ctx.fillRect(24, 14 + bob, 5, 4);
+      ctx.fillStyle = noseBlack;
+      ctx.fillRect(27, 13 + bob, 3, 3);
+
+      // Right Big Eye
+      ctx.fillStyle = noseBlack;
+      ctx.fillRect(22, 11 + bob, 3, 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(23, 11 + bob, 1, 1);
     }
 
     this.cache.set(key, c);
