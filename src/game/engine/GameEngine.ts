@@ -446,12 +446,25 @@ export class GameEngine {
     camera.x += (targetCamX - camera.x) * 0.12;
     camera.y += (targetCamY - camera.y) * 0.12;
 
-    // Clamp camera to map bounds
+    // Clamp camera to map bounds with zoom scaling
     if (this.canvas) {
-      const halfW = this.canvas.width / 2;
-      const halfH = this.canvas.height / 2;
-      camera.x = Math.max(halfW, Math.min(MAP_WIDTH * TILE_SIZE - halfW, camera.x));
-      camera.y = Math.max(halfH, Math.min(MAP_HEIGHT * TILE_SIZE - halfH, camera.y));
+      const zoom = this.getZoom();
+      const visibleHalfW = (this.canvas.width / 2) / zoom;
+      const visibleHalfH = (this.canvas.height / 2) / zoom;
+      const totalMapW = MAP_WIDTH * TILE_SIZE;
+      const totalMapH = MAP_HEIGHT * TILE_SIZE;
+
+      if (totalMapW <= visibleHalfW * 2) {
+        camera.x = totalMapW / 2;
+      } else {
+        camera.x = Math.max(visibleHalfW, Math.min(totalMapW - visibleHalfW, camera.x));
+      }
+
+      if (totalMapH <= visibleHalfH * 2) {
+        camera.y = totalMapH / 2;
+      } else {
+        camera.y = Math.max(visibleHalfH, Math.min(totalMapH - visibleHalfH, camera.y));
+      }
     }
 
     // Football physics simulation
