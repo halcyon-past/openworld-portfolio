@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { soundManager } from '@/game/audio/SoundManager';
 import { ChevronDown } from 'lucide-react';
 
@@ -15,34 +15,52 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
   const [currentLineIdx, setCurrentLineIdx] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fullText = lines[currentLineIdx] || '';
 
-  // Typewriter effect
+  // Clean, deterministic typewriter effect using substring slice
   useEffect(() => {
     let charIdx = 0;
     setDisplayedText('');
     setIsTyping(true);
 
-    const interval = setInterval(() => {
-      if (charIdx < fullText.length) {
-        setDisplayedText((prev) => prev + fullText.charAt(charIdx));
-        if (charIdx % 2 === 0) {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    intervalRef.current = setInterval(() => {
+      charIdx++;
+      if (charIdx <= fullText.length) {
+        setDisplayedText(fullText.slice(0, charIdx));
+        if (charIdx % 3 === 0) {
           soundManager.playTextBeep();
         }
-        charIdx++;
       } else {
         setIsTyping(false);
-        clearInterval(interval);
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
       }
-    }, 24);
+    }, 20);
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [currentLineIdx, fullText]);
 
   const handleAdvance = useCallback(() => {
     if (isTyping) {
-      // Instantly finish typing current line
+      // Instantly finish typing current line cleanly without duplicate chars
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       setDisplayedText(fullText);
       setIsTyping(false);
       soundManager.playMenuCursor();
@@ -58,27 +76,32 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
     }
   }, [isTyping, fullText, currentLineIdx, lines.length, onClose]);
 
-  // Keyboard navigation for dialogue
+  // Keyboard navigation with capture phase to stop engine conflict
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === ' ' || e.key === 'Enter' || e.key.toLowerCase() === 'z') {
         e.preventDefault();
+        e.stopPropagation();
         handleAdvance();
       } else if (e.key === 'Escape' || e.key.toLowerCase() === 'x') {
         e.preventDefault();
+        e.stopPropagation();
         soundManager.playCancel();
         onClose();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [handleAdvance, onClose]);
 
   return (
     <div
-      onClick={handleAdvance}
-      className="fixed bottom-4 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[680px] z-40 cursor-pointer font-pixel"
+      onClick={(e) => {
+        e.stopPropagation();
+        handleAdvance();
+      }}
+      className="fixed bottom-4 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[680px] z-50 cursor-pointer font-pixel"
     >
       {/* Speaker Tag */}
       <div className="inline-block bg-gradient-to-r from-red-600 to-rose-700 text-white text-[10px] md:text-xs px-3 py-1 rounded-t-md border-t-2 border-x-2 border-slate-900 shadow-md">
@@ -86,23 +109,21 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
       </div>
 
       {/* Main GBA Dialogue Frame */}
-      <div className="bg-[#fcf8f2] text-slate-900 border-4 border-[#2b3340] rounded-b-md rounded-tr-md p-4 md:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.6)] relative min-h-[96px] flex items-start gap-4">
+      <div className="bg-[#fcf8f2] text-slate-900 border-4 border-[#2b3340] rounded-b-md rounded-tr-md p-4 md:p-5 shadow-[0_8px_30px_rgba(0,0,0,0.6)] relative min-h-[96px] flex items-start gap-4 select-none">
         {/* Avatar badge if available */}
         {avatar && (
-          <div className="hidden sm:flex flex-col items-center justify-center w-12 h-12 rounded bg-slate-200 border-2 border-slate-400 shrink-0 overflow-hidden">
-            <span className="text-xl">
-              {avatar === 'scientist' && '🔬'}
-              {avatar === 'nurse' && '💖'}
-              {avatar === 'clerk' && '🏪'}
-              {avatar === 'gymleader' && '⚡'}
-              {avatar === 'arcade' && '🕹️'}
-              {avatar === 'pet' && '🐶'}
-            </span>
+          <div className="hidden sm:flex flex-col items-center justify-center w-12 h-12 rounded bg-slate-200 border-2 border-slate-400 shrink-0 overflow-hidden text-xl">
+            {avatar === 'scientist' && '🔬'}
+            {avatar === 'nurse' && '💖'}
+            {avatar === 'clerk' && '🏪'}
+            {avatar === 'gymleader' && '⚡'}
+            {avatar === 'arcade' && '🕹️'}
+            {avatar === 'pet' && '🐶'}
           </div>
         )}
 
         {/* Dialogue Text */}
-        <div className="flex-1 text-xs md:text-sm leading-relaxed tracking-wide select-none">
+        <div className="flex-1 text-xs md:text-sm leading-relaxed tracking-wide font-medium min-h-[48px]">
           {displayedText}
         </div>
 
@@ -115,7 +136,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
 
         {/* Action prompt hint */}
         <div className="absolute bottom-1 right-12 text-[8px] text-slate-400 font-silk">
-          Press Space / Enter / Tap
+          Space / Enter / Tap
         </div>
       </div>
     </div>

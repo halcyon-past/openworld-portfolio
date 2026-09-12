@@ -16,6 +16,8 @@ export class GameEngine {
   public onModalOpen?: (modal: string) => void;
   public onDialogue?: (dialogue: { speaker: string; lines: string[]; avatar?: string }) => void;
   public onWildEncounter?: (text: string) => void;
+  public isDialogueActive: boolean = false;
+  public isModalActive: boolean = false;
 
   constructor() {
     this.state = {
@@ -169,6 +171,9 @@ export class GameEngine {
   }
 
   private handleInteract() {
+    if (this.isDialogueActive || this.isModalActive) {
+      return;
+    }
     const { player } = this.state;
     // Check target tile directly in front of player
     let targetX = player.x;
@@ -335,6 +340,11 @@ export class GameEngine {
   }
 
   private update(dt: number) {
+    if (this.isDialogueActive || this.isModalActive) {
+      this.keysPressed.clear();
+      this.targetTile = null;
+      return;
+    }
     const { player, camera, football } = this.state;
 
     // Movement speed: walking = 3.5 tiles/sec, sprinting = 6 tiles/sec

@@ -54,21 +54,25 @@ export default function Home() {
   };
 
   const handleOpenModal = useCallback((modal: string) => {
+    gameEngine.isModalActive = true;
     setActiveModal(modal);
   }, []);
 
   const handleCloseModal = useCallback(() => {
+    gameEngine.isModalActive = false;
     setActiveModal(null);
   }, []);
 
   const handleDialogue = useCallback(
     (dialogue: { speaker: string; lines: string[]; avatar?: string }) => {
+      gameEngine.isDialogueActive = true;
       setActiveDialogue(dialogue);
     },
     []
   );
 
   const handleCloseDialogue = useCallback(() => {
+    gameEngine.isDialogueActive = false;
     setActiveDialogue(null);
   }, []);
 
