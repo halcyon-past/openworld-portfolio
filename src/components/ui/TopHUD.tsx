@@ -1,0 +1,170 @@
+'use client';
+
+import React from 'react';
+import { soundManager } from '@/game/audio/SoundManager';
+import {
+  Volume2,
+  VolumeX,
+  Tv,
+  FileText,
+  Menu,
+  BookOpen,
+  User,
+  Briefcase,
+  MapPin,
+  Gamepad2,
+  Sparkles
+} from 'lucide-react';
+
+interface TopHUDProps {
+  isMuted: boolean;
+  onToggleMute: () => void;
+  showScanlines: boolean;
+  onToggleScanlines: () => void;
+  onOpenModal: (modal: string) => void;
+  onToggleRecruiter: () => void;
+  playerCoords: { x: number; y: number };
+}
+
+export const TopHUD: React.FC<TopHUDProps> = ({
+  isMuted,
+  onToggleMute,
+  showScanlines,
+  onToggleScanlines,
+  onOpenModal,
+  onToggleRecruiter,
+  playerCoords,
+}) => {
+  return (
+    <header className="fixed top-2 left-2 right-2 md:top-3 md:left-4 md:right-4 z-30 flex items-center justify-between pointer-events-none font-pixel">
+      
+      {/* Left: Player Badge & Mini Coordinates */}
+      <div className="flex items-center gap-2 pointer-events-auto bg-[#1e2530]/90 border-2 border-slate-700 backdrop-blur-xs px-3 py-1.5 rounded-md shadow-lg text-white">
+        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+        <div className="flex flex-col">
+          <span className="text-[10px] md:text-xs font-bold text-amber-300">ARITRO SAHA</span>
+          <span className="text-[8px] text-slate-400 font-silk">
+            PALLET CLOUD ({playerCoords.x},{playerCoords.y})
+          </span>
+        </div>
+      </div>
+
+      {/* Center: Quick Nav Buttons (Hidden on tiny screens, shown on md+) */}
+      <div className="hidden lg:flex items-center gap-1.5 pointer-events-auto bg-[#1e2530]/90 border-2 border-slate-700 backdrop-blur-xs p-1 rounded-md shadow-lg">
+        <button
+          onClick={() => {
+            soundManager.playSelect();
+            onOpenModal('pokedex');
+          }}
+          className="px-2.5 py-1 rounded bg-red-600/80 hover:bg-red-500 text-white text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+        >
+          <BookOpen className="w-3 h-3" />
+          <span>PROJECTS</span>
+        </button>
+
+        <button
+          onClick={() => {
+            soundManager.playSelect();
+            onOpenModal('trainercard');
+          }}
+          className="px-2.5 py-1 rounded bg-blue-600/80 hover:bg-blue-500 text-white text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+        >
+          <User className="w-3 h-3" />
+          <span>ABOUT ME</span>
+        </button>
+
+        <button
+          onClick={() => {
+            soundManager.playSelect();
+            onOpenModal('bag');
+          }}
+          className="px-2.5 py-1 rounded bg-amber-600/80 hover:bg-amber-500 text-white text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+        >
+          <Briefcase className="w-3 h-3" />
+          <span>SKILLS</span>
+        </button>
+
+        <button
+          onClick={() => {
+            soundManager.playSelect();
+            onOpenModal('townmap');
+          }}
+          className="px-2.5 py-1 rounded bg-emerald-600/80 hover:bg-emerald-500 text-white text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+        >
+          <MapPin className="w-3 h-3" />
+          <span>MAP</span>
+        </button>
+
+        <button
+          onClick={() => {
+            soundManager.playSelect();
+            onOpenModal('arcade');
+          }}
+          className="px-2.5 py-1 rounded bg-purple-600/80 hover:bg-purple-500 text-white text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+        >
+          <Gamepad2 className="w-3 h-3" />
+          <span>ARCADE</span>
+        </button>
+      </div>
+
+      {/* Right: Quick Action Controls */}
+      <div className="flex items-center gap-1.5 pointer-events-auto bg-[#1e2530]/90 border-2 border-slate-700 backdrop-blur-xs p-1 rounded-md shadow-lg text-slate-200">
+        
+        {/* Recruiter Dossier Button */}
+        <button
+          onClick={() => {
+            soundManager.playSelect();
+            onToggleRecruiter();
+          }}
+          title="Recruiter Fast View"
+          className="px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+        >
+          <FileText className="w-3 h-3" />
+          <span className="hidden sm:inline">RECRUITER VIEW</span>
+        </button>
+
+        {/* Audio Mute Toggle */}
+        <button
+          onClick={() => {
+            soundManager.playMenuCursor();
+            onToggleMute();
+          }}
+          title={isMuted ? 'Unmute BGM & SFX' : 'Mute Audio'}
+          className={`p-1.5 rounded transition-all cursor-pointer ${
+            isMuted ? 'bg-red-500/30 text-red-400' : 'bg-emerald-500/30 text-emerald-400'
+          }`}
+        >
+          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+        </button>
+
+        {/* CRT Filter Toggle */}
+        <button
+          onClick={() => {
+            soundManager.playMenuCursor();
+            onToggleScanlines();
+          }}
+          title="Toggle CRT Scanlines"
+          className={`p-1.5 rounded transition-all cursor-pointer ${
+            showScanlines ? 'bg-cyan-500/30 text-cyan-300' : 'bg-slate-700 text-slate-400'
+          }`}
+        >
+          <Tv className="w-3.5 h-3.5" />
+        </button>
+
+        {/* Start Menu trigger */}
+        <button
+          onClick={() => {
+            soundManager.playSelect();
+            onOpenModal('startmenu');
+          }}
+          title="Open Start Menu (Esc/X)"
+          className="p-1.5 rounded bg-red-600 hover:bg-red-500 text-white transition-all cursor-pointer"
+        >
+          <Menu className="w-3.5 h-3.5" />
+        </button>
+
+      </div>
+
+    </header>
+  );
+};
