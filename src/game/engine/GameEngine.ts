@@ -11,6 +11,7 @@ export class GameEngine {
   private lastTime: number = 0;
   private keysPressed: Set<string> = new Set();
   private targetTile: Position | null = null;
+  private currentPath: Position[] = [];
 
   // UI Event Callbacks
   public onModalOpen?: (modal: string) => void;
@@ -142,7 +143,95 @@ export class GameEngine {
   }
 
   /**
-   * Tap / Click to walk pathfinding
+   * Breadth-First Search (BFS) shortest pathfinding to navigate around obstacles and long distances
+   */
+  private findPath(startX: number, startY: number, destX: number, destY: number): Position[] {
+    if (startX === destX && startY === destY) return [];
+
+    // If destination itself is solid (e.g. clicked on a building or NPC), find the nearest accessible neighbor
+    let targetX = destX;
+    let targetY = destY;
+
+    if (tileMap.isSolid(targetX, targetY)) {
+      const neighbors = [
+        { x: targetX, y: targetY + 1 },
+        { x: targetX, y: targetY - 1 },
+        { x: targetX + 1, y: targetY },
+        { x: targetX - 1, y: targetY },
+        { x: targetX + 1, y: targetY + 1 },
+        { x: targetX - 1, y: targetY + 1 },
+        { x: targetX + 1, y: targetY - 1 },
+        { x: targetX - 1, y: targetY - 1 },
+      ];
+
+      // Pick accessible neighbor closest to the player
+      const valid = neighbors.filter(n => !tileMap.isSolid(n.x, n.y));
+      if (valid.length === 0) return [];
+      valid.sort((a, b) => Math.hypot(a.x - startX, a.y - startY) - Math.hypot(b.x - startX, b.y - startY));
+      targetX = valid[0].x;
+      targetY = valid[0].y;
+    }
+
+    if (startX === targetX && startY === targetY) return [];
+
+    // Queue stores: current position
+    const queue: Position[] = [{ x: startX, y: startY }];
+    const visited = new Set<string>();
+    visited.add(`${startX},${startY}`);
+
+    // CameFrom map to reconstruct path: 'x,y' -> Position
+    const cameFrom = new Map<string, Position>();
+
+    const dirs = [
+      { x: 0, y: 1 },
+      { x: 0, y: -1 },
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+    ];
+
+    let found = false;
+
+    while (queue.length > 0) {
+      const curr = queue.shift()!;
+      if (curr.x === targetX && curr.y === targetY) {
+        found = true;
+        break;
+      }
+
+      for (const d of dirs) {
+        const nx = curr.x + d.x;
+        const ny = curr.y + d.y;
+        const key = `${nx},${ny}`;
+
+        if (nx >= 0 && nx < MAP_WIDTH && ny >= 0 && ny < MAP_HEIGHT) {
+          if (!visited.has(key) && !tileMap.isSolid(nx, ny)) {
+            visited.add(key);
+            cameFrom.set(key, curr);
+            queue.push({ x: nx, y: ny });
+          }
+        }
+      }
+    }
+
+    if (!found) return [];
+
+    // Reconstruct path from target back to start
+    const path: Position[] = [];
+    let stepKey = `${targetX},${targetY}`;
+
+    while (stepKey !== `${startX},${startY}`) {
+      const [sx, sy] = stepKey.split(',').map(Number);
+      path.unshift({ x: sx, y: sy });
+      const prev = cameFrom.get(stepKey);
+      if (!prev) break;
+      stepKey = `${prev.x},${prev.y}`;
+    }
+
+    return path;
+  }
+
+  /**
+   * Tap / Click to walk pathfinding with full BFS routing
    */
   public handleCanvasClick(clientX: number, clientY: number, rect: DOMRect) {
     if (!this.canvas) return;
@@ -163,8 +252,21 @@ export class GameEngine {
     const tileY = Math.floor(worldY / TILE_SIZE);
 
     if (tileX >= 0 && tileX < MAP_WIDTH && tileY >= 0 && tileY < MAP_HEIGHT) {
-      this.targetTile = { x: tileX, y: tileY };
-      soundManager.playMenuCursor();
+      // Find shortest path from current player position to clicked destination
+      const playerTileX = this.state.player.x;
+      const playerTileY = this.state.player.y;
+      const path = this.findPath(playerTileX, playerTileY, tileX, tileY);
+
+      if (path.length > 0) {
+        this.currentPath = path;
+        this.targetTile = { x: tileX, y: tileY };
+        soundManager.playMenuCursor();
+      } else {
+        // Direct target attempt as fallback
+        this.currentPath = [];
+        this.targetTile = { x: tileX, y: tileY };
+        soundManager.playMenuCursor();
+      }
     }
   }
 
@@ -178,6 +280,7 @@ export class GameEngine {
     this.state.player.subY = 0;
     this.state.player.isMoving = false;
     this.targetTile = null;
+    this.currentPath = [];
     soundManager.playWarp();
   }
 
@@ -406,13 +509,46 @@ export class GameEngine {
         else if (this.keysPressed.has('arrowright') || this.keysPressed.has('d')) wantDir = 'right';
       }
 
-      // Tap to walk direction
+      // If manual directional input exists, cancel automated pathfinding
+      if (wantDir) {
+        this.currentPath = [];
+        this.targetTile = null;
+      }
+
+      // Pathfinding: follow precomputed BFS shortest-path nodes
+      if (!wantDir && this.currentPath.length > 0) {
+        const nextNode = this.currentPath[0];
+        const dx = nextNode.x - player.x;
+        const dy = nextNode.y - player.y;
+
+        if (dx === 0 && dy === 0) {
+          this.currentPath.shift(); // Already at node, move to next
+        } else if (dx === 1 && dy === 0) {
+          wantDir = 'right';
+        } else if (dx === -1 && dy === 0) {
+          wantDir = 'left';
+        } else if (dx === 0 && dy === 1) {
+          wantDir = 'down';
+        } else if (dx === 0 && dy === -1) {
+          wantDir = 'up';
+        } else {
+          // Recompute path if player drifted off-course
+          if (this.targetTile) {
+            this.currentPath = this.findPath(player.x, player.y, this.targetTile.x, this.targetTile.y);
+          } else {
+            this.currentPath = [];
+          }
+        }
+      }
+
+      // Fallback: direct tap-to-walk direction if no path
       if (!wantDir && this.targetTile) {
         const dx = this.targetTile.x - player.x;
         const dy = this.targetTile.y - player.y;
 
         if (dx === 0 && dy === 0) {
           this.targetTile = null;
+          this.currentPath = [];
         } else if (Math.abs(dx) > Math.abs(dy)) {
           wantDir = dx > 0 ? 'right' : 'left';
         } else {
@@ -435,9 +571,14 @@ export class GameEngine {
           player.isMoving = true;
           player.subX = 0;
           player.subY = 0;
+          // Pop step from path if moving onto it
+          if (this.currentPath.length > 0 && this.currentPath[0].x === nextX && this.currentPath[0].y === nextY) {
+            this.currentPath.shift();
+          }
         } else {
           soundManager.playBump();
           this.targetTile = null;
+          this.currentPath = [];
         }
       }
     }
@@ -586,6 +727,24 @@ export class GameEngine {
 
     for (const item of renderables) {
       item.draw(ctx);
+    }
+
+    // Render tap-to-walk target waypoint marker if traveling
+    if (this.targetTile) {
+      const pulse = Math.sin(performance.now() / 150) * 3;
+      const targetCenterX = this.targetTile.x * TILE_SIZE + 16;
+      const targetCenterY = this.targetTile.y * TILE_SIZE + 16;
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(targetCenterX, targetCenterY, 8 + pulse, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(targetCenterX, targetCenterY, 3, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     // 4. Atmospheric 2.5D Vignette & Cinematic Ambient Lighting
