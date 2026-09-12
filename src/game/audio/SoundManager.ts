@@ -104,17 +104,18 @@ class SoundManager {
         );
 
         // Explicit masculine voice targets
-        // For Dr. Oak: mature, resonant, authoritative male voice
+        // For Dr. Oak: mature, resonant scholar/professor voice
         const oakVoices = [
-          ...nonFemaleVoices.filter((v) => /daniel|oliver|arthur|george|grandpa|guy|en-gb|natural/i.test(v.name)),
-          ...nonFemaleVoices.filter((v) => /alex|david|mark|albert|wavenet-d|standard-d/i.test(v.name)),
+          ...nonFemaleVoices.filter((v) => /albert|grandpa|arthur|george|en-gb|natural/i.test(v.name)),
+          ...nonFemaleVoices.filter((v) => /daniel|alex|david|mark|wavenet-d|standard-d/i.test(v.name)),
           ...nonFemaleVoices
         ];
 
-        // For Aritro: confident, modern young tech lead male voice
+        // For Aritro Saha: crisp, articulate, confident young developer voice (Daniel / Alex / David / Guy)
+        // Strictly avoids cartoonish novelty voices (Eddy/Reed/Rocko)
         const aritroVoices = [
-          ...nonFemaleVoices.filter((v) => /eddy|reed|rocko|rishi|aman|alex|daniel|aaron|guy|wavenet-b|standard-b/i.test(v.name)),
-          ...nonFemaleVoices.filter((v) => /male|david|mark|en-us/i.test(v.name)),
+          ...nonFemaleVoices.filter((v) => /daniel|alex|david|guy|oliver|aaron|james|wavenet-b|wavenet-d|standard-b|google uk english male|google us english/i.test(v.name)),
+          ...nonFemaleVoices.filter((v) => /rishi|aman/i.test(v.name)),
           ...nonFemaleVoices
         ];
 
@@ -125,10 +126,9 @@ class SoundManager {
 
         // Distinct voice profiles for every character
         switch (speakerType) {
-          case 'scientist': // Dr. / Prof. Oak (Distinguished, wise, clear elder scholar)
-            // Pitch set to 0.82 (NOT over-lowered) to preserve vocal tract clarity and phoneme intelligibility
+          case 'scientist': // Dr. / Prof. Oak (Distinguished, clear professor)
             utterance.voice = oakVoices[0] || null;
-            utterance.pitch = 0.82;
+            utterance.pitch = 0.88;
             utterance.rate = 0.92;
             break;
 
@@ -144,11 +144,10 @@ class SoundManager {
             utterance.rate = 1.1;
             break;
 
-          case 'gymleader': // Aritro Saha (Natural masculine young developer voice)
-            // Voice strictly selected from nonFemale / young male voices, pitch 0.88 for natural human baritone
+          case 'gymleader': // Aritro Saha (Tech Lead / Associate Developer - crisp, articulate, natural human voice)
             utterance.voice = aritroVoices[0] || null;
-            utterance.pitch = 0.88;
-            utterance.rate = 0.98;
+            utterance.pitch = 1.0; // 100% natural authentic pitch, no synthetic warping or robotic artifact
+            utterance.rate = 1.0;  // Natural conversational tempo
             break;
 
           case 'arcade': // Arcade Host (Energetic, upbeat)
