@@ -48,10 +48,79 @@ class SoundManager {
     return this.isMuted;
   }
 
+  // --- Voice & Dialogue Speech Synthesis ---
+
+  /**
+   * Character speech synthesis using Web Speech API with fallback to character pitch bleeps
+   */
+  public speakText(text: string, speakerType: string = 'default') {
+    if (this.isMuted) return;
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel(); // Stop any pending speech
+
+        // Clean text of game brackets/emojis
+        const cleanText = text.replace(/\[.*?\]/g, '').trim();
+        if (!cleanText) return;
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.rate = 1.05;
+
+        // Custom pitch & timbre per character
+        switch (speakerType) {
+          case 'scientist': // Prof. Oak (distinguished, slightly lower pitch)
+            utterance.pitch = 0.85;
+            utterance.rate = 0.98;
+            break;
+          case 'nurse': // Nurse Joy (cheerful, higher pitch)
+            utterance.pitch = 1.35;
+            utterance.rate = 1.1;
+            break;
+          case 'clerk': // Shop clerk (polite, mid-high)
+            utterance.pitch = 1.15;
+            utterance.rate = 1.1;
+            break;
+          case 'gymleader': // BMS Tech Leader (firm, confident)
+            utterance.pitch = 0.8;
+            utterance.rate = 1.0;
+            break;
+          case 'arcade': // Arcade host (energetic, fast)
+            utterance.pitch = 1.25;
+            utterance.rate = 1.2;
+            break;
+          case 'pet': // Pet pup
+            utterance.pitch = 1.6;
+            utterance.rate = 1.3;
+            break;
+          default:
+            utterance.pitch = 1.0;
+            utterance.rate = 1.05;
+            break;
+        }
+
+        utterance.volume = 0.85;
+        window.speechSynthesis.speak(utterance);
+      } catch {
+        // Fallback to audio bleeps
+      }
+    }
+  }
+
+  public stopSpeaking() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // ignore
+      }
+    }
+  }
+
   // --- Retro Sound Effects ---
 
-  /** Dialogue character typewriter blip */
-  public playTextBeep() {
+  /** Dialogue character typewriter blip with pitch varied by character type */
+  public playTextBeep(speakerType: string = 'default') {
     if (this.isMuted) return;
     this.initContext();
     if (!this.ctx || !this.sfxGain) return;
@@ -61,18 +130,28 @@ class SoundManager {
       const gain = this.ctx.createGain();
       const t = this.ctx.currentTime;
 
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(520, t);
-      osc.frequency.exponentialRampToValueAtTime(780, t + 0.04);
+      let baseFreq = 520;
+      if (speakerType === 'scientist') baseFreq = 380;
+      else if (speakerType === 'nurse') baseFreq = 680;
+      else if (speakerType === 'gymleader') baseFreq = 320;
+      else if (speakerType === 'arcade') baseFreq = 620;
+      else if (speakerType === 'pet') baseFreq = 840;
 
-      gain.gain.setValueAtTime(0.08, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+      // Randomize slightly for authentic animal crossing / undertale voice chatter
+      const freq = baseFreq + (Math.random() * 60 - 30);
+
+      osc.type = speakerType === 'nurse' || speakerType === 'pet' ? 'triangle' : 'square';
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.2, t + 0.035);
+
+      gain.gain.setValueAtTime(0.06, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
 
       osc.connect(gain);
       gain.connect(this.sfxGain);
 
       osc.start(t);
-      osc.stop(t + 0.04);
+      osc.stop(t + 0.035);
     } catch {
       // AudioContext state handling
     }

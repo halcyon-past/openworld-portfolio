@@ -5,7 +5,7 @@ export const MAP_WIDTH = 36;
 export const MAP_HEIGHT = 30;
 
 export interface TileData {
-  type: 'grass' | 'path' | 'water' | 'tallgrass' | 'fence' | 'flower_red' | 'flower_blue' | 'flower_yellow' | 'sign';
+  type: 'grass' | 'path' | 'water' | 'tallgrass' | 'fence' | 'flower_red' | 'flower_blue' | 'flower_yellow' | 'sign' | 'cliff' | 'stairs';
   solid: boolean;
 }
 
@@ -86,6 +86,15 @@ export class TileMap {
     for (let x = 1; x <= 4; x++) {
       for (let y = 21; y <= 28; y++) {
         this.grid[y][x] = { type: 'water', solid: true };
+      }
+    }
+
+    // 5b. 2.5D North-East Elevated Plateau (Cliff ridge at y: 2 with stairs at x: 27..28)
+    for (let x = 25; x <= 34; x++) {
+      if (x === 27 || x === 28) {
+        this.grid[2][x] = { type: 'stairs', solid: false };
+      } else {
+        this.grid[2][x] = { type: 'cliff', solid: true };
       }
     }
 
@@ -357,9 +366,9 @@ export class TileMap {
   }
 
   /**
-   * Renders map layers onto canvas
+   * Renders flat ground terrain layer onto canvas (grass, paths, water, flowers, cliffs, stairs)
    */
-  public render(ctx: CanvasRenderingContext2D, animFrame: number) {
+  public renderTerrain(ctx: CanvasRenderingContext2D, animFrame: number) {
     const waterFrame = Math.floor(animFrame / 15);
     const tallgrassFrame = Math.floor(animFrame / 30);
 
@@ -395,54 +404,107 @@ export class TileMap {
           case 'flower_yellow':
             ctx.drawImage(spriteGenerator.getFlowerTile('yellow'), px, py);
             break;
+          case 'cliff':
+            ctx.drawImage(spriteGenerator.getCliffTile('middle'), px, py);
+            break;
+          case 'stairs':
+            ctx.drawImage(spriteGenerator.getStairsTile(), px, py);
+            break;
           default:
             ctx.drawImage(spriteGenerator.getGrassTile(), px, py);
             break;
         }
       }
     }
+  }
 
-    // 2. Render perimeter trees (2x2 tiles = 64x64px)
+  /**
+   * Returns list of all 2.5D scenery objects (trees & buildings) with their Y-depth baseline for sorting
+   */
+  public getSceneryObjects(): Array<{
+    baseY: number;
+    draw: (ctx: CanvasRenderingContext2D) => void;
+  }> {
     const tree = spriteGenerator.getTreeTile();
-    // Top border trees
+    const items: Array<{ baseY: number; draw: (ctx: CanvasRenderingContext2D) => void }> = [];
+
+    // Perimeter trees
+    // Top border trees (Y = 0)
     for (let x = 0; x < MAP_WIDTH; x += 2) {
-      ctx.drawImage(tree, x * TILE_SIZE - 8, -12);
-      ctx.drawImage(tree, x * TILE_SIZE - 8, (MAP_HEIGHT - 2) * TILE_SIZE);
+      items.push({
+        baseY: 0.8 * TILE_SIZE,
+        draw: (ctx) => ctx.drawImage(tree, x * TILE_SIZE - 8, -12),
+      });
+      // Bottom border trees
+      items.push({
+        baseY: (MAP_HEIGHT - 0.2) * TILE_SIZE,
+        draw: (ctx) => ctx.drawImage(tree, x * TILE_SIZE - 8, (MAP_HEIGHT - 2) * TILE_SIZE),
+      });
     }
+
     // Side border trees
     for (let y = 2; y < MAP_HEIGHT - 2; y += 2) {
-      ctx.drawImage(tree, -16, y * TILE_SIZE);
-      ctx.drawImage(tree, (MAP_WIDTH - 2) * TILE_SIZE, y * TILE_SIZE);
+      items.push({
+        baseY: (y + 1.8) * TILE_SIZE,
+        draw: (ctx) => ctx.drawImage(tree, -16, y * TILE_SIZE),
+      });
+      items.push({
+        baseY: (y + 1.8) * TILE_SIZE,
+        draw: (ctx) => ctx.drawImage(tree, (MAP_WIDTH - 2) * TILE_SIZE, y * TILE_SIZE),
+      });
     }
 
-    // Natural decorative tree clusters
+    // Decorative natural trees
     const decorativeTrees: [number, number][] = [
       [10, 3], [12, 3], [28, 3],
       [2, 13], [13, 13], [22, 13],
       [8, 22], [22, 22], [28, 24]
     ];
     for (const [tx, ty] of decorativeTrees) {
-      ctx.drawImage(tree, tx * TILE_SIZE, ty * TILE_SIZE);
+      items.push({
+        baseY: (ty + 1.8) * TILE_SIZE,
+        draw: (ctx) => ctx.drawImage(tree, tx * TILE_SIZE, ty * TILE_SIZE),
+      });
     }
 
-    // 3. Render Buildings (positioned at their footprints)
-    // House (x: 3, y: 4, width: 4, height: 3)
-    ctx.drawImage(spriteGenerator.getHouseBuilding(), 3 * TILE_SIZE, 4 * TILE_SIZE);
+    // Buildings (baseY set to bottom edge of footprint)
+    // House (x: 3, y: 4, width: 4, height: 3 -> base Y is 7 * TILE_SIZE)
+    items.push({
+      baseY: 7 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getHouseBuilding(), 3 * TILE_SIZE, 4 * TILE_SIZE),
+    });
 
-    // Research Lab (x: 19, y: 4, width: 5, height: 3)
-    ctx.drawImage(spriteGenerator.getResearchLab(), 19 * TILE_SIZE, 4 * TILE_SIZE);
+    // Research Lab (x: 19, y: 4, width: 5, height: 3 -> base Y is 7 * TILE_SIZE)
+    items.push({
+      baseY: 7 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getResearchLab(), 19 * TILE_SIZE, 4 * TILE_SIZE),
+    });
 
-    // Poké Center (x: 5, y: 14, width: 4, height: 3)
-    ctx.drawImage(spriteGenerator.getPokemonCenter(), 5 * TILE_SIZE, 14 * TILE_SIZE);
+    // Poké Center (x: 5, y: 14, width: 4, height: 3 -> base Y is 17 * TILE_SIZE)
+    items.push({
+      baseY: 17 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getPokemonCenter(), 5 * TILE_SIZE, 14 * TILE_SIZE),
+    });
 
-    // Poké Mart (x: 17, y: 14, width: 4, height: 3)
-    ctx.drawImage(spriteGenerator.getPokeMart(), 17 * TILE_SIZE, 14 * TILE_SIZE);
+    // Poké Mart (x: 17, y: 14, width: 4, height: 3 -> base Y is 17 * TILE_SIZE)
+    items.push({
+      baseY: 17 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getPokeMart(), 17 * TILE_SIZE, 14 * TILE_SIZE),
+    });
 
-    // Arcade (x: 26, y: 14, width: 4, height: 3)
-    ctx.drawImage(spriteGenerator.getArcadeBuilding(), 26 * TILE_SIZE, 14 * TILE_SIZE);
+    // Arcade (x: 26, y: 14, width: 4, height: 3 -> base Y is 17 * TILE_SIZE)
+    items.push({
+      baseY: 17 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getArcadeBuilding(), 26 * TILE_SIZE, 14 * TILE_SIZE),
+    });
 
-    // Silicon Gym (x: 14, y: 22, width: 5, height: 4)
-    ctx.drawImage(spriteGenerator.getSiliconGym(), 14 * TILE_SIZE, 22 * TILE_SIZE);
+    // Silicon Gym (x: 14, y: 22, width: 5, height: 4 -> base Y is 26 * TILE_SIZE)
+    items.push({
+      baseY: 26 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getSiliconGym(), 14 * TILE_SIZE, 22 * TILE_SIZE),
+    });
+
+    return items;
   }
 }
 

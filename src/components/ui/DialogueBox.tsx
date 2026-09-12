@@ -19,7 +19,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
 
   const fullText = lines[currentLineIdx] || '';
 
-  // Clean, deterministic typewriter effect using substring slice
+  // Clean, deterministic typewriter effect using substring slice + voice speech
   useEffect(() => {
     let charIdx = 0;
     setDisplayedText('');
@@ -30,12 +30,17 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
       intervalRef.current = null;
     }
 
+    // Trigger character speech synthesis for the current line
+    if (fullText) {
+      soundManager.speakText(fullText, avatar || 'default');
+    }
+
     intervalRef.current = setInterval(() => {
       charIdx++;
       if (charIdx <= fullText.length) {
         setDisplayedText(fullText.slice(0, charIdx));
         if (charIdx % 3 === 0) {
-          soundManager.playTextBeep();
+          soundManager.playTextBeep(avatar || 'default');
         }
       } else {
         setIsTyping(false);
@@ -47,12 +52,13 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
     }, 20);
 
     return () => {
+      soundManager.stopSpeaking();
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
     };
-  }, [currentLineIdx, fullText]);
+  }, [currentLineIdx, fullText, avatar]);
 
   const handleAdvance = useCallback(() => {
     if (isTyping) {

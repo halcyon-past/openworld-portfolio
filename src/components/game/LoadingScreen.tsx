@@ -43,17 +43,36 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onStartGame, onOpe
     return () => clearInterval(interval);
   }, []);
 
-  const handleStart = () => {
+  const handleStart = React.useCallback(() => {
     soundManager.playFanfare();
     soundManager.startBGM();
     onStartGame();
-  };
+  }, [onStartGame]);
 
-  const handleRecruiterMode = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleRecruiterMode = React.useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     soundManager.playSelect();
     onOpenRecruiter();
-  };
+  }, [onOpenRecruiter]);
+
+  // Support pressing Enter or Space to start game immediately once loaded
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isLoaded) {
+          handleStart();
+        } else {
+          // If still loading and user presses Enter, fast-skip directly to game
+          handleStart();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [isLoaded, handleStart]);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#070b10] text-slate-100 overflow-hidden font-pixel">
@@ -67,15 +86,17 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onStartGame, onOpe
       {/* Main Retro Game Container */}
       <div className="relative z-10 flex flex-col items-center max-w-lg w-full px-6 text-center">
         
-        {/* Animated Pixel Pokéball Logo */}
-        <div className="relative mb-6">
-          <div className="w-24 h-24 rounded-full border-4 border-slate-900 bg-gradient-to-b from-red-500 via-red-600 to-white relative shadow-[0_0_25px_rgba(239,68,68,0.5)] flex items-center justify-center animate-bounce">
-            {/* Center black band */}
-            <div className="absolute w-full h-3 bg-slate-900 flex items-center justify-center">
-              {/* Center button */}
-              <div className="w-8 h-8 rounded-full border-4 border-slate-900 bg-white flex items-center justify-center shadow-inner">
-                <div className="w-3 h-3 rounded-full bg-slate-200 animate-ping" />
-              </div>
+        {/* Official Aritro Saha Logo & Animated Pixel Pokéball Accent */}
+        <div className="relative mb-5 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-2xl bg-[#0f172a]/90 border-2 border-amber-400/60 p-2 shadow-[0_0_30px_rgba(245,158,11,0.3)] relative flex items-center justify-center animate-bounce">
+            <img
+              src="/logo.webp"
+              alt="Aritro Saha Official Logo"
+              className="w-full h-full object-contain drop-shadow-md"
+            />
+            {/* Mini pixel pokeball badge in bottom-right corner */}
+            <div className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full border-2 border-slate-900 bg-gradient-to-b from-red-500 to-white shadow-md flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-slate-900 border border-white" />
             </div>
           </div>
         </div>
@@ -91,7 +112,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onStartGame, onOpe
           ARITRO SAHA
         </h1>
         <p className="text-xs md:text-sm text-sky-300 tracking-wider mb-6 font-silk">
-          ASSOCIATE SOFTWARE DEVELOPER @ BMS
+          ASSOCIATE SOFTWARE ENGINEER @ BMS
         </p>
 
         {!isLoaded ? (

@@ -32,8 +32,12 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({ onRe
       {/* Sticky Header Bar */}
       <header className="sticky top-0 z-40 bg-[#111726]/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 sm:px-8 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white shadow-md">
-            AS
+          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 p-1 flex items-center justify-center shadow-md overflow-hidden shrink-0">
+            <img
+              src="/logo.webp"
+              alt="Aritro Saha Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
           <div>
             <h1 className="text-sm sm:text-base font-bold text-white tracking-tight">

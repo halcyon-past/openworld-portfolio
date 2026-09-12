@@ -39,8 +39,10 @@ export const TopHUD: React.FC<TopHUDProps> = ({
     <header className="fixed top-2 left-2 right-2 md:top-3 md:left-4 md:right-4 z-30 flex items-center justify-between pointer-events-none font-pixel">
       
       {/* Left: Player Badge & Mini Coordinates */}
-      <div className="flex items-center gap-2 pointer-events-auto bg-[#1e2530]/90 border-2 border-slate-700 backdrop-blur-xs px-3 py-1.5 rounded-md shadow-lg text-white">
-        <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+      <div className="flex items-center gap-2.5 pointer-events-auto bg-[#1e2530]/90 border-2 border-slate-700 backdrop-blur-xs px-3 py-1.5 rounded-md shadow-lg text-white">
+        <div className="w-6 h-6 rounded bg-slate-900 border border-amber-400/50 p-0.5 shrink-0 flex items-center justify-center">
+          <img src="/logo.webp" alt="Logo" className="w-full h-full object-contain" />
+        </div>
         <div className="flex flex-col">
           <span className="text-[10px] md:text-xs font-bold text-amber-300">ARITRO SAHA</span>
           <span className="text-[8px] text-slate-400 font-silk">

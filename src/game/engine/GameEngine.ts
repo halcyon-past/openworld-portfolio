@@ -475,7 +475,7 @@ export class GameEngine {
     const { player, camera, football } = this.state;
 
     // Clear canvas
-    ctx.fillStyle = '#0d131a';
+    ctx.fillStyle = '#070b10';
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Apply Camera Transform
@@ -485,29 +485,56 @@ export class GameEngine {
       Math.floor(this.canvas.height / 2 - camera.y)
     );
 
-    // 1. Render Map & Buildings
+    // 1. Render Flat Base Terrain (Grass, Paths, Water, Flowers, Cliffs, Stairs)
     const animFrame = Math.floor(performance.now() / 33);
-    tileMap.render(ctx, animFrame);
+    tileMap.renderTerrain(ctx, animFrame);
 
-    // 2. Render Football
-    const ballTile = spriteGenerator.getFootballTile();
-    ctx.drawImage(ballTile, Math.floor(football.x), Math.floor(football.y));
-
-    // 3. Render NPCs
-    for (const npc of tileMap.npcs) {
-      const npcSprite = spriteGenerator.getCharacterSprite(npc.spriteType, npc.direction, 0);
-      ctx.drawImage(npcSprite, npc.x * TILE_SIZE, npc.y * TILE_SIZE);
-
-      // Render interact hint icon "!"
-      const dist = Math.hypot(player.x - npc.x, player.y - npc.y);
-      if (dist <= 1.5) {
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 12px monospace';
-        ctx.fillText('!', npc.x * TILE_SIZE + 14, npc.y * TILE_SIZE - 4);
-      }
+    // 2. Collect all 2.5D Depth-Sorted Renderables (Buildings, Trees, NPCs, Player, Football)
+    interface Renderable {
+      baseY: number;
+      draw: (c: CanvasRenderingContext2D) => void;
     }
 
-    // 4. Render Player
+    const renderables: Renderable[] = [];
+
+    // Scenery: Buildings & Trees from TileMap
+    renderables.push(...tileMap.getSceneryObjects());
+
+    // Football
+    const ballTile = spriteGenerator.getFootballTile();
+    renderables.push({
+      baseY: football.y + 16,
+      draw: (c) => {
+        // Football ground shadow
+        c.fillStyle = 'rgba(15, 23, 42, 0.35)';
+        c.beginPath();
+        c.ellipse(football.x + 12, football.y + 20, 8, 3, 0, 0, Math.PI * 2);
+        c.fill();
+        c.drawImage(ballTile, Math.floor(football.x), Math.floor(football.y));
+      },
+    });
+
+    // NPCs
+    for (const npc of tileMap.npcs) {
+      const npcSprite = spriteGenerator.getCharacterSprite(npc.spriteType, npc.direction, 0);
+      const npcBaseY = (npc.y + 1) * TILE_SIZE;
+      renderables.push({
+        baseY: npcBaseY,
+        draw: (c) => {
+          c.drawImage(npcSprite, npc.x * TILE_SIZE, npc.y * TILE_SIZE);
+
+          // Render interact hint icon "!"
+          const dist = Math.hypot(player.x - npc.x, player.y - npc.y);
+          if (dist <= 1.5) {
+            c.fillStyle = '#ef4444';
+            c.font = 'bold 12px monospace';
+            c.fillText('!', npc.x * TILE_SIZE + 14, npc.y * TILE_SIZE - 4);
+          }
+        },
+      });
+    }
+
+    // Player
     const playerPx = (player.x + player.subX) * TILE_SIZE;
     const playerPy = (player.y + player.subY) * TILE_SIZE;
     const playerSprite = spriteGenerator.getCharacterSprite(
@@ -515,9 +542,38 @@ export class GameEngine {
       player.direction,
       player.isMoving ? player.stepFrame : 0
     );
-    ctx.drawImage(playerSprite, Math.floor(playerPx), Math.floor(playerPy));
+    const playerBaseY = playerPy + TILE_SIZE;
 
+    renderables.push({
+      baseY: playerBaseY,
+      draw: (c) => {
+        c.drawImage(playerSprite, Math.floor(playerPx), Math.floor(playerPy));
+      },
+    });
+
+    // 3. True 2.5D Depth Sorting (Painter's Algorithm by baseY)
+    renderables.sort((a, b) => a.baseY - b.baseY);
+
+    for (const item of renderables) {
+      item.draw(ctx);
+    }
+
+    // 4. Atmospheric 2.5D Vignette & Cinematic Ambient Lighting
     ctx.restore();
+
+    // Subtle radial light vignette over camera
+    const grad = ctx.createRadialGradient(
+      this.canvas.width / 2,
+      this.canvas.height / 2,
+      this.canvas.width * 0.25,
+      this.canvas.width / 2,
+      this.canvas.height / 2,
+      this.canvas.width * 0.75
+    );
+    grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    grad.addColorStop(1, 'rgba(3, 7, 18, 0.45)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
 
