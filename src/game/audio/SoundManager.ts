@@ -104,20 +104,22 @@ class SoundManager {
         );
 
         // Explicit masculine voice targets
+        // Direct match for Daniel voice
+        const danielVoice = enVoices.find((v) => /^daniel\b/i.test(v.name)) || 
+                            enVoices.find((v) => /\bdaniel\b/i.test(v.name));
+
         // For Dr. Oak: mature, resonant scholar/professor voice
         const oakVoices = [
           ...nonFemaleVoices.filter((v) => /albert|grandpa|arthur|george|en-gb|natural/i.test(v.name)),
-          ...nonFemaleVoices.filter((v) => /daniel|alex|david|mark|wavenet-d|standard-d/i.test(v.name)),
+          ...nonFemaleVoices.filter((v) => /alex|david|mark|wavenet-d|standard-d/i.test(v.name)),
           ...nonFemaleVoices
         ];
 
-        // For Aritro Saha: crisp, articulate, confident young developer voice (Daniel / Alex / David / Guy)
-        // Strictly avoids cartoonish novelty voices (Eddy/Reed/Rocko)
-        const aritroVoices = [
-          ...nonFemaleVoices.filter((v) => /daniel|alex|david|guy|oliver|aaron|james|wavenet-b|wavenet-d|standard-b|google uk english male|google us english/i.test(v.name)),
-          ...nonFemaleVoices.filter((v) => /rishi|aman/i.test(v.name)),
-          ...nonFemaleVoices
-        ];
+        // For Aritro Saha: Lock explicitly to Daniel, followed by clear British/American male voices
+        const aritroVoice = danielVoice ||
+          nonFemaleVoices.find((v) => /\b(alex|david|guy|oliver|james|wavenet-b|standard-b)\b/i.test(v.name)) ||
+          nonFemaleVoices[0] ||
+          null;
 
         const femaleVoice = enVoices.find((v) => 
           /female|woman|samantha|zira|victoria|karen|moira|fiona|sandy|shelley|tara|tessa|flo|grandma/i.test(v.name)
@@ -144,10 +146,10 @@ class SoundManager {
             utterance.rate = 1.1;
             break;
 
-          case 'gymleader': // Aritro Saha (Tech Lead / Associate Developer - crisp, articulate, natural human voice)
-            utterance.voice = aritroVoices[0] || null;
-            utterance.pitch = 1.0; // 100% natural authentic pitch, no synthetic warping or robotic artifact
-            utterance.rate = 1.0;  // Natural conversational tempo
+          case 'gymleader': // Aritro Saha (Locked directly to Daniel voice - clear, natural, confident)
+            utterance.voice = aritroVoice;
+            utterance.pitch = 1.0; // 1.0 natural authentic human pitch
+            utterance.rate = 0.98; // Natural speaking pace
             break;
 
           case 'arcade': // Arcade Host (Energetic, upbeat)
@@ -157,13 +159,13 @@ class SoundManager {
             break;
 
           case 'sign': // Public announcement / town notice board narrator (crisp, modern, neutral guide voice)
-            utterance.voice = naturalVoice || femaleVoice || aritroVoices[0] || null;
+            utterance.voice = naturalVoice || femaleVoice || aritroVoice || null;
             utterance.pitch = 1.05; // Bright, clear, neutral public system announcement tone
             utterance.rate = 1.02;  // Fluent, informative reading speed
             break;
 
           default:
-            utterance.voice = naturalVoice || aritroVoices[0] || null;
+            utterance.voice = naturalVoice || aritroVoice || null;
             utterance.pitch = 1.0;
             utterance.rate = 1.0;
             break;

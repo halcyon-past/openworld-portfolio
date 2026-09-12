@@ -311,7 +311,7 @@ export class TileMap {
       },
       {
         id: 'npc_gymlead',
-        name: 'Tech Lead Alex',
+        name: 'Aritro Saha (Tech Lead)',
         x: 17,
         y: 27,
         direction: 'down',
