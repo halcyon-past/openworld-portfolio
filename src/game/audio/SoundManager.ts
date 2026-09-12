@@ -82,14 +82,22 @@ class SoundManager {
         window.speechSynthesis.cancel(); // Stop any pending speech
         this.isSpeaking = false;
 
-        // Clean text of game brackets/emojis
-        const cleanText = text.replace(/\[.*?\]/g, '').replace(/[*_#~]/g, '').trim();
-        if (!cleanText) return;
-
-        // If Pixel Pup (pet), play playful synth bark instead of reading text literally
+        // If Pixel Pup (pet), immediately trigger authentic canine puppy bark sound effect
         if (speakerType === 'pet') {
-          this.playTextBeep('pet');
-          return;
+          this.playPuppyBark('happy');
+        }
+
+        // Clean text of action asterisks (e.g. *wags pixel tail excitedly*), brackets, and markdown
+        let cleanText = text
+          .replace(/\*.*?\*/g, '')
+          .replace(/\[.*?\]/g, '')
+          .replace(/[*_#~]/g, '')
+          .trim();
+
+        if (!cleanText) {
+          // If the entire text was an action, just have the puppy bark
+          if (speakerType === 'pet') cleanText = 'Woof! Woof!';
+          else return;
         }
 
         const utterance = new SpeechSynthesisUtterance(cleanText);
@@ -128,6 +136,12 @@ class SoundManager {
 
         // Distinct voice profiles for every character
         switch (speakerType) {
+          case 'pet': // Pixel Pup (Playful, excited, high-pitched cartoon puppy voice)
+            utterance.voice = naturalVoice || femaleVoice || enVoices[0] || null;
+            utterance.pitch = 1.95; // Adorable, energetic cartoon puppy pitch
+            utterance.rate = 1.3;   // Zippy excited puppy pace
+            break;
+
           case 'scientist': // Dr. / Prof. Oak (Distinguished, clear professor)
             utterance.voice = oakVoices[0] || null;
             utterance.pitch = 0.88;
@@ -203,6 +217,90 @@ class SoundManager {
 
   // --- Retro Sound Effects ---
 
+  /**
+   * Realistic synthesized Puppy Bark sound effect (playful energetic double/triple-bark: "Arf! Woof-woof!")
+   */
+  public playPuppyBark(variation: 'happy' | 'double' | 'single' = 'double') {
+    if (this.isMuted) return;
+    this.initContext();
+    if (!this.ctx || !this.sfxGain) return;
+
+    try {
+      const now = this.ctx.currentTime;
+
+      // Synthesize a single realistic canine vocalization
+      const triggerBark = (time: number, pitch: number, duration: number, vol: number) => {
+        if (!this.ctx || !this.sfxGain) return;
+
+        // 1. Dual oscillator for vocal body (warm triangle + rich sawtooth harmonic)
+        const oscTri = this.ctx.createOscillator();
+        const oscSaw = this.ctx.createOscillator();
+        const vocalGain = this.ctx.createGain();
+
+        // 2. Formant bandpass filter modeling canine vocal tract resonance
+        const formant = this.ctx.createBiquadFilter();
+        formant.type = 'bandpass';
+        formant.frequency.setValueAtTime(1350, time);
+        formant.Q.setValueAtTime(2.0, time);
+
+        // 3. Bark breath onset / puff (short white noise transient)
+        const noiseLen = Math.floor(this.ctx.sampleRate * 0.04);
+        const noiseBuf = this.ctx.createBuffer(1, noiseLen, this.ctx.sampleRate);
+        const data = noiseBuf.getChannelData(0);
+        for (let i = 0; i < noiseLen; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
+
+        const noiseSource = this.ctx.createBufferSource();
+        noiseSource.buffer = noiseBuf;
+
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(vol * 0.35, time);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, time + 0.035);
+
+        // Canine bark frequency trajectory: quick rising chirp followed by steep downward drop
+        oscTri.type = 'triangle';
+        oscSaw.type = 'sawtooth';
+
+        oscTri.frequency.setValueAtTime(pitch * 0.9, time);
+        oscTri.frequency.linearRampToValueAtTime(pitch * 1.3, time + duration * 0.18);
+        oscTri.frequency.exponentialRampToValueAtTime(pitch * 0.65, time + duration);
+
+        oscSaw.frequency.setValueAtTime(pitch * 0.9, time);
+        oscSaw.frequency.linearRampToValueAtTime(pitch * 1.3, time + duration * 0.18);
+        oscSaw.frequency.exponentialRampToValueAtTime(pitch * 0.65, time + duration);
+
+        // Punchy vocal envelope
+        vocalGain.gain.setValueAtTime(0.001, time);
+        vocalGain.gain.linearRampToValueAtTime(vol, time + 0.012);
+        vocalGain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+        oscTri.connect(vocalGain);
+        oscSaw.connect(vocalGain);
+        vocalGain.connect(formant);
+        formant.connect(this.sfxGain);
+
+        noiseSource.connect(noiseGain);
+        noiseGain.connect(this.sfxGain);
+
+        oscTri.start(time);
+        oscTri.stop(time + duration);
+        oscSaw.start(time);
+        oscSaw.stop(time + duration);
+        noiseSource.start(time);
+        noiseSource.stop(time + 0.04);
+      };
+
+      // Happy energetic puppy bark sequence: "Arf! ... Arf-arf!"
+      triggerBark(now, 720, 0.09, 0.28);
+      triggerBark(now + 0.11, 860, 0.11, 0.32);
+
+      if (variation === 'happy') {
+        triggerBark(now + 0.24, 940, 0.08, 0.22);
+      }
+    } catch {
+      // AudioContext state handling
+    }
+  }
+
   /** Dialogue character typewriter blip with pitch varied by character type */
   public playTextBeep(speakerType: string = 'default') {
     if (this.isMuted) return;
@@ -214,17 +312,34 @@ class SoundManager {
       const gain = this.ctx.createGain();
       const t = this.ctx.currentTime;
 
+      if (speakerType === 'pet') {
+        // Cute micro-bark yip with downward canine pitch drop
+        const startFreq = 780 + (Math.random() * 80 - 40);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(startFreq, t);
+        osc.frequency.exponentialRampToValueAtTime(startFreq * 0.7, t + 0.045);
+
+        gain.gain.setValueAtTime(0.12, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGain);
+
+        osc.start(t);
+        osc.stop(t + 0.045);
+        return;
+      }
+
       let baseFreq = 480;
       if (speakerType === 'scientist') baseFreq = 220; // Deep low-frequency professor rumble
       else if (speakerType === 'gymleader') baseFreq = 260; // Deep masculine punch
       else if (speakerType === 'nurse') baseFreq = 680;
       else if (speakerType === 'arcade') baseFreq = 620;
-      else if (speakerType === 'pet') baseFreq = 840;
 
       // Randomize slightly for authentic animal crossing / undertale voice chatter
       const freq = baseFreq + (Math.random() * 60 - 30);
 
-      osc.type = speakerType === 'nurse' || speakerType === 'pet' ? 'triangle' : 'square';
+      osc.type = speakerType === 'nurse' ? 'triangle' : 'square';
       osc.frequency.setValueAtTime(freq, t);
       osc.frequency.exponentialRampToValueAtTime(freq * 1.2, t + 0.035);
 

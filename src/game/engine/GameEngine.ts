@@ -455,9 +455,9 @@ export class GameEngine {
       dialogue_pet: {
         speaker: 'Pixel Pup (PAWsitive Mascot)',
         lines: [
-          "Woof! *wags pixel tail excitedly*",
-          "Pixel Pup is healthy and happy thanks to Aritro's Hack4Bengal winner project 'PAWsitive'!",
-          "PAWsitive connects pet owners with emergency blood donors and verified clinics."
+          "Woof! Arf-arf! *wags pixel tail excitedly*",
+          "Pixel Pup is healthy and happy thanks to Aritro's Hack4Bengal champion project 'PAWsitive'!",
+          "PAWsitive connects pet owners with emergency blood donors and verified clinics. Woof!"
         ],
         avatar: 'pet'
       }
