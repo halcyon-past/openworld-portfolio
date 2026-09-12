@@ -60,11 +60,20 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     gameEngine.handleCanvasClick(e.clientX, e.clientY, rect);
   };
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas || e.touches.length === 0) return;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    gameEngine.handleCanvasClick(touch.clientX, touch.clientY, rect);
+  };
+
   return (
     <canvas
       ref={canvasRef}
       onClick={handleClick}
-      className="fixed inset-0 w-full h-full block bg-[#0d131a] pixelated cursor-crosshair select-none"
+      onTouchStart={handleTouchStart}
+      className="fixed inset-0 w-full h-full block bg-[#0d131a] pixelated cursor-crosshair select-none touch-none"
     />
   );
 };

@@ -18,6 +18,14 @@ export class GameEngine {
   public onWildEncounter?: (text: string) => void;
   public isDialogueActive: boolean = false;
   public isModalActive: boolean = false;
+  private virtualDirection: Direction | null = null;
+
+  public getZoom(): number {
+    if (!this.canvas) return 1.5;
+    // On mobile (< 640px wide or < 600px high), use 1.35x - 1.5x so the world is readable without clipping
+    const h = this.canvas.height;
+    return Math.max(1.25, Math.min(1.85, Math.round((h / 480) * 10) / 10));
+  }
 
   constructor() {
     this.state = {
@@ -101,6 +109,7 @@ export class GameEngine {
    * Virtual touch / button input support for mobile
    */
   public handleVirtualDirection(dir: Direction | null) {
+    this.virtualDirection = dir;
     this.keysPressed.delete('arrowup');
     this.keysPressed.delete('arrowdown');
     this.keysPressed.delete('arrowleft');
@@ -145,8 +154,7 @@ export class GameEngine {
     const screenX = (clientX - rect.left) * scaleX;
     const screenY = (clientY - rect.top) * scaleY;
 
-    // Responsive retro zoom factor (1.5x on desktop, 1.25x on smaller screens)
-    const zoom = Math.max(1.2, Math.min(1.8, Math.round((this.canvas.height / 540) * 10) / 10));
+    const zoom = this.getZoom();
 
     const worldX = (screenX - this.canvas.width / 2) / zoom + this.state.camera.x;
     const worldY = (screenY - this.canvas.height / 2) / zoom + this.state.camera.y;
@@ -387,12 +395,14 @@ export class GameEngine {
       }
     } else {
       // Handle player input to initiate move
-      let wantDir: Direction | null = null;
+      let wantDir: Direction | null = this.virtualDirection;
 
-      if (this.keysPressed.has('arrowup') || this.keysPressed.has('w')) wantDir = 'up';
-      else if (this.keysPressed.has('arrowdown') || this.keysPressed.has('s')) wantDir = 'down';
-      else if (this.keysPressed.has('arrowleft') || this.keysPressed.has('a')) wantDir = 'left';
-      else if (this.keysPressed.has('arrowright') || this.keysPressed.has('d')) wantDir = 'right';
+      if (!wantDir) {
+        if (this.keysPressed.has('arrowup') || this.keysPressed.has('w')) wantDir = 'up';
+        else if (this.keysPressed.has('arrowdown') || this.keysPressed.has('s')) wantDir = 'down';
+        else if (this.keysPressed.has('arrowleft') || this.keysPressed.has('a')) wantDir = 'left';
+        else if (this.keysPressed.has('arrowright') || this.keysPressed.has('d')) wantDir = 'right';
+      }
 
       // Tap to walk direction
       if (!wantDir && this.targetTile) {
@@ -482,7 +492,7 @@ export class GameEngine {
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Apply Camera Transform with HD Pixel-Art Zoom
-    const zoom = Math.max(1.2, Math.min(1.8, Math.round((this.canvas.height / 540) * 10) / 10));
+    const zoom = this.getZoom();
 
     ctx.save();
     // Center viewport and scale

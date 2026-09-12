@@ -107,7 +107,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({ speaker, lines, avatar
         e.stopPropagation();
         handleAdvance();
       }}
-      className="fixed bottom-4 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[680px] z-50 cursor-pointer font-pixel"
+      className="fixed bottom-28 md:bottom-6 left-3 right-3 sm:left-6 sm:right-6 md:left-1/2 md:-translate-x-1/2 md:w-[680px] z-50 cursor-pointer font-pixel"
     >
       {/* Speaker Tag */}
       <div className="inline-block bg-gradient-to-r from-red-600 to-rose-700 text-white text-[10px] md:text-xs px-3 py-1 rounded-t-md border-t-2 border-x-2 border-slate-900 shadow-md">
