@@ -129,8 +129,8 @@ export class TileMap {
     this.markSolidBox(9, 13, 1, 1);
     // Northern Garden Bench: rested above flower path at x: 14, y: 5 (1x1)
     this.markSolidBox(14, 5, 1, 1);
-    // Lakeside Scenic Bench: lake shore at x: 3, y: 23 (1x1, completely clear of column 6-7 pathways!)
-    this.markSolidBox(3, 23, 1, 1);
+    // Lakeside Scenic Bench: grassy lakeshore overlook at x: 5, y: 23 (1x1, completely clear of water and path!)
+    this.markSolidBox(5, 23, 1, 1);
   }
 
   private markSolidBox(startX: number, startY: number, w: number, h: number) {
@@ -372,11 +372,11 @@ export class TileMap {
           "Listening to the gentle splash of water melts away all stress. Focus and clarity fully restored!"
         ]
       },
-      // Lakeside Scenic Bench (Front trigger at x: 3, y: 24)
+      // Lakeside Scenic Bench (Overlook trigger at x: 5, y: 24)
       {
         id: 'trigger_bench_lake',
         name: 'Lakeside Scenic Bench',
-        x: 3,
+        x: 5,
         y: 24,
         type: 'bench',
         dialogueText: [
@@ -642,10 +642,10 @@ export class TileMap {
       draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 14 * TILE_SIZE, 5 * TILE_SIZE),
     });
 
-    // Lakeside Scenic Bench (lake shore at x: 3, y: 23, completely clear of path)
+    // Lakeside Scenic Bench (grassy lakeshore overlook at x: 5, y: 23, completely clear of water & path)
     items.push({
       baseY: 24 * TILE_SIZE,
-      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 3 * TILE_SIZE, 23 * TILE_SIZE),
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 5 * TILE_SIZE, 23 * TILE_SIZE),
     });
 
     return items;

@@ -531,6 +531,106 @@ export class SpriteGenerator {
     return c;
   }
 
+  /**
+   * Generates a cute retro pixel-art swimming rubber/mallard duck (20x18 px) with subtle water ripple
+   */
+  public getDuckSprite(direction: 'left' | 'right', frame: number = 0, variant: 'yellow' | 'mallard' = 'yellow'): HTMLCanvasElement {
+    const key = `duck_${variant}_${direction}_${frame % 2}`;
+    if (this.cache.has(key)) return this.cache.get(key)!;
+
+    const [c, ctx] = this.createCanvas(24, 20);
+    const bob = (frame % 2 === 1) ? 1 : 0;
+    const isRight = direction === 'right';
+
+    ctx.save();
+    if (isRight) {
+      ctx.translate(24, 0);
+      ctx.scale(-1, 1);
+    }
+
+    // 1. Water wake / ripple underneath duck
+    ctx.strokeStyle = 'rgba(224, 242, 254, 0.6)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(12, 16, 8 + (frame % 2), 3, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 2. Duck Body (Plump round waterbird)
+    if (variant === 'mallard') {
+      // Emerald / brown mallard
+      ctx.fillStyle = '#78350f'; // Warm brown plumage
+      ctx.beginPath();
+      ctx.ellipse(12, 11 + bob, 7, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Wing winglet feather
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(11, 10 + bob, 5, 3);
+
+      // Iridescent Emerald Green Head
+      ctx.fillStyle = '#047857';
+      ctx.beginPath();
+      ctx.arc(6, 7 + bob, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // White neck collar band
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(5, 10 + bob, 4, 1.5);
+
+      // Yellow-orange beak
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(1, 7 + bob, 3, 2.5);
+    } else {
+      // Classic Cute Bright Yellow Duckling
+      ctx.fillStyle = '#facc15'; // Vibrant sunny yellow body
+      ctx.beginPath();
+      ctx.ellipse(12, 11 + bob, 7, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Wing fold
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(11, 10 + bob, 5, 3);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(10, 9 + bob, 4, 1.5);
+
+      // Head
+      ctx.fillStyle = '#facc15';
+      ctx.beginPath();
+      ctx.arc(6, 7 + bob, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Fluffy cheek tuft
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(7, 7 + bob, 2, 2);
+
+      // Bright orange bill / beak
+      ctx.fillStyle = '#ea580c';
+      ctx.fillRect(1, 7 + bob, 3, 2.5);
+      ctx.fillStyle = '#fb923c';
+      ctx.fillRect(1, 7 + bob, 3, 1);
+    }
+
+    // Eye (Glossy black dot with tiny white catchlight)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(5, 6 + bob, 1.5, 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(5, 6 + bob, 1, 1);
+
+    // Cute upturned tail feathers
+    ctx.fillStyle = variant === 'mallard' ? '#451a03' : '#eab308';
+    ctx.beginPath();
+    ctx.moveTo(17, 10 + bob);
+    ctx.lineTo(21, 6 + bob);
+    ctx.lineTo(19, 12 + bob);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+
+    this.cache.set(key, c);
+    return c;
+  }
+
   // --- Character Sprites (Player & NPCs) ---
 
   /**

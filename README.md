@@ -69,7 +69,8 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
 | **🏠 Aritro's Residence** | `x: 3..6, y: 4..6` | 4x3 Building | Contact terminal, social links (GitHub, LinkedIn, LeetCode, X), SiliconSync blog feed, and beatbox studio. |
 | **🕹️ Developer Arcade Corner** | `x: 26..29, y: 14..16` | 4x3 Building | Playable retro minigames: *Developer Speed Test* (typing benchmark) and *Minimalist Python Snake*. |
 | **⛲ Pallet Cloud Wishing Fountain** | `x: 11..12, y: 5..6` | 2x1 Basin (`y: 6`) | Animated marble fountain with procedural water droplet spray and concentric pool ripples. Toss in 100 PokéDollars for a CI/CD blessing! |
-| **🪑 Scenic Rest Benches** | Multiple Locations | 1x1 Each | Cozy wooden benches in Town Square (`9, 13`), Northern Garden (`14, 5`), and Lake Shore (`3, 23`) for enjoying the view. |
+| **🦆 Swimming Lake Ducks** | `x: 1..4, y: 21..28` | Animated Wildlife | Cute pixel-art yellow ducklings and emerald mallards swimming leisurely in the southwestern lake with gentle bobbing and wake ripples. |
+| **🪑 Scenic Rest Benches** | Multiple Locations | 1x1 Each | Cozy wooden benches in Town Square (`9, 13`), Northern Garden (`14, 5`), and Lakeshore Overlook (`5, 23`) for taking a breather. |
 | **⚽ Interactive Soccer Pitch** | `x: 8, y: 6` | Physics Object | Soccer ball simulated with velocity and friction that bounces off boundaries when kicked across the lawn. |
 
 ---

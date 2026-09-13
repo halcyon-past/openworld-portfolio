@@ -57,6 +57,19 @@ export const SHOWCASE_PROJECTS: ShowcaseProject[] = [
   }
 ];
 
+export interface LakeDuck {
+  id: string;
+  x: number; // world pixel coordinates
+  y: number;
+  targetX: number;
+  targetY: number;
+  speed: number;
+  direction: 'left' | 'right';
+  variant: 'yellow' | 'mallard';
+  swimTimer: number;
+  quackTimer: number;
+}
+
 export class GameEngine {
   public state: GameState;
   private canvas: HTMLCanvasElement | null = null;
@@ -67,6 +80,9 @@ export class GameEngine {
   private targetTile: Position | null = null;
   private currentPath: Position[] = [];
   private lastBumpTime: number = 0;
+
+  // Lake Ducks
+  public lakeDucks: LakeDuck[] = [];
 
   // Live Jumbotron TV Showcase State
   public tvIndex: number = 0;
@@ -115,6 +131,63 @@ export class GameEngine {
       activeModal: null,
       activeDialogue: null,
     };
+
+    this.initLakeDucks();
+  }
+
+  private initLakeDucks() {
+    // Lake boundaries: x: 1..4 (32px to 160px), y: 21..28 (672px to 928px)
+    // Water surface area: x: 40 to 140 px, y: 680 to 910 px
+    this.lakeDucks = [
+      {
+        id: 'duck_1',
+        x: 55,
+        y: 710,
+        targetX: 90,
+        targetY: 760,
+        speed: 12 + Math.random() * 8, // 12-20 px/sec gentle leisurely swimming
+        direction: 'right',
+        variant: 'yellow',
+        swimTimer: 0,
+        quackTimer: 2 + Math.random() * 5,
+      },
+      {
+        id: 'duck_2',
+        x: 120,
+        y: 790,
+        targetX: 60,
+        targetY: 820,
+        speed: 10 + Math.random() * 8,
+        direction: 'left',
+        variant: 'mallard',
+        swimTimer: 0.5,
+        quackTimer: 4 + Math.random() * 5,
+      },
+      {
+        id: 'duck_3',
+        x: 80,
+        y: 870,
+        targetX: 115,
+        targetY: 840,
+        speed: 11 + Math.random() * 7,
+        direction: 'right',
+        variant: 'yellow',
+        swimTimer: 1.0,
+        quackTimer: 6 + Math.random() * 5,
+      },
+      {
+        id: 'duck_4',
+        x: 65,
+        y: 830,
+        targetX: 75,
+        targetY: 730,
+        speed: 9 + Math.random() * 6,
+        direction: 'left',
+        variant: 'yellow',
+        swimTimer: 1.5,
+        quackTimer: 3 + Math.random() * 5,
+      },
+    ];
   }
 
   public init(canvas: HTMLCanvasElement) {
@@ -750,6 +823,36 @@ export class GameEngine {
     // Bounce football off map borders
     if (football.x < 32 || football.x > (MAP_WIDTH - 2) * TILE_SIZE) football.vx *= -1;
     if (football.y < 32 || football.y > (MAP_HEIGHT - 2) * TILE_SIZE) football.vy *= -1;
+
+    // Lake Ducks gentle random swimming simulation
+    // Bounds of lake water: x in [42, 148], y in [684, 916]
+    const minLakeX = 42;
+    const maxLakeX = 146;
+    const minLakeY = 684;
+    const maxLakeY = 916;
+
+    for (const duck of this.lakeDucks) {
+      duck.swimTimer += dt;
+
+      const dx = duck.targetX - duck.x;
+      const dy = duck.targetY - duck.y;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist < 4) {
+        // Pick new random waypoint in water
+        duck.targetX = minLakeX + Math.random() * (maxLakeX - minLakeX);
+        duck.targetY = minLakeY + Math.random() * (maxLakeY - minLakeY);
+        // Vary speed gently between 9 and 18 px/s
+        duck.speed = 9 + Math.random() * 9;
+      } else {
+        const moveStep = Math.min(dist, duck.speed * dt);
+        duck.x += (dx / dist) * moveStep;
+        duck.y += (dy / dist) * moveStep;
+
+        if (dx > 1) duck.direction = 'right';
+        else if (dx < -1) duck.direction = 'left';
+      }
+    }
   }
 
   private triggerGrassEncounter() {
@@ -850,6 +953,20 @@ export class GameEngine {
         c.drawImage(playerSprite, Math.floor(playerPx), Math.floor(playerPy));
       },
     });
+
+    // Swimming Lake Ducks (animated with water ripples and gentle bobbing)
+    for (const duck of this.lakeDucks) {
+      const duckFrame = Math.floor(duck.swimTimer * 3);
+      const duckSprite = spriteGenerator.getDuckSprite(duck.direction, duckFrame, duck.variant);
+      const duckBaseY = duck.y + 16;
+
+      renderables.push({
+        baseY: duckBaseY,
+        draw: (c) => {
+          c.drawImage(duckSprite, Math.floor(duck.x), Math.floor(duck.y));
+        },
+      });
+    }
 
     // 3. True 2.5D Depth Sorting (Painter's Algorithm by baseY)
     renderables.sort((a, b) => a.baseY - b.baseY);
