@@ -1071,7 +1071,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                 PARCEL MANIFEST & ROUTING:
               </div>
               <div>• Destination: Aritro Saha (Associate Software Developer)</div>
-              <div>• Target Inbox: <span className="text-blue-400">aritrosaha2025@gmail.com</span></div>
+              <div>• Target Inbox: <span className="text-blue-400">titanssuperior@gmail.com</span></div>
               <div>• Skills Requisitioned: <span className="text-emerald-400 font-bold">{cart.length} Skills</span></div>
               <div>
                 • Dispatch Mode:{' '}
