@@ -3,9 +3,7 @@
 import React from 'react';
 import { soundManager } from '@/game/audio/SoundManager';
 import {
-  Volume2,
-  VolumeX,
-  Tv,
+  Settings,
   FileText,
   Menu,
   BookOpen,
@@ -13,24 +11,15 @@ import {
   Briefcase,
   MapPin,
   Gamepad2,
-  Sparkles
 } from 'lucide-react';
 
 interface TopHUDProps {
-  isMuted: boolean;
-  onToggleMute: () => void;
-  showScanlines: boolean;
-  onToggleScanlines: () => void;
   onOpenModal: (modal: string) => void;
   onToggleRecruiter: () => void;
   playerCoords: { x: number; y: number };
 }
 
 export const TopHUD: React.FC<TopHUDProps> = ({
-  isMuted,
-  onToggleMute,
-  showScanlines,
-  onToggleScanlines,
   onOpenModal,
   onToggleRecruiter,
   playerCoords,
@@ -125,32 +114,16 @@ export const TopHUD: React.FC<TopHUDProps> = ({
           <span className="hidden sm:inline">RECRUITER VIEW</span>
         </button>
 
-        {/* Audio Mute Toggle */}
+        {/* Settings Menu Button */}
         <button
           onClick={() => {
-            soundManager.playMenuCursor();
-            onToggleMute();
+            soundManager.playSelect();
+            onOpenModal('settings');
           }}
-          title={isMuted ? 'Unmute BGM & SFX' : 'Mute Audio'}
-          className={`p-1.5 rounded transition-all cursor-pointer ${
-            isMuted ? 'bg-red-500/30 text-red-400' : 'bg-emerald-500/30 text-emerald-400'
-          }`}
+          title="Game & Audio Settings"
+          className="p-1.5 rounded bg-slate-700/80 hover:bg-slate-600 text-slate-200 transition-all cursor-pointer"
         >
-          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-        </button>
-
-        {/* CRT Filter Toggle */}
-        <button
-          onClick={() => {
-            soundManager.playMenuCursor();
-            onToggleScanlines();
-          }}
-          title="Toggle CRT Scanlines"
-          className={`p-1.5 rounded transition-all cursor-pointer ${
-            showScanlines ? 'bg-cyan-500/30 text-cyan-300' : 'bg-slate-700 text-slate-400'
-          }`}
-        >
-          <Tv className="w-3.5 h-3.5" />
+          <Settings className="w-3.5 h-3.5" />
         </button>
 
         {/* Start Menu trigger */}

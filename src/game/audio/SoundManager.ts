@@ -12,7 +12,16 @@ class SoundManager {
   private bgmInterval: ReturnType<typeof setInterval> | null = null;
   private currentNoteIndex: number = 0;
 
+  // Individual audio channel settings
+  private bgmVolume: number = 0.5;
+  private isBgmMuted: boolean = false;
+  private sfxVolume: number = 0.7;
+  private isSfxMuted: boolean = false;
+  private voiceVolume: number = 0.85;
+  private isVoiceMuted: boolean = false;
+
   constructor() {
+    this.loadSettings();
     this.initSpeechVoices();
   }
 
@@ -22,11 +31,13 @@ class SoundManager {
       this.ctx = new AudioCtx();
 
       this.bgmGain = this.ctx.createGain();
-      this.bgmGain.gain.value = 0.12; // gentle retro background music volume
+      const bgmVol = (this.isMuted || this.isBgmMuted) ? 0 : this.bgmVolume * 0.16;
+      this.bgmGain.gain.value = bgmVol;
       this.bgmGain.connect(this.ctx.destination);
 
       this.sfxGain = this.ctx.createGain();
-      this.sfxGain.gain.value = 0.22; // crisp sound effects
+      const sfxVol = (this.isMuted || this.isSfxMuted) ? 0 : this.sfxVolume * 0.28;
+      this.sfxGain.gain.value = sfxVol;
       this.sfxGain.connect(this.ctx.destination);
     }
 
@@ -35,12 +46,116 @@ class SoundManager {
     }
   }
 
+  // --- Audio Channel Controls ---
+
+  public getBgmVolume(): number { return this.bgmVolume; }
+  public setBgmVolume(volume: number) {
+    this.bgmVolume = Math.max(0, Math.min(1, volume));
+    this.updateBgmGain();
+    this.persistSettings();
+  }
+
+  public getBgmMuted(): boolean { return this.isBgmMuted; }
+  public setBgmMuted(muted: boolean) {
+    this.isBgmMuted = muted;
+    this.updateBgmGain();
+    this.persistSettings();
+  }
+  public toggleBgmMute(): boolean {
+    this.setBgmMuted(!this.isBgmMuted);
+    return this.isBgmMuted;
+  }
+
+  public getSfxVolume(): number { return this.sfxVolume; }
+  public setSfxVolume(volume: number) {
+    this.sfxVolume = Math.max(0, Math.min(1, volume));
+    this.updateSfxGain();
+    this.persistSettings();
+  }
+
+  public getSfxMuted(): boolean { return this.isSfxMuted; }
+  public setSfxMuted(muted: boolean) {
+    this.isSfxMuted = muted;
+    this.updateSfxGain();
+    this.persistSettings();
+  }
+  public toggleSfxMute(): boolean {
+    this.setSfxMuted(!this.isSfxMuted);
+    return this.isSfxMuted;
+  }
+
+  public getVoiceVolume(): number { return this.voiceVolume; }
+  public setVoiceVolume(volume: number) {
+    this.voiceVolume = Math.max(0, Math.min(1, volume));
+    this.persistSettings();
+  }
+
+  public getVoiceMuted(): boolean { return this.isVoiceMuted; }
+  public setVoiceMuted(muted: boolean) {
+    this.isVoiceMuted = muted;
+    if (muted) this.stopSpeaking();
+    this.persistSettings();
+  }
+  public toggleVoiceMute(): boolean {
+    this.setVoiceMuted(!this.isVoiceMuted);
+    return this.isVoiceMuted;
+  }
+
+  private updateBgmGain() {
+    if (this.bgmGain && this.ctx) {
+      const vol = (this.isMuted || this.isBgmMuted) ? 0 : this.bgmVolume * 0.16;
+      this.bgmGain.gain.setValueAtTime(vol, this.ctx.currentTime);
+    }
+  }
+
+  private updateSfxGain() {
+    if (this.sfxGain && this.ctx) {
+      const vol = (this.isMuted || this.isSfxMuted) ? 0 : this.sfxVolume * 0.28;
+      this.sfxGain.gain.setValueAtTime(vol, this.ctx.currentTime);
+    }
+  }
+
+  private persistSettings() {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('openworld_audio_settings', JSON.stringify({
+          bgmVolume: this.bgmVolume,
+          bgmMuted: this.isBgmMuted,
+          sfxVolume: this.sfxVolume,
+          sfxMuted: this.isSfxMuted,
+          voiceVolume: this.voiceVolume,
+          voiceMuted: this.isVoiceMuted,
+        }));
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  private loadSettings() {
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('openworld_audio_settings');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (typeof parsed.bgmVolume === 'number') this.bgmVolume = parsed.bgmVolume;
+          if (typeof parsed.bgmMuted === 'boolean') this.isBgmMuted = parsed.bgmMuted;
+          if (typeof parsed.sfxVolume === 'number') this.sfxVolume = parsed.sfxVolume;
+          if (typeof parsed.sfxMuted === 'boolean') this.isSfxMuted = parsed.sfxMuted;
+          if (typeof parsed.voiceVolume === 'number') this.voiceVolume = parsed.voiceVolume;
+          if (typeof parsed.voiceMuted === 'boolean') this.isVoiceMuted = parsed.voiceMuted;
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }
+
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
-    if (this.ctx) {
-      if (this.bgmGain) this.bgmGain.gain.value = this.isMuted ? 0 : 0.12;
-      if (this.sfxGain) this.sfxGain.gain.value = this.isMuted ? 0 : 0.22;
-    }
+    this.updateBgmGain();
+    this.updateSfxGain();
+    if (this.isMuted) this.stopSpeaking();
     return this.isMuted;
   }
 
@@ -75,30 +190,29 @@ class SoundManager {
    * Character speech synthesis using Web Speech API with specific voice selections and pitch modulation
    */
   public speakText(text: string, speakerType: string = 'default') {
-    if (this.isMuted) return;
+    // If Pixel Pup (pet), play playful synth barks and DO NOT speak text with speech synthesis
+    if (speakerType === 'pet') {
+      if (!this.isMuted && !this.isSfxMuted) {
+        this.playPuppyBark('happy');
+      }
+      return;
+    }
+
+    if (this.isMuted || this.isVoiceMuted) return;
 
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel(); // Stop any pending speech
         this.isSpeaking = false;
 
-        // If Pixel Pup (pet), immediately trigger authentic canine puppy bark sound effect
-        if (speakerType === 'pet') {
-          this.playPuppyBark('happy');
-        }
-
-        // Clean text of action asterisks (e.g. *wags pixel tail excitedly*), brackets, and markdown
-        let cleanText = text
+        // Clean text of action asterisks, brackets, and markdown
+        const cleanText = text
           .replace(/\*.*?\*/g, '')
           .replace(/\[.*?\]/g, '')
           .replace(/[*_#~]/g, '')
           .trim();
 
-        if (!cleanText) {
-          // If the entire text was an action, just have the puppy bark
-          if (speakerType === 'pet') cleanText = 'Woof! Woof!';
-          else return;
-        }
+        if (!cleanText) return;
 
         const utterance = new SpeechSynthesisUtterance(cleanText);
         const voices = this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
@@ -185,7 +299,7 @@ class SoundManager {
             break;
         }
 
-        utterance.volume = 0.95;
+        utterance.volume = Math.max(0.01, Math.min(1.0, this.voiceVolume));
 
         utterance.onstart = () => {
           this.isSpeaking = true;
@@ -221,7 +335,7 @@ class SoundManager {
    * Realistic synthesized Puppy Bark sound effect (playful energetic double/triple-bark: "Arf! Woof-woof!")
    */
   public playPuppyBark(variation: 'happy' | 'double' | 'single' = 'double') {
-    if (this.isMuted) return;
+    if (this.isMuted || this.isSfxMuted) return;
     this.initContext();
     if (!this.ctx || !this.sfxGain) return;
 
@@ -303,7 +417,7 @@ class SoundManager {
 
   /** Dialogue character typewriter blip with pitch varied by character type */
   public playTextBeep(speakerType: string = 'default') {
-    if (this.isMuted) return;
+    if (this.isMuted || this.isSfxMuted) return;
     this.initContext();
     if (!this.ctx || !this.sfxGain) return;
 

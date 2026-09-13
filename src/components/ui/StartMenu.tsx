@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { soundManager } from '@/game/audio/SoundManager';
-import { BookOpen, User, Briefcase, MapPin, Gamepad2, Save, X } from 'lucide-react';
+import { BookOpen, User, Briefcase, MapPin, Gamepad2, Save, Settings, X } from 'lucide-react';
 
 interface StartMenuProps {
   onSelect: (menuItem: string) => void;
@@ -19,6 +19,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({ onSelect, onClose }) => {
     { id: 'townmap', label: 'TOWN MAP', desc: 'Fast Travel & Warps', icon: MapPin, color: 'text-emerald-500' },
     { id: 'arcade', label: 'ARCADE', desc: 'Playable Minigames', icon: Gamepad2, color: 'text-purple-500' },
     { id: 'save', label: 'SAVE', desc: 'Record Game Progress', icon: Save, color: 'text-blue-500' },
+    { id: 'settings', label: 'SETTINGS', desc: 'Audio & Visual Options', icon: Settings, color: 'text-teal-500' },
     { id: 'exit', label: 'EXIT', desc: 'Close Start Menu', icon: X, color: 'text-slate-400' },
   ];
 

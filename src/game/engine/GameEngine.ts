@@ -951,17 +951,21 @@ export class GameEngine {
    * Renders the live project showcase content inside the outdoor Mega Jumbotron TV
    */
   private renderTvScreen(ctx: CanvasRenderingContext2D) {
-    const screenX = 10 * TILE_SIZE + 8;  // 168
-    const screenY = 12 * TILE_SIZE + 12; // 204
-    const screenW = 80;
-    const screenH = 36;
+    const screenX = 10 * TILE_SIZE + 5;  // 165
+    const screenY = 12 * TILE_SIZE + 11; // 203
+    const screenW = 86;
+    const screenH = 40;
 
     const proj = this.showcaseProjects[this.tvIndex];
     if (!proj) return;
 
     ctx.save();
 
-    // Screen clipping with subtle rounded corners
+    // Enable high-quality image smoothing for Retina-clear downscaling
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    // Screen clipping with rounded corners
     ctx.beginPath();
     ctx.roundRect(screenX, screenY, screenW, screenH, 2);
     ctx.clip();
@@ -976,8 +980,7 @@ export class GameEngine {
       ctx.fillStyle = grad;
       ctx.fillRect(screenX, screenY, screenW, screenH);
 
-      // Tech grid lines
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
       ctx.lineWidth = 1;
       for (let x = screenX; x < screenX + screenW; x += 10) {
         ctx.beginPath();
@@ -987,65 +990,56 @@ export class GameEngine {
       }
     }
 
-    // 2. CRT Scanline Overlay
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.26)';
-    for (let y = screenY; y < screenY + screenH; y += 2) {
-      ctx.fillRect(screenX, y, screenW, 1);
-    }
-
-    // 3. Screen Glass Reflection Glare
-    const glareGrad = ctx.createLinearGradient(screenX, screenY, screenX + screenW, screenY + screenH);
-    glareGrad.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
-    glareGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.04)');
-    glareGrad.addColorStop(1, 'rgba(0, 0, 0, 0.2)');
-    ctx.fillStyle = glareGrad;
-    ctx.fillRect(screenX, screenY, screenW, screenH);
-
-    // 4. Top Status Header (Channel & Blinking Live Indicator)
-    const isBlinkOn = Math.floor(performance.now() / 450) % 2 === 0;
-    // Channel Tag
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-    ctx.fillRect(screenX + 2, screenY + 2, 28, 6);
+    // 2. High-Contrast Bottom Broadcast Banner (deep glass overlay)
+    const bannerH = 15;
+    ctx.fillStyle = 'rgba(7, 11, 22, 0.94)';
+    ctx.fillRect(screenX, screenY + screenH - bannerH, screenW, bannerH);
     ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 4px monospace';
-    ctx.fillText(`CH 0${this.tvIndex + 1}/0${this.showcaseProjects.length}`, screenX + 4, screenY + 6.5);
+    ctx.fillRect(screenX, screenY + screenH - bannerH, screenW, 1);
 
-    // Live Badge
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-    ctx.fillRect(screenX + screenW - 24, screenY + 2, 22, 6);
+    // Project Title (Clear bold typography)
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 6.5px sans-serif';
+    const displayTitle = proj.title.length > 17 ? proj.title.slice(0, 15) + '..' : proj.title;
+    ctx.fillText(displayTitle, screenX + 3, screenY + screenH - 8);
+
+    // Project Tech Highlight Badge (Golden tag)
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 5px sans-serif';
+    ctx.fillText(proj.badge, screenX + 3, screenY + screenH - 2.5);
+
+    // 3. Top Status Header: Channel Pill & Live Indicator
+    const isBlinkOn = Math.floor(performance.now() / 450) % 2 === 0;
+
+    // Channel badge left
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+    ctx.fillRect(screenX + 2, screenY + 2, 28, 6.5);
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 4.5px sans-serif';
+    ctx.fillText(`CH 0${this.tvIndex + 1}/0${this.showcaseProjects.length}`, screenX + 4, screenY + 6.8);
+
+    // Live badge right
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+    ctx.fillRect(screenX + screenW - 24, screenY + 2, 22, 6.5);
     if (isBlinkOn) {
       ctx.fillStyle = '#ef4444';
       ctx.beginPath();
-      ctx.arc(screenX + screenW - 20, screenY + 5, 1.5, 0, Math.PI * 2);
+      ctx.arc(screenX + screenW - 20, screenY + 5.2, 1.5, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 4px monospace';
-    ctx.fillText('LIVE', screenX + screenW - 16, screenY + 6.5);
+    ctx.font = 'bold 4.5px sans-serif';
+    ctx.fillText('LIVE', screenX + screenW - 16, screenY + 6.8);
 
-    // 5. Lower Third Broadcast Banner
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-    ctx.fillRect(screenX, screenY + screenH - 11, screenW, 11);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(screenX, screenY + screenH - 11, screenW, 1);
-
-    // Project Title
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 5px monospace';
-    const displayTitle = proj.title.length > 18 ? proj.title.slice(0, 16) + '..' : proj.title;
-    ctx.fillText(displayTitle, screenX + 3, screenY + screenH - 6);
-
-    // Project Tech Highlight Badge
-    ctx.fillStyle = '#fbbf24';
-    ctx.font = 'bold 4px monospace';
-    ctx.fillText(proj.badge, screenX + 3, screenY + screenH - 2);
-
-    // 6. Slide Countdown Progress Bar
+    // 4. Slide Countdown Progress Bar
     const progress = Math.min(1, this.tvTimer / 5.0);
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(screenX, screenY + screenH - 1.5, screenW, 1.5);
     ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(screenX, screenY + screenH - 1, Math.floor(screenW * progress), 1);
+    ctx.fillRect(screenX, screenY + screenH - 1.5, Math.floor(screenW * progress), 1.5);
 
     ctx.restore();
+    ctx.imageSmoothingEnabled = false;
   }
 
   /**

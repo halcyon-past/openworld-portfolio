@@ -1896,32 +1896,32 @@ export class SpriteGenerator {
     const key = 'bldg_jumbotron_frame';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
-    const [c, ctx] = this.createCanvas(96, 68);
+    const [c, ctx] = this.createCanvas(96, 72);
 
     // 1. Heavy Industrial Ground Shadow
     ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(48, 62, 44, 6, 0, 0, Math.PI * 2);
+    ctx.ellipse(48, 66, 44, 5, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // 2. Heavy Dual Support Steel Pillars
     ctx.fillStyle = '#334155';
-    ctx.fillRect(20, 48, 10, 16);
-    ctx.fillRect(66, 48, 10, 16);
+    ctx.fillRect(18, 52, 10, 16);
+    ctx.fillRect(68, 52, 10, 16);
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(26, 48, 4, 16);
-    ctx.fillRect(72, 48, 4, 16);
+    ctx.fillRect(24, 52, 4, 16);
+    ctx.fillRect(74, 52, 4, 16);
     // Steel bolts
     ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(21, 60, 2, 2);
-    ctx.fillRect(27, 60, 2, 2);
-    ctx.fillRect(67, 60, 2, 2);
-    ctx.fillRect(73, 60, 2, 2);
+    ctx.fillRect(19, 62, 2, 2);
+    ctx.fillRect(25, 62, 2, 2);
+    ctx.fillRect(69, 62, 2, 2);
+    ctx.fillRect(75, 62, 2, 2);
 
     // 3. Main Monitor Chassis / Heavy Bezel
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#090d16';
     ctx.beginPath();
-    ctx.roundRect(4, 4, 88, 48, 5);
+    ctx.roundRect(3, 3, 90, 50, 4);
     ctx.fill();
 
     // Bezel metallic border highlight
@@ -1929,29 +1929,29 @@ export class SpriteGenerator {
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Top Brand Bar: "ARITRO TECH TV • LIVE SHOWCASE"
+    // Top Brand Bar: "⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡"
     ctx.fillStyle = '#0284c7';
-    ctx.fillRect(6, 6, 84, 5);
+    ctx.fillRect(5, 5, 86, 5);
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 4px monospace';
-    ctx.fillText('⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡', 12, 10);
+    ctx.font = 'bold 4.5px monospace';
+    ctx.fillText('⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡', 8, 9);
 
-    // Live ON-AIR blinking LED
+    // Live ON-AIR blinking LED housing
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
-    ctx.arc(84, 8.5, 2, 0, Math.PI * 2);
+    ctx.arc(86, 7.5, 2, 0, Math.PI * 2);
     ctx.fill();
 
-    // Inner Screen Housing Border (Screen area: 8x12 to 88x48 -> 80x36)
+    // Inner Screen Housing Border (Screen area: 5, 11, 86, 40)
     ctx.fillStyle = '#000000';
-    ctx.fillRect(8, 12, 80, 36);
+    ctx.fillRect(5, 11, 86, 40);
 
-    // Dual speakers underneath display
+    // Dual stereo speakers underneath display
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(10, 49, 76, 2);
-    for (let x = 12; x < 84; x += 4) {
+    ctx.fillRect(6, 51, 84, 2);
+    for (let x = 8; x < 88; x += 4) {
       ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x, 49, 2, 2);
+      ctx.fillRect(x, 51, 2, 2);
     }
 
     this.cache.set(key, c);

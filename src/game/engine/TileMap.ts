@@ -120,17 +120,17 @@ export class TileMap {
     // Gym (5x4): x: 14..18, y: 22..25
     this.markSolidBox(14, 22, 5, 4);
 
-    // 8. Mark solid footprints for new interactive town scenery
-    // Mega Jumbotron TV (6x3): x: 10..15, y: 13..15
-    this.markSolidBox(10, 13, 6, 3);
-    // Northern Park Grand Fountain (4x3): x: 11..14, y: 5..7
-    this.markSolidBox(11, 5, 4, 3);
-    // Town Square Bench (2x1): x: 9..10, y: 16
-    this.markSolidBox(9, 16, 2, 1);
-    // Northern Garden Bench (2x1): x: 15..16, y: 6
-    this.markSolidBox(15, 6, 2, 1);
-    // Lakeside Scenic Bench (2x1): x: 5..6, y: 23
-    this.markSolidBox(5, 23, 2, 1);
+    // 8. Mark minimal accurate solid footprints for new interactive town scenery
+    // Mega Jumbotron TV: only the 4x1 base pillar footprint at row 14 (rows 12, 13, 15, 16, 17, 18 completely open!)
+    this.markSolidBox(11, 14, 4, 1);
+    // Northern Park Grand Fountain: 3x2 central basin (rows 4, 5, 8, 9 and side columns open)
+    this.markSolidBox(11, 6, 3, 2);
+    // Town Square Bench: tucked against Center wall at x: 9, y: 13 (1x1)
+    this.markSolidBox(9, 13, 1, 1);
+    // Northern Garden Bench: x: 15, y: 5 (1x1)
+    this.markSolidBox(15, 5, 1, 1);
+    // Lakeside Scenic Bench: lake shore at x: 3, y: 23 (1x1, completely clear of column 6-7 pathways!)
+    this.markSolidBox(3, 23, 1, 1);
   }
 
   private markSolidBox(startX: number, startY: number, w: number, h: number) {
@@ -283,12 +283,12 @@ export class TileMap {
           "'Home of 8 coveted badges, enterprise pipelines, and Hack4Bengal champions!'"
         ]
       },
-      // Town Square Mega Jumbotron TV (Front triggers at x: 12 & 13, y: 16)
+      // Town Square Mega Jumbotron TV (Front triggers at x: 12 & 13, y: 15)
       {
         id: 'trigger_tv_1',
         name: 'Mega Jumbotron TV',
         x: 12,
-        y: 16,
+        y: 15,
         type: 'tv',
         targetModal: 'pokedex',
         dialogueText: [
@@ -301,7 +301,7 @@ export class TileMap {
         id: 'trigger_tv_2',
         name: 'Mega Jumbotron TV',
         x: 13,
-        y: 16,
+        y: 15,
         type: 'tv',
         targetModal: 'pokedex',
         dialogueText: [
@@ -335,35 +335,35 @@ export class TileMap {
           "✨ A refreshing azure mist restored your Pokémon and coding spirit to 100%! ✨"
         ]
       },
-      // Town Square Viewing Bench (Front trigger at x: 9, y: 17)
+      // Town Square Viewing Bench (Beside Center at x: 9, y: 14)
       {
         id: 'trigger_bench_town',
         name: 'Town Square Bench',
         x: 9,
-        y: 17,
+        y: 14,
         type: 'bench',
         dialogueText: [
           "You took a seat on the cozy Town Square Bench.",
           "From here you have a front-row view of the outdoor Mega Jumbotron showcasing Aritro's projects!"
         ]
       },
-      // Northern Garden Bench (Front trigger at x: 15, y: 7)
+      // Northern Garden Bench (Front trigger at x: 15, y: 6)
       {
         id: 'trigger_bench_garden',
         name: 'Northern Garden Bench',
         x: 15,
-        y: 7,
+        y: 6,
         type: 'bench',
         dialogueText: [
           "You rested on the wooden garden bench by the fountain.",
           "Listening to the gentle splash of water melts away all stress. Focus and clarity fully restored!"
         ]
       },
-      // Lakeside Scenic Bench (Front trigger at x: 5, y: 24)
+      // Lakeside Scenic Bench (Front trigger at x: 3, y: 24)
       {
         id: 'trigger_bench_lake',
         name: 'Lakeside Scenic Bench',
-        x: 5,
+        x: 3,
         y: 24,
         type: 'bench',
         dialogueText: [
@@ -605,9 +605,9 @@ export class TileMap {
     });
 
     // --- Interactive Scenery Objects ---
-    // Town Square Mega Jumbotron TV (x: 10, y: 12, width: 96px = 6 tiles, base Y: 16 * TILE_SIZE)
+    // Town Square Mega Jumbotron TV (x: 10, y: 12, width: 96px = 6 tiles, base Y: 15 * TILE_SIZE)
     items.push({
-      baseY: 16 * TILE_SIZE,
+      baseY: 15 * TILE_SIZE,
       draw: (ctx) => ctx.drawImage(spriteGenerator.getMegaJumbotronTV(), 10 * TILE_SIZE, 12 * TILE_SIZE),
     });
 
@@ -617,22 +617,22 @@ export class TileMap {
       draw: (ctx) => ctx.drawImage(spriteGenerator.getTownFountain(), 11 * TILE_SIZE, 5 * TILE_SIZE),
     });
 
-    // Town Square Viewing Bench (x: 9, y: 16, width: 32px = 2 tiles)
+    // Town Square Viewing Bench (beside Poké Center at x: 9, y: 13)
     items.push({
-      baseY: 16.8 * TILE_SIZE,
-      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 9 * TILE_SIZE, 15.5 * TILE_SIZE),
+      baseY: 14 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 9 * TILE_SIZE, 13 * TILE_SIZE),
     });
 
-    // Northern Garden Rest Bench (x: 15, y: 6)
+    // Northern Garden Rest Bench (x: 15, y: 5)
     items.push({
-      baseY: 6.8 * TILE_SIZE,
-      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 15 * TILE_SIZE, 5.5 * TILE_SIZE),
+      baseY: 6 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 15 * TILE_SIZE, 5 * TILE_SIZE),
     });
 
-    // Lakeside Scenic Bench (x: 5, y: 23)
+    // Lakeside Scenic Bench (lake shore at x: 3, y: 23, completely clear of path)
     items.push({
-      baseY: 23.8 * TILE_SIZE,
-      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 5 * TILE_SIZE, 22.5 * TILE_SIZE),
+      baseY: 24 * TILE_SIZE,
+      draw: (ctx) => ctx.drawImage(spriteGenerator.getParkBench(), 3 * TILE_SIZE, 23 * TILE_SIZE),
     });
 
     return items;

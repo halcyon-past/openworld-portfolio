@@ -12,6 +12,7 @@ import { TrainerCardModal } from '@/components/modals/TrainerCardModal';
 import { BagModal } from '@/components/modals/BagModal';
 import { TownMapModal } from '@/components/modals/TownMapModal';
 import { SaveModal } from '@/components/modals/SaveModal';
+import { SettingsModal } from '@/components/modals/SettingsModal';
 import { ContactModal } from '@/components/modals/ContactModal';
 import { DeveloperArcadeModal } from '@/components/arcade/DeveloperArcadeModal';
 import { RecruiterDossierView } from '@/components/recruiter/RecruiterDossierView';
@@ -141,10 +142,6 @@ export default function Home() {
 
       {/* Top HUD with Quick Links & Preferences */}
       <TopHUD
-        isMuted={isMuted}
-        onToggleMute={handleToggleMute}
-        showScanlines={showScanlines}
-        onToggleScanlines={handleToggleScanlines}
         onOpenModal={handleOpenModal}
         onToggleRecruiter={() => {
           soundManager.stopBGM();
@@ -208,6 +205,15 @@ export default function Home() {
         <SaveModal
           playerX={playerCoords.x}
           playerY={playerCoords.y}
+          onClose={handleCloseModal}
+        />
+      )}
+
+      {/* Settings & Audio Channels Modal */}
+      {activeModal === 'settings' && (
+        <SettingsModal
+          showScanlines={showScanlines}
+          onToggleScanlines={handleToggleScanlines}
           onClose={handleCloseModal}
         />
       )}
