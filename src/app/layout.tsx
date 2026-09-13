@@ -111,9 +111,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 };
 
-// JSON-LD Structured Data for Googlebot and search engines (Rich Snippets: Person, ProfilePage, SoftwareApplication, WebSite)
+// JSON-LD Structured Data for Googlebot and search engines (Rich Snippets: Person, ProfilePage, ItemList, BreadcrumbList, WebSite)
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -121,7 +124,7 @@ const jsonLd = {
       "@type": "Person",
       "@id": `${SITE_URL}/#person`,
       name: "Aritro Saha",
-      alternateName: "Megh",
+      alternateName: ["Megh", "Aritro"],
       jobTitle: "Associate Software Engineer",
       worksFor: {
         "@type": "Organization",
@@ -133,6 +136,16 @@ const jsonLd = {
         name: "Vellore Institute of Technology, Chennai",
         url: "https://chennai.vit.ac.in",
       },
+      award: [
+        "Hack4Bengal 3.0 Champion (Overall 1st / 400+ developers)",
+        "LeetCode Knight (Max Rating: 1868, Top 6% globally)",
+      ],
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Associate Software Engineer",
+        description:
+          "Enterprise LLM workflows, medical diagnostic decision support, and serverless data engineering at Bristol Myers Squibb.",
+      },
       url: SITE_URL,
       image: `${SITE_URL}/assets/profile.webp`,
       email: "aritrosaha2025@gmail.com",
@@ -143,6 +156,7 @@ const jsonLd = {
         "https://instagram.com/halcyon-past",
         "https://siliconsync.aritro.cloud",
         "https://pypi.org/project/quarantine-py/",
+        "https://ijirt.org/article?manuscript=180711",
       ],
       description:
         "Associate Software Engineer at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, and AI engineering.",
@@ -151,11 +165,14 @@ const jsonLd = {
         "TypeScript",
         "Next.js",
         "React",
+        "FastAPI",
         "LangGraph",
+        "Google Gemini API",
+        "Three.js",
         "Cloud Architecture",
-        "GCP",
-        "AWS",
-        "Databricks",
+        "Google Cloud Platform (GCP)",
+        "Amazon Web Services (AWS)",
+        "Databricks Apache Spark",
         "Distributed Systems",
         "Full Stack Development"
       ]
@@ -164,10 +181,92 @@ const jsonLd = {
       "@type": "ProfilePage",
       "@id": `${SITE_URL}/#profilepage`,
       url: SITE_URL,
-      name: "Aritro Saha GBA RPG Portfolio",
+      name: "Aritro Saha Pokémon RPG Open World Portfolio",
       mainEntity: {
         "@id": `${SITE_URL}/#person`
       }
+    },
+    {
+      "@type": "ItemList",
+      "@id": `${SITE_URL}/#projects`,
+      name: "Featured Engineering Projects by Aritro Saha",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          item: {
+            "@type": "SoftwareApplication",
+            name: "Quarantine (Python Package)",
+            description: "Fault-tolerant loop execution and exception isolation library in Python published to PyPI and Conda-Forge.",
+            url: "https://pypi.org/project/quarantine-py/",
+            sameAs: "https://github.com/halcyon-past/quarantine",
+          },
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          item: {
+            "@type": "SoftwareApplication",
+            name: "Structurify",
+            description: "Scalable AI pipeline converting unstructured documents into relational formats utilizing GCP Cloud Run, Pub/Sub, LangGraph, and Next.js.",
+            url: "https://structurify.aritro.cloud",
+            sameAs: "https://github.com/halcyon-past/Structurify",
+          },
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          item: {
+            "@type": "SoftwareApplication",
+            name: "Luffy Laser Dodge",
+            description: "Interactive 3D browser reflex game utilizing Google MediaPipe WASM face tracking and Three.js procedural rigged animations.",
+            url: "https://onepiece.aritro.cloud/",
+            sameAs: "https://github.com/halcyon-past/Luffy-Laser-Dodge",
+          },
+        },
+        {
+          "@type": "ListItem",
+          position: 4,
+          item: {
+            "@type": "ScholarlyArticle",
+            name: "KrishnaVision: Contactless Multimodal Virtual Interface",
+            headline: "Contactless Multimodal Virtual Interface with 97.3% gesture classification accuracy and Gemini assistant",
+            url: "https://ijirt.org/article?manuscript=180711",
+            author: {
+              "@id": `${SITE_URL}/#person`,
+            },
+          },
+        },
+        {
+          "@type": "ListItem",
+          position: 5,
+          item: {
+            "@type": "SoftwareApplication",
+            name: "PAWsitive",
+            description: "1st Place Winner at Hack4Bengal 3.0. Animal healthcare and emergency blood donor coordination platform.",
+            url: "https://www.bepawsitive.xyz",
+            sameAs: "https://github.com/halcyon-past/PAW-sitive",
+          },
+        },
+      ],
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${SITE_URL}/#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home (Pokémon RPG Portfolio)",
+          item: SITE_URL,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Professional Dossier & Resume",
+          item: `${SITE_URL}/dossier`,
+        },
+      ],
     },
     {
       "@type": "SoftwareApplication",

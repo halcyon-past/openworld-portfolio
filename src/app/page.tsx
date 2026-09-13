@@ -100,37 +100,35 @@ export default function Home() {
     gameEngine.handleVirtualAction(action);
   };
 
-  // 1. If Loading Screen is active
-  if (isLoading) {
-    return (
-      <LoadingScreen
-        onStartGame={handleStartGame}
-        onOpenRecruiter={() => handleOpenRecruiter('home')}
-      />
-    );
-  }
-
-  // 2. If Recruiter Dossier View is active
-  if (isRecruiterMode) {
-    return (
-      <RecruiterDossierView
-        returnLabel={recruiterOrigin === 'home' ? 'RETURN TO HOME SCREEN' : 'RETURN TO POKÉMON RPG'}
-        onReturn={() => {
-          setIsRecruiterMode(false);
-          if (recruiterOrigin === 'home') {
-            setIsLoading(true);
-            soundManager.stopBGM();
-          } else {
-            soundManager.startBGM();
-          }
-        }}
-      />
-    );
-  }
-
-  // 3. Main Open World RPG Game Screen
   return (
-    <div className={`relative w-full h-full overflow-hidden ${showScanlines ? 'crt-scanlines' : ''}`}>
+    <>
+      {/* 1. If Loading Screen is active */}
+      {isLoading && (
+        <LoadingScreen
+          onStartGame={handleStartGame}
+          onOpenRecruiter={() => handleOpenRecruiter('home')}
+        />
+      )}
+
+      {/* 2. If Recruiter Dossier View is active */}
+      {!isLoading && isRecruiterMode && (
+        <RecruiterDossierView
+          returnLabel={recruiterOrigin === 'home' ? 'RETURN TO HOME SCREEN' : 'RETURN TO POKÉMON RPG'}
+          onReturn={() => {
+            setIsRecruiterMode(false);
+            if (recruiterOrigin === 'home') {
+              setIsLoading(true);
+              soundManager.stopBGM();
+            } else {
+              soundManager.startBGM();
+            }
+          }}
+        />
+      )}
+
+      {/* 3. Main Open World RPG Game Screen */}
+      {!isLoading && !isRecruiterMode && (
+        <div className={`relative w-full h-full overflow-hidden ${showScanlines ? 'crt-scanlines' : ''}`}>
       
       {/* HTML5 Canvas Game Engine */}
       <GameCanvas
@@ -233,98 +231,131 @@ export default function Home() {
         onDirection={handleVirtualDirection}
         onAction={handleVirtualAction}
       />
+        </div>
+      )}
 
-      {/* Semantic Crawlable Content for Search Engines & Assistive Technologies */}
+      {/* Semantic Crawlable Content for Search Engines (Googlebot) & Assistive Technologies */}
       <article className="sr-only">
-        <h1>Aritro Saha - Associate Software Engineer at Bristol Myers Squibb</h1>
-        <p>
-          Welcome to the open-world retro RPG portfolio of Aritro Saha (Megh). Aritro is an Associate Software Engineer at Bristol Myers Squibb, Winner of Hack4Bengal 3.0, LeetCode Knight (Peak Rating: 1868), and an Electronics and Computer Engineering graduate of Vellore Institute of Technology (VIT Chennai, CGPA: 8.53/10.0).
-        </p>
+        <header>
+          <h1>Aritro Saha | Associate Software Engineer at Bristol Myers Squibb & Full-Stack AI Developer</h1>
+          <p>
+            Official portfolio and interactive Pokémon RPG open world of Aritro Saha (Megh). Associate Software Engineer at Bristol Myers Squibb (BMS), Hack4Bengal 3.0 Winner, LeetCode Knight (Peak Rating: 1868, Top 6% globally), and Electronics and Computer Engineering graduate from Vellore Institute of Technology (VIT Chennai, CGPA: 8.53/10.0).
+          </p>
+          <nav>
+            <a href="/dossier">View Full Text Resume & Professional Engineering Dossier</a>
+            <a href="/">Play Interactive 2D Pokémon RPG Game Portfolio</a>
+          </nav>
+        </header>
 
         <section>
-          <h2>Featured Software Projects</h2>
+          <h2>Core Specialties & Technical Domains</h2>
+          <p>
+            Specialized in resilient backend systems, distributed Python architectures, LLM workflow automation (LangGraph, Gemini, Bedrock), high-throughput data engineering (AWS Lambda, Glue, Databricks Spark, DynamoDB), and interactive web experiences (Next.js, TypeScript, Three.js).
+          </p>
+        </section>
+
+        <section>
+          <h2>Featured Engineering Projects</h2>
           <ul>
             <li>
-              <h3>Quarantine</h3>
-              <p>Fault-tolerant loop execution and exception isolation library in Python published to PyPI and Conda-Forge. Zero external dependencies, thread-safe, with dead-letter queue recovery mechanism.</p>
-              <a href="https://pypi.org/project/quarantine-py/">Quarantine PyPI Package</a>
-              <a href="https://github.com/halcyon-past/quarantine">Quarantine GitHub Repository</a>
+              <h3>Quarantine — Python Exception Isolation & Fault-Tolerant Loop Library</h3>
+              <p>
+                Published open-source library on PyPI and Conda-Forge. Zero external dependencies, thread-safe execution isolation, dead-letter queue diagnostics, and resilient batch data pipelines.
+              </p>
+              <a href="https://pypi.org/project/quarantine-py/">Quarantine on PyPI</a>
+              <a href="https://github.com/halcyon-past/quarantine">Quarantine GitHub Source Code</a>
             </li>
             <li>
-              <h3>Structurify</h3>
-              <p>Scalable AI pipeline converting unstructured documents into structured relational formats utilizing GCP Cloud Run, Pub/Sub, LangGraph, Gemini, DuckDB, Firestore, and Next.js.</p>
-              <a href="https://structurify.aritro.cloud">Structurify Live Demo</a>
-              <a href="https://github.com/halcyon-past/Structurify">Structurify GitHub Repository</a>
+              <h3>Structurify — Scalable Document to Relational AI Pipeline</h3>
+              <p>
+                Production cloud pipeline transforming unstructured PDF/Docx files into relational SQL schemas via GCP Cloud Run, Pub/Sub, LangGraph, Gemini multimodal parsing, DuckDB, and Next.js.
+              </p>
+              <a href="https://structurify.aritro.cloud">Structurify Web Application</a>
+              <a href="https://github.com/halcyon-past/Structurify">Structurify GitHub Source Code</a>
             </li>
             <li>
-              <h3>Luffy Laser Dodge</h3>
-              <p>Interactive 3D browser reflex game utilizing Google MediaPipe WASM face tracking and Three.js procedural rigged animations.</p>
-              <a href="https://onepiece.aritro.cloud/">Luffy Laser Dodge Live Demo</a>
-              <a href="https://github.com/halcyon-past/Luffy-Laser-Dodge">Luffy Laser Dodge GitHub Repository</a>
+              <h3>Luffy Laser Dodge — Real-Time 3D Browser Reflex Game</h3>
+              <p>
+                Computer vision web game with Google MediaPipe WASM head tracking and Three.js custom rigged animations running at 60 FPS in browser.
+              </p>
+              <a href="https://onepiece.aritro.cloud/">Luffy Laser Dodge Web Game</a>
+              <a href="https://github.com/halcyon-past/Luffy-Laser-Dodge">Luffy Laser Dodge GitHub Source Code</a>
             </li>
             <li>
-              <h3>KrishnaVision: Contactless Multimodal Virtual Interface</h3>
-              <p>VIT Capstone research project published in IJIRT (International Journal of Innovative Research in Technology). Contactless virtual HCI system with 97.3% gesture accuracy at 22ms latency and Gemini-powered assistant.</p>
-              <a href="https://github.com/halcyon-past/Glide-Connect">KrishnaVision GitHub Repository</a>
-              <a href="https://ijirt.org/article?manuscript=180711">IJIRT Research Paper (Paper ID: 180711)</a>
+              <h3>KrishnaVision: Contactless Multimodal Virtual Interface (Published Research)</h3>
+              <p>
+                Published research paper in IJIRT (International Journal of Innovative Research in Technology, Paper ID: 180711). Contactless human-computer interface achieving 97.3% gesture classification accuracy at 22ms latency with Google Gemini multimodal agent integration.
+              </p>
+              <a href="https://ijirt.org/article?manuscript=180711">IJIRT Research Publication (Paper ID: 180711)</a>
+              <a href="https://github.com/halcyon-past/Glide-Connect">KrishnaVision GitHub Source Code</a>
             </li>
             <li>
-              <h3>PAWsitive</h3>
-              <p>Overall 1st place winner at Hack4Bengal 3.0 among 400+ participants. Centralized platform for pet healthcare, blood donor coordination, and emergency rescue clinics.</p>
+              <h3>PAWsitive — Hack4Bengal 3.0 Grand Champion</h3>
+              <p>
+                1st Place Overall Champion among 400+ developers at Hack4Bengal 3.0. Emergency blood donor coordination network and real-time medical clinic locator for animal healthcare.
+              </p>
               <a href="https://www.bepawsitive.xyz">PAWsitive Platform</a>
-              <a href="https://github.com/halcyon-past/PAW-sitive">PAWsitive GitHub Repository</a>
+              <a href="https://github.com/halcyon-past/PAW-sitive">PAWsitive GitHub Source Code</a>
             </li>
             <li>
               <h3>SiliconSync & Veripyed</h3>
-              <p>Daily AI research breakdown blog and video engineering tutorials on YouTube.</p>
-              <a href="https://siliconsync.aritro.cloud/">SiliconSync AI News</a>
-              <a href="https://www.youtube.com/@veripyed">Veripyed YouTube Channel</a>
+              <p>Daily AI research publications and systems engineering video walkthroughs.</p>
+              <a href="https://siliconsync.aritro.cloud/">SiliconSync AI Research</a>
+              <a href="https://www.youtube.com/@veripyed">Veripyed on YouTube</a>
             </li>
           </ul>
         </section>
 
         <section>
-          <h2>Professional Experience</h2>
+          <h2>Professional Work Experience</h2>
           <ul>
             <li>
-              <strong>Bristol Myers Squibb — Associate Software Engineer (July 2025 – Present) | Hyderabad, India</strong>
-              <p>Reduced diagnostic review time for Non-Small Cell Lung Cancer (NSCLC) cases by 30% by developing an internal medical diagnostic assistant with LLM-driven clinical decision support. Reduced release cycle time by 40+ engineering hours per cycle via Databricks accelerator with standardized ETL/ELT microservices and YAML CI/CD pipelines. Delivered self-service LLM marketplace plugin adopted by 20+ internal teams. Scaled data ingestion to 5M+ records/hour via serverless AWS Lambda, Glue crawler, and DynamoDB.</p>
+              <strong>Bristol Myers Squibb (BMS) — Associate Software Engineer</strong> (July 2025 – Present | Hyderabad, India)
+              <p>
+                Architected internal medical diagnostic assistant for Non-Small Cell Lung Cancer (NSCLC) accelerating clinician review throughput by 30%. Streamlined Databricks ETL/ELT pipelines cutting release cycles by 40+ engineering hours. Delivered self-service enterprise LLM marketplace microservice adopted across 20+ functional groups. Scaled data ingestion pipelines to 5M+ events/hour using AWS Lambda, Glue, and DynamoDB.
+              </p>
             </li>
             <li>
-              <strong>Bajaj Finserv Health — Data Science Engineer Intern (February 2025 – June 2025) | Pune, India</strong>
-              <p>Cut OPD claims failure rate by 60% through a distributed vision NER pipeline scaled to 40,000+ claims/day. Engineered regex NER mapping service for ICD-10 codes eliminating 3rd party APIs and accelerating throughput by 98%. Improved P99 backend latency by 35% (800ms to 520ms) via FastAPI endpoint serialization and unit tests.</p>
+              <strong>Bajaj Finserv Health — Data Science Engineer Intern</strong> (February 2025 – June 2025 | Pune, India)
+              <p>
+                Engineered distributed vision NER pipeline processing 40,000+ daily OPD claims with a 60% failure rate reduction. Built in-house ICD-10 medical ontology mapping service boosting throughput by 98%. Reduced P99 backend response latency by 35% across high-load microservices.
+              </p>
             </li>
             <li>
-              <strong>WIPRO — Software Engineering Intern (October 2023 – December 2023) | Kolkata, India</strong>
-              <p>Developed 3D visualization engine in Three.js with optimized asset loading reducing client-side render time by 3x. Increased deployment frequency by 50% via automated Docker + Azure DevOps CI/CD pipelines.</p>
+              <strong>Wipro — Software Engineering Intern</strong> (October 2023 – December 2023 | Kolkata, India)
+              <p>
+                Developed high-performance 3D visualization components in Three.js and accelerated deployment velocity by 50% using Dockerized Azure DevOps CI/CD pipelines.
+              </p>
             </li>
           </ul>
         </section>
 
         <section>
-          <h2>Education & Credentials</h2>
-          <p>B.Tech in Electronics and Computer Engineering, Vellore Institute of Technology (VIT Chennai), September 2021 – July 2025. CGPA: 8.53 / 10.0.</p>
-          <p>Competitive Programming: LeetCode Knight Badge, Peak Rating: 1868, 630+ problems solved, Top 6% globally.</p>
-          <p>Hack4Bengal 3.0 Winner (PAWsitive - 1st / 400+ participants).</p>
-          <p>Published Paper: KrishnaVision in IJIRT (Paper ID: 180711, May 2025).</p>
+          <h2>Academic Background & Certifications</h2>
+          <p>
+            Bachelor of Technology (B.Tech) in Electronics and Computer Engineering from Vellore Institute of Technology, Chennai (VIT Chennai, 2021–2025, CGPA: 8.53 / 10.0).
+          </p>
+          <p>
+            Competitive Programming: LeetCode Knight Badge (Max Rating: 1868, 630+ algorithmic problems solved, Top 6% worldwide).
+          </p>
         </section>
 
         <section>
-          <h2>Technical Skills</h2>
-          <p>Languages: Python, TypeScript, JavaScript, SQL, C++, C, HTML5/CSS3.</p>
-          <p>Frameworks & Libs: Next.js, React, FastAPI, Node.js, Three.js, Tailwind CSS, LangGraph, PyTorch, MediaPipe, Pandas, NumPy.</p>
-          <p>Cloud & Distributed: AWS (Lambda, S3, DynamoDB, Glue, Bedrock, SageMaker, OpenSearch, Redshift), GCP (Cloud Run, Pub/Sub), Spark Databricks, Docker, Azure DevOps, MongoDB, Elasticsearch, Firestore, DuckDB.</p>
+          <h2>Full Technology Stack</h2>
+          <p>Languages: Python, TypeScript, JavaScript, SQL, C++, C, HTML5, CSS3.</p>
+          <p>Web & Backend: Next.js, React, FastAPI, Node.js, Express, Three.js, Tailwind CSS, WebSockets, REST APIs.</p>
+          <p>AI & Data Science: LangGraph, Google Gemini API, PyTorch, MediaPipe, Pandas, NumPy, OpenCV, RAG Pipelines.</p>
+          <p>Cloud & DevOps: Amazon Web Services (AWS Lambda, S3, DynamoDB, Glue, Bedrock, SageMaker), Google Cloud Platform (Cloud Run, Pub/Sub), Databricks Apache Spark, Docker, Git, GitHub Actions, CI/CD, Azure DevOps.</p>
         </section>
 
         <section>
-          <h2>Contact Aritro Saha</h2>
-          <p>Email: aritrosaha2025@gmail.com</p>
-          <p>Phone: +919043150635</p>
-          <p>LinkedIn: https://linkedin.com/in/aritro-saha</p>
-          <p>GitHub: https://github.com/halcyon-past</p>
+          <h2>Contact & Professional Links</h2>
+          <p>Email: <a href="mailto:aritrosaha2025@gmail.com">aritrosaha2025@gmail.com</a></p>
+          <p>LinkedIn: <a href="https://linkedin.com/in/aritro-saha">https://linkedin.com/in/aritro-saha</a></p>
+          <p>GitHub: <a href="https://github.com/halcyon-past">https://github.com/halcyon-past</a></p>
+          <p>YouTube: <a href="https://www.youtube.com/@veripyed">https://www.youtube.com/@veripyed</a></p>
         </section>
       </article>
-
-    </div>
+    </>
   );
 }

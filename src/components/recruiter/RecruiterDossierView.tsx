@@ -22,13 +22,17 @@ const GithubIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+import Link from 'next/link';
+
 interface RecruiterDossierViewProps {
-  onReturn: () => void;
+  onReturn?: () => void;
+  returnHref?: string;
   returnLabel?: string;
 }
 
 export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({
   onReturn,
+  returnHref,
   returnLabel = 'RETURN TO POKÉMON RPG',
 }) => {
   return (
@@ -53,17 +57,27 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({
           </div>
         </div>
 
-        {/* Back navigation button */}
-        <button
-          onClick={() => {
-            soundManager.playSelect();
-            onReturn();
-          }}
-          className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-md cursor-pointer"
-        >
-          <Gamepad2 className="w-4 h-4" />
-          <span>{returnLabel}</span>
-        </button>
+        {/* Back navigation button / link */}
+        {returnHref ? (
+          <Link
+            href={returnHref}
+            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-md cursor-pointer"
+          >
+            <Gamepad2 className="w-4 h-4" />
+            <span>{returnLabel}</span>
+          </Link>
+        ) : (
+          <button
+            onClick={() => {
+              soundManager.playSelect();
+              onReturn?.();
+            }}
+            className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-md cursor-pointer"
+          >
+            <Gamepad2 className="w-4 h-4" />
+            <span>{returnLabel}</span>
+          </button>
+        )}
       </header>
 
       {/* Main Container */}

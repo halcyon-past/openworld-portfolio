@@ -7,6 +7,14 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: '/',
       },
+      {
+        userAgent: 'Googlebot',
+        allow: '/',
+      },
+      {
+        userAgent: 'Bingbot',
+        allow: '/',
+      },
     ],
     sitemap: 'https://openworld.aritro.cloud/sitemap.xml',
     host: 'https://openworld.aritro.cloud',
