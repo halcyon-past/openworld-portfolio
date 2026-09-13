@@ -64,7 +64,7 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
 | **⚡ Mega Jumbotron TV** | `x: 11..14, y: 12..14` | 3x1 Pillars (`y: 14`) | High-definition outdoor display showcasing rotating project previews. Walk up to row 15 and press **[A]** to cycle channels! |
 | **🔴 Innovation Pokédex Center** | `x: 5..8, y: 14..16` | 4x3 Building | Inspect Aritro's full-stack & distributed creations with Pokémon-style battle stats, radar graphs, live links, and PyPI badges. |
 | **🏢 Silicon Gym (BMS Arena)** | `x: 14..18, y: 22..25` | 5x4 Building | Explore enterprise systems engineering at Bristol Myers Squibb, distributed ETL pipelines, and 8 Gym Badges of Honor. |
-| **🔵 Skill & Tech Stack Mart** | `x: 17..20, y: 14..16` | 4x3 Building | Inventory Bag stocked with Key Items (Python, Next.js, LangGraph), TMs (Docker, GCP, Terraform), and Battle Tools. |
+| **🔵 Skill & Tech Stack Mart** | `x: 17..20, y: 14..16` | 4x3 Building | Full-fledged Poké Mart store where recruiters and engineers can browse skills by category, add items to their Cart, compose a project message, and generate an authentic Pokémon pixel-styled mail order. |
 | **🔬 AI Research Lab** | `x: 19..23, y: 4..6` | 5x3 Building | Access the lab mainframe to view the Trainer Card, LeetCode Knight stats (1868 peak, 630+ solved), CGPA, and research publications. |
 | **🏠 Aritro's Residence** | `x: 3..6, y: 4..6` | 4x3 Building | Contact terminal, social links (GitHub, LinkedIn, LeetCode, X), SiliconSync blog feed, and beatbox studio. |
 | **🕹️ Developer Arcade Corner** | `x: 26..29, y: 14..16` | 4x3 Building | Playable retro minigames: *Developer Speed Test* (typing benchmark) and *Minimalist Python Snake*. |
@@ -72,6 +72,22 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
 | **🦆 Swimming Lake Ducks** | `x: 1..4, y: 21..28` | Animated Wildlife | Cute pixel-art yellow ducklings and emerald mallards swimming leisurely in the southwestern lake with gentle bobbing and wake ripples. |
 | **🪑 Scenic Rest Benches** | Multiple Locations | 1x1 Each | Cozy wooden benches in Town Square (`9, 13`), Northern Garden (`14, 5`), and Lakeshore Overlook (`5, 23`) for taking a breather. |
 | **⚽ Interactive Soccer Pitch** | `x: 8, y: 6` | Physics Object | Soccer ball simulated with velocity and friction that bounces off boundaries when kicked across the lawn. |
+
+---
+
+### 🛒 Poké Mart Tech Stack Shopping Cart & Pixel Mail Generator
+- **Categorized Inventory Catalog**: Browse all technical skills cleanly partitioned across:
+  - **Languages**: Python, JavaScript, TypeScript, Java, C, SQL
+  - **Frontend**: React.js, Next.js, Vue.js, Three.js, Tailwind CSS, HTML/CSS
+  - **Backend**: PySpark, Node.js, Express.js, FastAPI, Flask, REST APIs, WebSockets
+  - **Cloud & DevOps**: AWS (Lambda, S3, DynamoDB, Glue, SageMaker, Bedrock), GCP (BigQuery, Dataflow, Dataproc, Cloud Run, Pub/Sub, GCS, Vertex AI, AlloyDB), Azure (Data Factory, DevOps), Docker, Jenkins, Terraform
+  - **AI/ML**: OpenAI, Google Gemini, Databricks, Spark, Langchain, Scikit-Learn, NLP, NER, Computer Vision, Pandas, NumPy
+  - **Databases**: SQL, PostgreSQL, MongoDB, DynamoDB, ElasticSearch, Firestore
+  - **Tools**: Git, Linux, Postman, JIRA
+- **Interactive Shopping Cart**: Select and add desired engineering capabilities to your cart with instant badge counters, remove options, and order summaries.
+- **Project Message & Checkout Flow**: Click "PROCEED TO ORDER" to open the requisition desk where recruiters can fill in their Name, Email, Organization/Role, and customized project inquiry.
+- **Pokémon Pixel-Art Mail Format**: Generates an authentic retro Pokémon letter with ASCII borders, Silph Co. parcel stamp, sender/recipient routing headers, custom inquiry message, and all ordered skills organized neatly side-by-side by category.
+- **Dual-Action Dispatch**: Automatically launches the client's email client (`mailto:`) with pre-filled subject and body, alongside a one-click clipboard copy utility.
 
 ---
 

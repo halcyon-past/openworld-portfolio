@@ -392,51 +392,95 @@ export const PORTFOLIO_DATA = {
 
   skillPockets: [
     {
-      category: "Core Languages",
-      pocketName: "Key Items",
+      category: "Languages",
+      pocketName: "Languages",
       icon: "key",
       items: [
-        { name: "Python", level: "Expert", description: "AsyncIO, PyPI package author, ETL pipelines, Pandas, Pytest", tag: "Core" },
-        { name: "SQL", level: "Advanced", description: "Complex queries, Redshift, relational schema modeling", tag: "Data" },
-        { name: "TypeScript", level: "Advanced", description: "Strict type-safe systems, Next.js, asynchronous architectures", tag: "FullStack" },
-        { name: "JavaScript", level: "Expert", description: "Event-driven programming, React.js, Node.js runtime", tag: "Web" },
-        { name: "Spark / PySpark", level: "Advanced", description: "Distributed dataframes, Databricks accelerators, batch transformations", tag: "BigData" }
+        { name: "Python", level: "Expert", description: "AsyncIO, PyPI author, distributed pipelines, FastAPI, Pandas, Pytest", tag: "Core" },
+        { name: "JavaScript", level: "Expert", description: "ES6+, event loop, async/await, React.js, Node.js ecosystem", tag: "Web" },
+        { name: "TypeScript", level: "Advanced", description: "Strict static typing, Next.js, interfaces, generics, scalable architectures", tag: "FullStack" },
+        { name: "Java", level: "Proficient", description: "Object-oriented design, enterprise backends, multithreading, Spring basics", tag: "OOP" },
+        { name: "C", level: "Proficient", description: "Low-level memory management, pointers, data structures, systems fundamentals", tag: "Systems" },
+        { name: "SQL", level: "Expert", description: "Complex analytical joins, query profiling, indexing, Redshift & PostgreSQL", tag: "Data" }
       ]
     },
     {
-      category: "Cloud, AWS & DevOps",
-      pocketName: "TMs & HMs",
+      category: "Frontend",
+      pocketName: "Frontend",
+      icon: "layout",
+      items: [
+        { name: "React.js", level: "Expert", description: "Modern hooks, concurrent rendering, custom UI component systems, virtual DOM", tag: "UI" },
+        { name: "Next.js", level: "Expert", description: "App router, SSR/SSG, server components, Turbopack, performance optimization", tag: "FullStack" },
+        { name: "Vue.js", level: "Proficient", description: "Reactivity system, Vue 3 Composition API, component-driven interfaces", tag: "UI" },
+        { name: "Three.js", level: "Advanced", description: "3D client-side WebGL rendering, shaders, optimized 60fps asset pipelines", tag: "3D" },
+        { name: "Tailwind CSS", level: "Expert", description: "Utility-first responsive layouts, theme customization, zero-runtime styling", tag: "Styling" },
+        { name: "HTML/CSS", level: "Expert", description: "Semantic markup, modern CSS grid, flexbox, canvas, responsive animations", tag: "Core" }
+      ]
+    },
+    {
+      category: "Backend",
+      pocketName: "Backend",
+      icon: "server",
+      items: [
+        { name: "PySpark", level: "Advanced", description: "Distributed dataframes, Databricks accelerators, high-throughput batch ETL", tag: "BigData" },
+        { name: "Node.js", level: "Advanced", description: "Asynchronous I/O, event-driven microservices, high-concurrency runtimes", tag: "Runtime" },
+        { name: "Express.js", level: "Advanced", description: "RESTful API services, middleware orchestration, authentication pipelines", tag: "API" },
+        { name: "FastAPI", level: "Expert", description: "Pydantic validation, async OpenAPI endpoints, low-latency microservices", tag: "AsyncAPI" },
+        { name: "Flask", level: "Advanced", description: "Lightweight WSGI Python microservices, rapid prototyping, modular blueprints", tag: "WebAPI" },
+        { name: "REST APIs", level: "Expert", description: "Idempotent API design, rate-limiting, OpenAPI specifications, payload tuning", tag: "Architecture" },
+        { name: "WebSockets", level: "Advanced", description: "Bidirectional real-time streaming, socket broadcasting, low-latency sync", tag: "Realtime" }
+      ]
+    },
+    {
+      category: "Cloud & DevOps",
+      pocketName: "Cloud & DevOps",
       icon: "zap",
       items: [
-        { name: "AWS Suite", level: "Expert", description: "Lambda, S3, DynamoDB, Glue, Bedrock, SageMaker, OpenSearch, Redshift", tag: "AWS" },
-        { name: "Spark Databricks", level: "Advanced", description: "Standardized ETL/ELT microservices, YAML-driven CI/CD generation", tag: "Databricks" },
-        { name: "GCP (Google Cloud)", level: "Advanced", description: "Cloud Run serverless fan-out, Pub/Sub message decoupling", tag: "GCP" },
-        { name: "Azure DevOps & Docker", level: "Advanced", description: "Multi-stage containers, automated CI/CD deployment pipelines", tag: "DevOps" },
-        { name: "Terraform & IaC", level: "Intermediate", description: "Declarative cloud infrastructure provisioning and scaling", tag: "Infra" }
+        { name: "AWS", level: "Expert", description: "Lambda (serverless), S3, DynamoDB, Glue, SageMaker, Bedrock, OpenSearch, Redshift", tag: "Cloud" },
+        { name: "GCP", level: "Advanced", description: "BigQuery, Dataflow, Dataproc, Cloud Run, Pub/Sub, GCS, Vertex AI, AlloyDB", tag: "Cloud" },
+        { name: "Azure", level: "Proficient", description: "Azure Data Factory pipelines, Azure DevOps automated releases & testing", tag: "Enterprise" },
+        { name: "Docker", level: "Advanced", description: "Multi-stage production containers, layer caching, isolated build runtimes", tag: "DevOps" },
+        { name: "Jenkins", level: "Intermediate", description: "Automated continuous integration build agents and deployment pipelines", tag: "CI/CD" },
+        { name: "Terraform", level: "Intermediate", description: "Declarative Infrastructure-as-Code (IaC), state management, cloud modules", tag: "IaC" }
       ]
     },
     {
-      category: "AI, ML & Frameworks",
-      pocketName: "Poké Balls",
+      category: "AI/ML",
+      pocketName: "AI/ML",
       icon: "disc",
       items: [
-        { name: "LangGraph", level: "Advanced", description: "Fault-tolerant Map-Reduce pipelines, retry state machines", tag: "Agents" },
-        { name: "Google Gemini & OpenAI", level: "Advanced", description: "Clinical decision support, vision-based NER, structured outputs", tag: "GenAI" },
-        { name: "FastAPI", level: "Advanced", description: "High-throughput async APIs, P99 latency optimization, regex NER services", tag: "Backend" },
-        { name: "Next.js & React.js", level: "Expert", description: "Sub-200ms real-time client sync, SSR, modern UI component systems", tag: "Frontend" },
-        { name: "Three.js", level: "Advanced", description: "3D client-side visualization engines with 3x optimized asset loading", tag: "3D" }
+        { name: "OpenAI", level: "Advanced", description: "Function calling, embedding generation, GPT-4o fine-tuning, automated agents", tag: "LLMs" },
+        { name: "Google Gemini", level: "Expert", description: "Multi-modal vision analysis, Gemini Flash structured JSON inference, agent pipelines", tag: "GenAI" },
+        { name: "Databricks & Spark", level: "Advanced", description: "Company-wide accelerators, unified analytics, scalable ML data transformation", tag: "BigData" },
+        { name: "LangChain & LangGraph", level: "Advanced", description: "Stateful agent graphs, cyclical workflows, Map-Reduce fault-tolerant pipelines", tag: "Agents" },
+        { name: "Scikit-Learn", level: "Advanced", description: "Classical machine learning, classification, regression, model hyperparameter tuning", tag: "ML" },
+        { name: "NLP & NER", level: "Advanced", description: "Named Entity Recognition, regex/vision token extraction, semantic parsing", tag: "NLP" },
+        { name: "Computer Vision", level: "Advanced", description: "MediaPipe landmark tracking, OpenCV contour manipulation, gesture control", tag: "Vision" },
+        { name: "Pandas & NumPy", level: "Expert", description: "Vectorized array processing, high-speed dataset aggregation and cleaning", tag: "DataScience" }
       ]
     },
     {
-      category: "Databases & Engines",
-      pocketName: "Medicine & Items",
+      category: "Databases",
+      pocketName: "Databases",
+      icon: "database",
+      items: [
+        { name: "SQL", level: "Expert", description: "Relational database schema architecture, normalization, complex analytics", tag: "RDBMS" },
+        { name: "PostgreSQL", level: "Advanced", description: "ACID compliance, JSONB documents, connection pooling, indexing strategies", tag: "RDBMS" },
+        { name: "MongoDB", level: "Advanced", description: "Flexible document stores, aggregation pipelines, replica sets", tag: "NoSQL" },
+        { name: "DynamoDB", level: "Advanced", description: "Single-digit millisecond latency at scale, partition key design, TTL caching", tag: "NoSQL" },
+        { name: "ElasticSearch", level: "Advanced", description: "Full-text fuzzy search, distributed shard indexing, log analytics", tag: "Search" },
+        { name: "Firestore", level: "Advanced", description: "Real-time client synchronization listeners, security rules, serverless persistence", tag: "Realtime" }
+      ]
+    },
+    {
+      category: "Tools",
+      pocketName: "Tools",
       icon: "shield",
       items: [
-        { name: "DuckDB", level: "Advanced", description: "High-speed distributed in-process SQL OLAP data aggregation", tag: "OLAP" },
-        { name: "DynamoDB & MongoDB", level: "Advanced", description: "High-throughput NoSQL stores, document indexing, claims pipelines", tag: "NoSQL" },
-        { name: "ElasticSearch", level: "Advanced", description: "Distributed document search, NER indexing, healthcare claims", tag: "Search" },
-        { name: "Firebase / Firestore", level: "Advanced", description: "Real-time sync listeners, Identity Platform, token logging", tag: "Realtime" },
-        { name: "PyPI & Conda-Forge", level: "Advanced", description: "Open-source package publishing, semantic versioning, CI/CD", tag: "Packages" }
+        { name: "Git", level: "Expert", description: "Distributed version control, branch rebasing, commit cherry-picking, hooks", tag: "VCS" },
+        { name: "Linux", level: "Advanced", description: "Shell scripting, process management, POSIX permissions, system administration", tag: "OS" },
+        { name: "Postman", level: "Expert", description: "Automated API contract testing, mock servers, environment collections", tag: "Testing" },
+        { name: "JIRA", level: "Advanced", description: "Agile sprints, backlog grooming, cross-functional engineering ticket management", tag: "Agile" }
       ]
     }
   ] as SkillPocket[],
