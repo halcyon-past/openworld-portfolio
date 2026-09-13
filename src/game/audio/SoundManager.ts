@@ -1,5 +1,29 @@
 import { VOICE_MANIFEST } from '@/data/voiceManifest';
 
+function canonicalizeSpeechText(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\[.*?\]/g, '')
+    .replace(/[✨⚡⭐★✓✉️🎒]/g, '')
+    .replace(/['’"“”`]/g, '')
+    .replace(/&/g, 'and')
+    .replace(/->/g, 'to')
+    .replace(/[^a-z0-9]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const CANONICAL_VOICE_MANIFEST: Array<{ canon: string; url: string; speaker: string }> = Object.entries(VOICE_MANIFEST).map(([key, url]) => {
+  const [speaker, ...rest] = key.split(':');
+  return {
+    canon: canonicalizeSpeechText(rest.join(':')),
+    url,
+    speaker
+  };
+});
+
 /**
  * 8-Bit Web Audio API Sound & Music Synthesizer
  * Zero external audio file dependencies - 100% reliable, zero 404s, instantaneous response.
@@ -214,36 +238,49 @@ class SoundManager {
       .replace(/\*.*?\*/g, '')
       .replace(/\[.*?\]/g, '')
       .replace(/[*_#~]/g, '')
+      .replace(/\s+/g, ' ')
       .trim();
 
     if (!cleanText) return;
 
     // 1. High-Fidelity Studio ElevenLabs Audio Clips (100% consistent across all devices)
     let mappedSpeaker = speakerType;
-    if (['house', 'lab', 'pokedex', 'mart', 'gym', 'bench', 'fountain'].includes(speakerType)) {
-      mappedSpeaker = speakerType === 'fountain' ? 'nurse' : 'sign';
+    if (['house', 'lab', 'pokedex', 'mart', 'gym', 'bench', 'sign'].includes(speakerType)) {
+      mappedSpeaker = 'sign';
+    } else if (['fountain', 'nurse'].includes(speakerType)) {
+      mappedSpeaker = 'nurse';
+    } else if (['tv', 'arcade'].includes(speakerType)) {
+      mappedSpeaker = 'arcade';
+    } else if (['scientist', 'oak'].includes(speakerType)) {
+      mappedSpeaker = 'scientist';
     }
-    const normText = cleanText
-      .toLowerCase()
-      .replace(/[✨⚡⭐★✓✉️🎒]/g, '')
-      .replace(/['’"“”`]/g, '')
-      .replace(/&/g, 'and')
-      .replace(/->/g, 'to')
-      .replace(/[^\w\s.,!?-]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
 
     const rawKey = `${speakerType}:${cleanText}`.toLowerCase();
     const mappedRawKey = `${mappedSpeaker}:${cleanText}`.toLowerCase();
-    const normKey = `${speakerType}:${normText}`;
-    const mappedNormKey = `${mappedSpeaker}:${normText}`;
+    const canonInput = canonicalizeSpeechText(text);
 
-    const clipUrl =
-      VOICE_MANIFEST[mappedNormKey] ||
-      VOICE_MANIFEST[normKey] ||
-      VOICE_MANIFEST[mappedRawKey] ||
+    let clipUrl =
       VOICE_MANIFEST[rawKey] ||
-      Object.entries(VOICE_MANIFEST).find(([k]) => normText.length > 10 && (k.includes(normText) || k.endsWith(':' + normText)))?.[1];
+      VOICE_MANIFEST[mappedRawKey];
+
+    if (!clipUrl && canonInput) {
+      const speakerMatch = CANONICAL_VOICE_MANIFEST.find(
+        (m) => (m.speaker === speakerType || m.speaker === mappedSpeaker) && m.canon === canonInput
+      );
+      if (speakerMatch) {
+        clipUrl = speakerMatch.url;
+      } else {
+        const anyMatch = CANONICAL_VOICE_MANIFEST.find((m) => m.canon === canonInput);
+        if (anyMatch) {
+          clipUrl = anyMatch.url;
+        } else if (canonInput.length > 15) {
+          const subMatch = CANONICAL_VOICE_MANIFEST.find(
+            (m) => m.canon.includes(canonInput) || canonInput.includes(m.canon)
+          );
+          if (subMatch) clipUrl = subMatch.url;
+        }
+      }
+    }
 
     if (clipUrl && typeof window !== 'undefined') {
       try {
