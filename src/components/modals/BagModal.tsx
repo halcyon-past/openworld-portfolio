@@ -112,42 +112,205 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
     return acc;
   }, {} as Record<string, CartItem[]>);
 
-  // Generate Pokemon Retro Mail Plaintext and Mailto URI
-  const generateMailBody = () => {
-    let body = `=====================================================\n`;
-    body += `     POKÉMON TECH MART • TALENT ORDER DISPATCH\n`;
-    body += `=====================================================\n\n`;
-    body += `DEAR ARITRO SAHA,\n\n`;
-    body += `A client has submitted an inquiry order from the Pallet Cloud Tech Mart!\n\n`;
-    body += `-----------------------------------------------------\n`;
-    body += `CUSTOMER MESSAGE:\n`;
-    body += `-----------------------------------------------------\n`;
-    body += `${clientMessage.trim() || 'No additional note provided.'}\n\n`;
-    body += `-----------------------------------------------------\n`;
-    body += `CLIENT DOSSIER:\n`;
-    body += `-----------------------------------------------------\n`;
-    body += `Name:         ${clientName.trim() || 'Prospective Collaborator / Recruiter'}\n`;
-    body += `Email:        ${clientEmail.trim() || 'Not specified'}\n`;
-    body += `Organization: ${clientRole.trim() || 'Tech Organization'}\n\n`;
-    body += `=====================================================\n`;
-    body += `             SKILLS ORDERED FROM MART\n`;
-    body += `=====================================================\n\n`;
+  // Generate Pokemon Retro Mail Plaintext for mailto: fallback
+  const generateMailPlainText = () => {
+    let body = `POKÉMON TECH MART • TALENT ORDER\n`;
+    body += `DESTINATION: ARITRO SAHA (aritrosaha2025@gmail.com)\n`;
+    body += `ORIGIN: PALLET CLOUD TOWN SQUARE\n\n`;
+    body += `FROM: ${clientName.trim() || 'Prospective Partner'} (${clientEmail.trim() || 'Email not specified'})\n`;
+    body += `ROLE/ORG: ${clientRole.trim() || 'Engineering Team'}\n\n`;
+    body += `--------------------------------------------------\n`;
+    body += `MESSAGE:\n"${clientMessage.trim() || 'Looking forward to connecting with you!'}"\n`;
+    body += `--------------------------------------------------\n\n`;
+    body += `ORDERED TECHNICAL SKILLS:\n`;
 
     if (Object.keys(groupedCart).length === 0) {
-      body += `(No specific skills selected - Full-Stack General Inquiry)\n\n`;
+      body += `(General Full-Stack Software Engineering Inquiry)\n`;
     } else {
       for (const [cat, items] of Object.entries(groupedCart)) {
-        body += `[${cat.toUpperCase()}]\n`;
-        body += items.map((i) => `  * ${i.name} (${i.level} • ${i.tag})`).join('\n') + `\n\n`;
+        body += `\n[${cat.toUpperCase()}]\n`;
+        body += items.map((i) => `  ★ ${i.name} [${i.level}] (${i.tag})`).join('\n');
       }
     }
 
-    body += `=====================================================\n`;
-    body += `Sent via Aritro's 2.5D Open-World RPG Portfolio\n`;
-    body += `Pallet Cloud Tech Mart Terminal\n`;
-    body += `=====================================================\n`;
-
+    body += `\n\n--------------------------------------------------\n`;
+    body += `Certified Poké Mart Talent Requisition • Bristol Myers Squibb Alumni\n`;
     return body;
+  };
+
+  // Generate Real Graphical Editable HTML Email (Tables, Borders, Colors, Badges, Pokéball graphics)
+  const generatePokemonHtmlMail = () => {
+    const safeName = clientName.trim() || 'Prospective Engineering Partner';
+    const safeEmail = clientEmail.trim() || 'Not specified';
+    const safeRole = clientRole.trim() || 'Engineering Organization';
+    const safeMessage = clientMessage.trim() || 'Hi Aritro, looking forward to discussing software engineering opportunities and collaborations!';
+
+    const categoryColors: Record<string, { bg: string; text: string; border: string; badge: string }> = {
+      'Languages': { bg: '#eff6ff', text: '#1e40af', border: '#93c5fd', badge: '🔷 CODE' },
+      'Frontend': { bg: '#fdf2f8', text: '#9d174d', border: '#fbcfe8', badge: '🎨 UI/UX' },
+      'Backend': { bg: '#ecfdf5', text: '#065f46', border: '#a7f3d0', badge: '⚡ SERVER' },
+      'Cloud & DevOps': { bg: '#f0fdf4', text: '#166534', border: '#bbf7d0', badge: '☁️ CLOUD' },
+      'AI/ML': { bg: '#faf5ff', text: '#6b21a8', border: '#e9d5ff', badge: '🧠 AI/ML' },
+      'Databases': { bg: '#fffbeb', text: '#92400e', border: '#fde68a', badge: '💾 DATA' },
+      'Tools': { bg: '#f8fafc', text: '#334155', border: '#cbd5e1', badge: '🛠️ TOOL' }
+    };
+
+    let categoriesHtml = '';
+    if (Object.keys(groupedCart).length === 0) {
+      categoriesHtml = `
+        <tr>
+          <td colspan="2" style="padding: 12px; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-size: 13px; color: #64748b; font-style: italic;">
+            General Full-Stack Software Engineering Inquiry (No specific items selected)
+          </td>
+        </tr>
+      `;
+    } else {
+      const entries = Object.entries(groupedCart);
+      for (let i = 0; i < entries.length; i += 2) {
+        const [cat1, items1] = entries[i];
+        const secondCol = entries[i + 1];
+
+        const renderCol = (cat: string, items: CartItem[]) => {
+          const scheme = categoryColors[cat] || { bg: '#f8fafc', text: '#1e293b', border: '#cbd5e1', badge: '⭐ ITEM' };
+          const itemsList = items
+            .map(
+              (item) => `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; margin-bottom: 4px; background-color: #ffffff; border: 1px solid ${scheme.border}; border-radius: 4px; font-size: 12px;">
+                <span style="font-weight: bold; color: #1e293b;">★ ${item.name}</span>
+                <span style="font-size: 10px; font-weight: bold; color: ${scheme.text}; background-color: ${scheme.bg}; padding: 2px 6px; border-radius: 10px; border: 1px solid ${scheme.border};">${item.level}</span>
+              </div>
+            `
+            )
+            .join('');
+
+          return `
+            <td width="50%" valign="top" style="padding: 6px;">
+              <div style="background-color: ${scheme.bg}; border: 2px solid ${scheme.border}; border-radius: 8px; padding: 10px; height: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid ${scheme.border}; padding-bottom: 6px; margin-bottom: 8px;">
+                  <span style="font-size: 12px; font-weight: bold; color: ${scheme.text}; letter-spacing: 0.5px; text-transform: uppercase;">${cat}</span>
+                  <span style="font-size: 9px; font-weight: bold; color: ${scheme.text}; background-color: #ffffff; padding: 1px 6px; border-radius: 4px; border: 1px solid ${scheme.border};">${scheme.badge}</span>
+                </div>
+                ${itemsList}
+              </div>
+            </td>
+          `;
+        };
+
+        categoriesHtml += `
+          <tr>
+            ${renderCol(cat1, items1)}
+            ${
+              secondCol
+                ? renderCol(secondCol[0], secondCol[1])
+                : `<td width="50%" valign="top" style="padding: 6px;"></td>`
+            }
+          </tr>
+        `;
+      }
+    }
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pokémon Tech Mart Requisition</title>
+</head>
+<body style="margin: 0; padding: 20px; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <div style="max-width: 640px; margin: 0 auto; background-color: #fdfbf7; border: 4px solid #1e293b; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+    
+    <!-- Retro Pokémon Mail Top Strip (Airmail style chevron) -->
+    <div style="height: 8px; background: repeating-linear-gradient(45deg, #ef4444, #ef4444 15px, #ffffff 15px, #ffffff 30px, #3b82f6 30px, #3b82f6 45px, #ffffff 45px, #ffffff 60px);"></div>
+    
+    <!-- Mail Header Bar with Graphic Pokéball Badge -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #1e3a8a; color: #ffffff; padding: 16px 20px;">
+      <tr>
+        <td width="54" valign="middle">
+          <!-- Graphical Pixel-Style Pokéball -->
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(180deg, #dc2626 48%, #1e293b 48%, #1e293b 54%, #f8fafc 54%); border: 3px solid #0f172a; position: relative; box-sizing: border-box;">
+            <div style="width: 14px; height: 14px; background-color: #ffffff; border: 3px solid #0f172a; border-radius: 50%; position: absolute; top: 12px; left: 12px; box-sizing: border-box;"></div>
+          </div>
+        </td>
+        <td valign="middle" style="padding-left: 12px;">
+          <div style="font-size: 16px; font-weight: 800; letter-spacing: 1px; color: #fbbf24; text-transform: uppercase;">
+            PALLET CLOUD POKÉ MART
+          </div>
+          <div style="font-size: 11px; color: #93c5fd; letter-spacing: 0.5px;">
+            SPECIAL TALENT REQUISITION PARCEL • SILPH CO. POSTAL SERVICE
+          </div>
+        </td>
+        <td align="right" valign="middle">
+          <div style="display: inline-block; background-color: #0f172a; border: 1px solid #fbbf24; border-radius: 6px; padding: 4px 8px; text-align: center;">
+            <div style="font-size: 9px; color: #fbbf24; font-weight: bold;">ORIGIN: PALLET TOWN</div>
+            <div style="font-size: 8px; color: #cbd5e1;">SERIES 2026</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div style="padding: 20px;">
+      
+      <!-- Routing Header Table -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 18px; font-size: 12px;">
+        <tr>
+          <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; width: 50%;">
+            <span style="color: #64748b; font-size: 10px; font-weight: bold; text-transform: uppercase; display: block;">FROM (SENDER):</span>
+            <span style="font-weight: bold; color: #0f172a; font-size: 13px;">${safeName}</span>
+            <div style="color: #475569; font-size: 11px;">${safeRole} &bull; <a href="mailto:${safeEmail}" style="color: #2563eb; text-decoration: none;">${safeEmail}</a></div>
+          </td>
+          <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; width: 50%; background-color: #f8fafc;">
+            <span style="color: #64748b; font-size: 10px; font-weight: bold; text-transform: uppercase; display: block;">TO (RECIPIENT):</span>
+            <span style="font-weight: bold; color: #0f172a; font-size: 13px;">Aritro Saha (Tech Lead / Gym Leader)</span>
+            <div style="color: #475569; font-size: 11px;">Associate Software Developer &bull; <a href="mailto:aritrosaha2025@gmail.com" style="color: #2563eb; text-decoration: none;">aritrosaha2025@gmail.com</a></div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Project Message Section -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
+          ✉️ REQUISITION INQUIRY & MESSAGE:
+        </div>
+        <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-top: 1px solid #fde68a; border-right: 1px solid #fde68a; border-bottom: 1px solid #fde68a; border-radius: 0 8px 8px 0; padding: 14px 16px; font-size: 13px; line-height: 1.6; color: #1e293b;">
+          &ldquo;${safeMessage}&rdquo;
+        </div>
+      </div>
+
+      <!-- Skills Ordered Heading -->
+      <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">
+          🎒 TECHNICAL SKILLS ORDERED FROM MART (${cart.length} ITEMS):
+        </span>
+      </div>
+
+      <!-- Skills Grid (Side-by-side grouped table) -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">
+        ${categoriesHtml}
+      </table>
+
+      <!-- Footer Stamp & Certifications -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 2px dashed #cbd5e1; padding-top: 14px; font-size: 11px; color: #64748b;">
+        <tr>
+          <td valign="middle">
+            <span style="font-weight: bold; color: #0f172a;">AUTHENTIC PALLET CLOUD RPG DISPATCH</span><br />
+            Bristol Myers Squibb Alumni &bull; Hack4Bengal 3.0 Champion
+          </td>
+          <td align="right" valign="middle">
+            <div style="display: inline-block; border: 2px solid #059669; border-radius: 4px; padding: 3px 8px; color: #059669; font-weight: bold; font-size: 10px; transform: rotate(-2deg); background-color: #ecfdf5;">
+              ✓ VERIFIED POKÉ MART SEAL
+            </div>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+    <!-- Bottom Airmail Chevron -->
+    <div style="height: 8px; background: repeating-linear-gradient(45deg, #3b82f6, #3b82f6 15px, #ffffff 15px, #ffffff 30px, #ef4444 30px, #ef4444 45px, #ffffff 45px, #ffffff 60px);"></div>
+  </div>
+</body>
+</html>
+    `.trim();
   };
 
   const handleSendMail = () => {
@@ -155,14 +318,34 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
     const mailtoSubject = encodeURIComponent(
       `[Tech Mart Order] Skills Inquiry from ${clientName.trim() || 'Engineering Client'}`
     );
-    const mailtoBody = encodeURIComponent(generateMailBody());
+    const mailtoBody = encodeURIComponent(generateMailPlainText());
     window.location.href = `mailto:aritrosaha2025@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
     setViewMode('success');
   };
 
-  const copyToClipboard = () => {
+  const copyRichHtmlToClipboard = async () => {
     soundManager.playSelect();
-    navigator.clipboard.writeText(generateMailBody());
+    const html = generatePokemonHtmlMail();
+    const plain = generateMailPlainText();
+
+    try {
+      if (typeof window !== 'undefined' && navigator.clipboard && window.ClipboardItem) {
+        const blobHtml = new Blob([html], { type: 'text/html' });
+        const blobPlain = new Blob([plain], { type: 'text/plain' });
+        const item = new ClipboardItem({
+          'text/html': blobHtml,
+          'text/plain': blobPlain
+        });
+        await navigator.clipboard.write([item]);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 3000);
+        return;
+      }
+    } catch {
+      // Fallback
+    }
+
+    navigator.clipboard.writeText(html);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 3000);
   };
@@ -520,123 +703,167 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   />
                 </div>
 
-                <div className="bg-yellow-950/60 border border-yellow-500/40 rounded p-2.5 text-[9px] text-yellow-200 font-silk">
-                  📬 Clicking <b>&quot;SEND MAIL&quot;</b> will generate and open your default email client with this complete Pokémon pixel-art formatted letter ready to dispatch directly to <b>aritrosaha2025@gmail.com</b>.
+                <div className="bg-yellow-950/60 border border-yellow-500/40 rounded p-2.5 text-[9px] text-yellow-200 font-silk space-y-1">
+                  <div>📬 <b>Graphic HTML Mail Format:</b> Generates a stylized Pokémon mail layout with graphic Pokéball seal, routing stamps, and side-by-side categorized tables.</div>
+                  <div className="text-yellow-300 font-bold">✨ Use &quot;COPY GRAPHICAL MAIL (HTML)&quot; to paste directly into Gmail, Outlook, or Apple Mail as full editable graphic cards!</div>
                 </div>
               </div>
 
               {/* Right Column: Live Pokémon Pixel-Game Styled Mail Preview */}
               <div className="lg:col-span-7 flex flex-col gap-3">
                 <div className="text-xs font-bold text-yellow-400 flex items-center justify-between">
-                  <span>STEP 2: RETRO POKÉMON LETTER PREVIEW</span>
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
+                    <span>STEP 2: GRAPHICAL POKÉMON MAIL PREVIEW</span>
+                  </span>
                   <span className="text-[9px] font-silk text-slate-400">{cart.length} SKILLS ORDERED</span>
                 </div>
 
-                {/* The Classic Pokémon Game Letter Sheet */}
-                <div className="bg-[#fcf8f0] text-slate-900 border-4 border-[#2b3340] rounded-lg p-4 font-mono shadow-2xl flex-1 flex flex-col justify-between overflow-y-auto max-h-[380px]">
+                {/* The Classic Pokémon Game Graphic Letter Sheet */}
+                <div className="bg-[#fcfbf7] text-slate-900 border-4 border-[#1e293b] rounded-xl shadow-2xl flex-1 flex flex-col justify-between overflow-y-auto max-h-[400px]">
                   
-                  {/* Decorative Header Stamp */}
-                  <div>
-                    <div className="flex items-center justify-between border-b-2 border-dashed border-slate-400 pb-2 mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-red-600 border-2 border-slate-900 flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-white border border-slate-900" />
+                  {/* Retro Airmail Border Ribbon */}
+                  <div className="h-2 w-full bg-[repeating-linear-gradient(45deg,#ef4444,#ef4444_12px,#ffffff_12px,#ffffff_24px,#3b82f6_24px,#3b82f6_36px,#ffffff_36px,#ffffff_48px)] shrink-0" />
+
+                  <div className="p-4 space-y-3.5">
+                    {/* Graphical Top Header with Pokéball Seal & Postage Stamp */}
+                    <div className="bg-[#1e3a8a] text-white p-3 rounded-lg border-2 border-slate-900 flex items-center justify-between shadow-sm">
+                      <div className="flex items-center gap-3">
+                        {/* Graphical Pixel Pokéball Seal */}
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-b from-red-600 from-50% via-slate-950 via-50% to-white to-55% border-2 border-slate-950 relative flex items-center justify-center shrink-0 shadow-xs">
+                          <div className="w-3.5 h-3.5 rounded-full bg-white border-2 border-slate-950 flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                          </div>
                         </div>
+
                         <div>
-                          <div className="text-[11px] font-bold tracking-wider text-slate-900">
-                            POKÉMON TECH MART • TALENT ORDER
+                          <div className="text-xs font-black tracking-wider text-yellow-300">
+                            PALLET CLOUD POKÉ MART
                           </div>
-                          <div className="text-[8px] text-slate-500 font-silk">
-                            ORIGIN: PALLET CLOUD TOWN SQUARE
+                          <div className="text-[8px] text-blue-200 font-silk">
+                            SPECIAL REQUISITION PARCEL • SILPH CO. POSTAL
                           </div>
                         </div>
                       </div>
-                      <div className="text-right text-[8px] text-slate-600 font-silk">
-                        STATUS: READY TO DISPATCH<br />
-                        DEST: ARITRO SAHA
+
+                      <div className="bg-slate-950/80 border border-yellow-400/80 rounded px-2 py-1 text-right shrink-0">
+                        <div className="text-[8px] text-yellow-300 font-bold font-silk">PALLET TOWN</div>
+                        <div className="text-[7px] text-slate-300 font-mono">SERIES 2026</div>
                       </div>
                     </div>
 
-                    {/* Client Message Section */}
-                    <div className="mb-4">
-                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                        MESSAGE TO DEVELOPER:
+                    {/* Routing Dossier Box */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white p-2.5 rounded-lg border border-slate-300 text-[10px]">
+                      <div className="space-y-0.5">
+                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider block">FROM (SENDER):</span>
+                        <div className="font-bold text-slate-900">{clientName || 'Prospective Partner'}</div>
+                        <div className="text-slate-600 truncate">{clientRole}</div>
+                        <div className="text-blue-600 font-mono text-[9px]">{clientEmail || 'email not provided'}</div>
                       </div>
-                      <div className="p-2.5 bg-amber-50/80 rounded border border-amber-200/80 text-xs leading-relaxed text-slate-800 whitespace-pre-wrap font-sans">
-                        &quot;{clientMessage || 'Looking forward to connecting with you!'}&quot;
-                      </div>
-                      <div className="mt-1 text-[9px] text-slate-600 font-silk">
-                        — From: <span className="font-bold text-slate-900">{clientName || 'Engineering Partner'}</span> ({clientEmail || 'email not provided'})
+
+                      <div className="space-y-0.5 border-t sm:border-t-0 sm:border-l border-slate-200 pt-1 sm:pt-0 sm:pl-2.5">
+                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider block">TO (RECIPIENT):</span>
+                        <div className="font-bold text-slate-900">Aritro Saha (Tech Lead / Gym Leader)</div>
+                        <div className="text-slate-600">Associate Software Developer</div>
+                        <div className="text-blue-600 font-mono text-[9px]">aritrosaha2025@gmail.com</div>
                       </div>
                     </div>
 
-                    {/* Skills Ordered Section - Displayed side-by-side in categorized grid */}
-                    <div className="mt-3">
-                      <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                        ORDERED TECHNICAL SKILLS (BY CATEGORY):
+                    {/* Client Message Callout */}
+                    <div>
+                      <div className="text-[9px] font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <Mail className="w-3 h-3 text-slate-500" />
+                        <span>REQUISITION INQUIRY & MESSAGE:</span>
+                      </div>
+                      <div className="p-3 bg-amber-50 rounded-lg border-l-4 border-amber-500 border-t border-r border-b border-amber-200 text-xs leading-relaxed text-slate-800 font-sans shadow-xs">
+                        &ldquo;{clientMessage || 'Looking forward to connecting with you!'}&rdquo;
+                      </div>
+                    </div>
+
+                    {/* Skills Ordered Section - Displayed side-by-side in categorized graphical cards */}
+                    <div>
+                      <div className="text-[9px] font-bold text-slate-600 uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span>🎒 ORDERED TECHNICAL SKILLS ({cart.length} ITEMS):</span>
+                        <span className="text-[8px] text-slate-500 font-silk">CATEGORIZED GRID</span>
                       </div>
 
                       {Object.keys(groupedCart).length === 0 ? (
-                        <div className="text-xs text-slate-500 italic p-2 bg-slate-100 rounded">
-                          (No specific skills selected - general full-stack inquiry)
+                        <div className="text-xs text-slate-500 italic p-3 bg-slate-100 rounded-lg border border-slate-200 text-center">
+                          (No specific skills selected - general full-stack engineering inquiry)
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                          {Object.entries(groupedCart).map(([category, items]) => (
-                            <div
-                              key={category}
-                              className="bg-white p-2.5 rounded border border-slate-300 shadow-xs"
-                            >
-                              <div className="text-[10px] font-bold text-blue-800 uppercase tracking-wide border-b border-slate-200 pb-1 mb-1.5 flex items-center justify-between">
-                                <span>{category}</span>
-                                <span className="text-[8px] text-slate-400 font-silk">
-                                  {items.length} item{items.length > 1 ? 's' : ''}
-                                </span>
+                          {Object.entries(groupedCart).map(([category, items]) => {
+                            const Icon = getCategoryIcon(category);
+                            return (
+                              <div
+                                key={category}
+                                className="bg-white p-2.5 rounded-lg border-2 border-slate-200 shadow-xs space-y-1.5"
+                              >
+                                <div className="text-[10px] font-bold text-blue-900 uppercase tracking-wide border-b border-slate-200 pb-1 flex items-center justify-between">
+                                  <span className="flex items-center gap-1.5">
+                                    <Icon className="w-3.5 h-3.5 text-blue-600" />
+                                    <span>{category}</span>
+                                  </span>
+                                  <span className="text-[8px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full font-bold">
+                                    {items.length}
+                                  </span>
+                                </div>
+                                <div className="space-y-1">
+                                  {items.map((i) => (
+                                    <div
+                                      key={i.name}
+                                      className="text-[10px] text-slate-800 flex items-center justify-between bg-slate-50 px-2 py-1 rounded border border-slate-200/80"
+                                    >
+                                      <span className="flex items-center gap-1 font-sans font-semibold">
+                                        <span className="text-amber-500 text-xs">★</span> {i.name}
+                                      </span>
+                                      <span className="text-[8px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 font-silk">
+                                        {i.level}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                              <ul className="space-y-1">
-                                {items.map((i) => (
-                                  <li
-                                    key={i.name}
-                                    className="text-[10px] text-slate-800 flex items-center justify-between"
-                                  >
-                                    <span className="flex items-center gap-1 font-sans font-medium">
-                                      <span className="text-yellow-600">★</span> {i.name}
-                                    </span>
-                                    <span className="text-[8px] text-slate-500 font-silk">
-                                      {i.level}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       )}
                     </div>
+
+                    {/* Certified Seal Footer */}
+                    <div className="border-t border-dashed border-slate-300 pt-2 flex items-center justify-between text-[8px] text-slate-500 font-silk">
+                      <div>
+                        AUTHENTIC PALLET CLOUD RPG DISPATCH<br />
+                        Bristol Myers Squibb Alumni • Hack4Bengal 3.0 Champion
+                      </div>
+                      <div className="px-2 py-1 border border-emerald-600 bg-emerald-50 text-emerald-700 rounded font-bold rotate-[-1deg]">
+                        ✓ VERIFIED MART SEAL
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Mail Footer Note */}
-                  <div className="border-t border-dashed border-slate-300 pt-2 mt-4 text-center text-[8px] text-slate-500 font-silk">
-                    CERTIFIED POKÉMON TECH MART INQUIRY • BRISTOL MYERS SQUIBB ALUMNI
-                  </div>
+                  {/* Bottom Airmail Border Ribbon */}
+                  <div className="h-2 w-full bg-[repeating-linear-gradient(45deg,#3b82f6,#3b82f6_12px,#ffffff_12px,#ffffff_24px,#ef4444_24px,#ef4444_36px,#ffffff_36px,#ffffff_48px)] shrink-0" />
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                   <button
-                    onClick={copyToClipboard}
-                    className="px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                    onClick={copyRichHtmlToClipboard}
+                    className="px-3.5 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all"
+                    title="Copies editable graphical HTML card for pasting into Gmail, Outlook, or Apple Mail"
                   >
                     <Copy className="w-3.5 h-3.5" />
-                    <span>{isCopied ? 'COPIED TO CLIPBOARD!' : 'COPY EMAIL TEXT'}</span>
+                    <span>{isCopied ? 'COPIED GRAPHICAL HTML!' : 'COPY GRAPHICAL MAIL (HTML)'}</span>
                   </button>
 
                   <button
                     onClick={handleSendMail}
-                    className="px-5 py-2.5 rounded bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-2 shadow-xl cursor-pointer transform hover:scale-102 transition-all animate-pulse"
+                    className="px-5 py-2 rounded bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-2 shadow-xl cursor-pointer transform hover:scale-102 transition-all"
                   >
                     <Send className="w-4 h-4" />
-                    <span>DISPATCH EMAIL NOW ►</span>
+                    <span>LAUNCH EMAIL CLIENT ►</span>
                   </button>
                 </div>
               </div>

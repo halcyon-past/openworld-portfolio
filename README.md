@@ -86,8 +86,12 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
   - **Tools**: Git, Linux, Postman, JIRA
 - **Interactive Shopping Cart**: Select and add desired engineering capabilities to your cart with instant badge counters, remove options, and order summaries.
 - **Project Message & Checkout Flow**: Click "PROCEED TO ORDER" to open the requisition desk where recruiters can fill in their Name, Email, Organization/Role, and customized project inquiry.
-- **Pokémon Pixel-Art Mail Format**: Generates an authentic retro Pokémon letter with ASCII borders, Silph Co. parcel stamp, sender/recipient routing headers, custom inquiry message, and all ordered skills organized neatly side-by-side by category.
-- **Dual-Action Dispatch**: Automatically launches the client's email client (`mailto:`) with pre-filled subject and body, alongside a one-click clipboard copy utility.
+- **Real Graphical Pokémon HTML Mail Format**:
+  - Full graphical layout featuring a diagonal airmail chevron border ribbon, retro Silph Co. Pallet Town postage seal, graphical red/white Pokéball emblem, and routing dossier.
+  - Project inquiry message callout box.
+  - Ordered skills organized in clean **side-by-side categorized cards** with type badges, level pills, and star ratings.
+- **One-Click Rich HTML Clipboard Copy (`COPY GRAPHICAL MAIL (HTML)`)**: Copies the rendered layout as a native rich HTML table directly onto the system clipboard. When pasted into **Gmail, Apple Mail, Outlook, or Thunderbird**, it appears as a fully visible, editable graphical card directly in the body of the email rather than a non-editable image or attachment!
+- **Email Client Quick Launcher**: Opens your default email client (`mailto:`) with pre-addressed recipient `aritrosaha2025@gmail.com` and structured subject line.
 
 ---
 
