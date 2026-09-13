@@ -1044,7 +1044,7 @@ export class GameEngine {
         c.save();
         c.translate(football.x + 12, football.y + 12);
         c.rotate(this.footballRollAngle);
-        c.drawImage(ballTile, -12, -12);
+        c.drawImage(ballTile, -12, -12, 24, 24);
         c.restore();
       },
     });

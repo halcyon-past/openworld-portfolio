@@ -508,24 +508,115 @@ export class SpriteGenerator {
     const key = 'tile_football';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
-    const [c, ctx] = this.createCanvas(24, 24);
-    // Ball body
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(12, 12, 10, 0, Math.PI * 2);
-    ctx.fill();
+    // 48x48 Retina canvas for ultra-crisp display at 24x24 world size
+    const [c, ctx] = this.createCanvas(48, 48);
+    ctx.imageSmoothingEnabled = true;
 
+    const cx = 24;
+    const cy = 24;
+    const r = 20;
+
+    // 1. Clip to circular sphere boundary
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.clip();
+
+    // 2. Base sphere surface with realistic spherical gradient
+    const sphereGrad = ctx.createRadialGradient(cx - 6, cy - 6, 2, cx, cy, r);
+    sphereGrad.addColorStop(0, '#ffffff');
+    sphereGrad.addColorStop(0.65, '#f1f5f9');
+    sphereGrad.addColorStop(0.88, '#cbd5e1');
+    sphereGrad.addColorStop(1, '#94a3b8');
+    ctx.fillStyle = sphereGrad;
+    ctx.fillRect(0, 0, 48, 48);
+
+    // 3. Authentic Truncated Icosahedron (Telstar) Soccer Ball Panel Geometry
+    const rot = -Math.PI / 2;
+    const r_center = 7.2; // Central pentagon radius
+
+    // 5 vertices of central black pentagon
+    const pentagon_pts: Array<{ x: number; y: number }> = [];
+    for (let i = 0; i < 5; i++) {
+      const a = rot + i * (2 * Math.PI / 5);
+      pentagon_pts.push({ x: cx + r_center * Math.cos(a), y: cy + r_center * Math.sin(a) });
+    }
+
+    // Outer black pentagons centered along vertex rays
+    const r_outer_center = 17.2;
+    const r_outer_size = 5.2;
+    const outer_pentagons: Array<Array<{ x: number; y: number }>> = [];
+
+    for (let i = 0; i < 5; i++) {
+      const a_v = rot + i * (2 * Math.PI / 5);
+      const ocx = cx + r_outer_center * Math.cos(a_v);
+      const ocy = cy + r_outer_center * Math.sin(a_v);
+      const opts: Array<{ x: number; y: number }> = [];
+      for (let j = 0; j < 5; j++) {
+        const aj = a_v + Math.PI + j * (2 * Math.PI / 5);
+        opts.push({ x: ocx + r_outer_size * Math.cos(aj), y: ocy + r_outer_size * Math.sin(aj) });
+      }
+      outer_pentagons.push(opts);
+    }
+
+    // Draw panel stitching seams
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.4;
+    for (let i = 0; i < 5; i++) {
+      ctx.beginPath();
+      ctx.moveTo(pentagon_pts[i].x, pentagon_pts[i].y);
+      ctx.lineTo(outer_pentagons[i][0].x, outer_pentagons[i][0].y);
+      ctx.stroke();
+
+      const p_curr = outer_pentagons[i];
+      const p_next = outer_pentagons[(i + 1) % 5];
+      ctx.beginPath();
+      ctx.moveTo(p_curr[2].x, p_curr[2].y);
+      ctx.lineTo(p_next[3].x, p_next[3].y);
+      ctx.stroke();
+    }
+
+    // Draw outer black pentagons
+    ctx.fillStyle = '#0f172a';
     ctx.strokeStyle = '#1e293b';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.2;
+    for (const opts of outer_pentagons) {
+      ctx.beginPath();
+      ctx.moveTo(opts[0].x, opts[0].y);
+      for (let j = 1; j < opts.length; j++) {
+        ctx.lineTo(opts[j].x, opts[j].y);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // Draw central black pentagon
+    ctx.beginPath();
+    ctx.moveTo(pentagon_pts[0].x, pentagon_pts[0].y);
+    for (let i = 1; i < pentagon_pts.length; i++) {
+      ctx.lineTo(pentagon_pts[i].x, pentagon_pts[i].y);
+    }
+    ctx.closePath();
+    ctx.fill();
     ctx.stroke();
 
-    // Black pentagon pattern
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(10, 10, 4, 4);
-    ctx.fillRect(6, 6, 3, 3);
-    ctx.fillRect(15, 6, 3, 3);
-    ctx.fillRect(6, 15, 3, 3);
-    ctx.fillRect(15, 15, 3, 3);
+    // 4. Specular spherical highlight on top-left
+    const shineGrad = ctx.createRadialGradient(cx - 7, cy - 7, 0, cx - 7, cy - 7, 12);
+    shineGrad.addColorStop(0, 'rgba(255, 255, 255, 0.65)');
+    shineGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.25)');
+    shineGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = shineGrad;
+    ctx.fillRect(0, 0, 48, 48);
+
+    ctx.restore();
+
+    // 5. Outer sphere rim border
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
 
     this.cache.set(key, c);
     return c;
