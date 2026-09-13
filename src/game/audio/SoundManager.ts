@@ -219,8 +219,31 @@ class SoundManager {
     if (!cleanText) return;
 
     // 1. High-Fidelity Studio ElevenLabs Audio Clips (100% consistent across all devices)
-    const key = `${speakerType}:${cleanText}`.toLowerCase();
-    const clipUrl = VOICE_MANIFEST[key];
+    let mappedSpeaker = speakerType;
+    if (['house', 'lab', 'pokedex', 'mart', 'gym', 'bench', 'fountain'].includes(speakerType)) {
+      mappedSpeaker = speakerType === 'fountain' ? 'nurse' : 'sign';
+    }
+    const normText = cleanText
+      .toLowerCase()
+      .replace(/[✨⚡⭐★✓✉️🎒]/g, '')
+      .replace(/['’"“”`]/g, '')
+      .replace(/&/g, 'and')
+      .replace(/->/g, 'to')
+      .replace(/[^\w\s.,!?-]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const rawKey = `${speakerType}:${cleanText}`.toLowerCase();
+    const mappedRawKey = `${mappedSpeaker}:${cleanText}`.toLowerCase();
+    const normKey = `${speakerType}:${normText}`;
+    const mappedNormKey = `${mappedSpeaker}:${normText}`;
+
+    const clipUrl =
+      VOICE_MANIFEST[mappedNormKey] ||
+      VOICE_MANIFEST[normKey] ||
+      VOICE_MANIFEST[mappedRawKey] ||
+      VOICE_MANIFEST[rawKey] ||
+      Object.entries(VOICE_MANIFEST).find(([k]) => normText.length > 10 && (k.includes(normText) || k.endsWith(':' + normText)))?.[1];
 
     if (clipUrl && typeof window !== 'undefined') {
       try {
