@@ -1,3 +1,5 @@
+import { VOICE_MANIFEST } from '@/data/voiceManifest';
+
 /**
  * 8-Bit Web Audio API Sound & Music Synthesizer
  * Zero external audio file dependencies - 100% reliable, zero 404s, instantaneous response.
@@ -19,6 +21,7 @@ class SoundManager {
   private isSfxMuted: boolean = false;
   private voiceVolume: number = 0.85;
   private isVoiceMuted: boolean = false;
+  private currentVoiceAudio: HTMLAudioElement | null = null;
 
   constructor() {
     this.loadSettings();
@@ -87,6 +90,9 @@ class SoundManager {
   public getVoiceVolume(): number { return this.voiceVolume; }
   public setVoiceVolume(volume: number) {
     this.voiceVolume = Math.max(0, Math.min(1, volume));
+    if (this.currentVoiceAudio) {
+      this.currentVoiceAudio.volume = Math.max(0.01, Math.min(1.0, this.voiceVolume));
+    }
     this.persistSettings();
   }
 
@@ -200,19 +206,58 @@ class SoundManager {
 
     if (this.isMuted || this.isVoiceMuted) return;
 
+    // Stop any pending speech or audio clip
+    this.stopSpeaking();
+
+    // Clean text of action asterisks, brackets, and markdown
+    const cleanText = text
+      .replace(/\*.*?\*/g, '')
+      .replace(/\[.*?\]/g, '')
+      .replace(/[*_#~]/g, '')
+      .trim();
+
+    if (!cleanText) return;
+
+    // 1. High-Fidelity Studio ElevenLabs Audio Clips (100% consistent across all devices)
+    const key = `${speakerType}:${cleanText}`.toLowerCase();
+    const clipUrl = VOICE_MANIFEST[key];
+
+    if (clipUrl && typeof window !== 'undefined') {
+      try {
+        const audio = new Audio(clipUrl);
+        audio.volume = Math.max(0.01, Math.min(1.0, this.voiceVolume));
+        this.isSpeaking = true;
+        this.currentVoiceAudio = audio;
+
+        audio.onended = () => {
+          this.isSpeaking = false;
+          if (this.currentVoiceAudio === audio) {
+            this.currentVoiceAudio = null;
+          }
+        };
+
+        audio.onerror = () => {
+          this.isSpeaking = false;
+          if (this.currentVoiceAudio === audio) {
+            this.currentVoiceAudio = null;
+          }
+        };
+
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            this.isSpeaking = false;
+          });
+        }
+        return;
+      } catch {
+        this.isSpeaking = false;
+      }
+    }
+
+    // 2. Fallback to browser Web Speech API if dynamic or unrendered
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
-        window.speechSynthesis.cancel(); // Stop any pending speech
-        this.isSpeaking = false;
-
-        // Clean text of action asterisks, brackets, and markdown
-        const cleanText = text
-          .replace(/\*.*?\*/g, '')
-          .replace(/\[.*?\]/g, '')
-          .replace(/[*_#~]/g, '')
-          .trim();
-
-        if (!cleanText) return;
 
         const utterance = new SpeechSynthesisUtterance(cleanText);
         const voices = this.cachedVoices.length > 0 ? this.cachedVoices : window.speechSynthesis.getVoices();
@@ -320,6 +365,16 @@ class SoundManager {
 
   public stopSpeaking() {
     this.isSpeaking = false;
+    if (this.currentVoiceAudio) {
+      try {
+        this.currentVoiceAudio.pause();
+        this.currentVoiceAudio.currentTime = 0;
+      } catch {
+        // ignore
+      }
+      this.currentVoiceAudio = null;
+    }
+
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
