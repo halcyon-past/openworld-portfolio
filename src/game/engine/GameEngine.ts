@@ -89,6 +89,10 @@ export class GameEngine {
   public tvTimer: number = 0;
   public showcaseProjects: ShowcaseProject[] = SHOWCASE_PROJECTS;
 
+  // Interactive Lawn Football State
+  public hasKickedFootball: boolean = false;
+  public footballRollAngle: number = 0;
+
   // UI Event Callbacks
   public onModalOpen?: (modal: string) => void;
   public onDialogue?: (dialogue: { speaker: string; lines: string[]; avatar?: string }) => void;
@@ -463,11 +467,12 @@ export class GameEngine {
     }
 
     // 3. Kick football if nearby
-    const distToBall = Math.hypot(
-      player.x * TILE_SIZE - this.state.football.x,
-      player.y * TILE_SIZE - this.state.football.y
-    );
-    if (distToBall < 36) {
+    const playerCenterX = (player.x + player.subX) * TILE_SIZE + 16;
+    const playerCenterY = (player.y + player.subY) * TILE_SIZE + 16;
+    const ballCenterX = this.state.football.x + 12;
+    const ballCenterY = this.state.football.y + 12;
+    const distToBall = Math.hypot(playerCenterX - ballCenterX, playerCenterY - ballCenterY);
+    if (distToBall <= 42) {
       this.kickFootball();
       return;
     }
@@ -616,15 +621,37 @@ export class GameEngine {
   }
 
   private kickFootball() {
-    soundManager.playFanfare();
     const { player, football } = this.state;
-    const force = 9;
-    if (player.direction === 'right') football.vx = force;
-    else if (player.direction === 'left') football.vx = -force;
-    else if (player.direction === 'down') football.vy = force;
-    else if (player.direction === 'up') football.vy = -force;
+    soundManager.playFanfare();
 
-    if (this.onDialogue) {
+    const playerCenterX = (player.x + player.subX) * TILE_SIZE + 16;
+    const playerCenterY = (player.y + player.subY) * TILE_SIZE + 16;
+    const ballCenterX = football.x + 12;
+    const ballCenterY = football.y + 12;
+
+    // Relative displacement from player to ball
+    let dx = ballCenterX - playerCenterX;
+    let dy = ballCenterY - playerCenterY;
+    const len = Math.hypot(dx, dy) || 1;
+    dx /= len;
+    dy /= len;
+
+    // Facing direction vector
+    let dirX = 0;
+    let dirY = 0;
+    if (player.direction === 'right') dirX = 1;
+    else if (player.direction === 'left') dirX = -1;
+    else if (player.direction === 'down') dirY = 1;
+    else if (player.direction === 'up') dirY = -1;
+
+    // Blend facing direction (70%) with direct angle (30%)
+    const force = 9.5;
+    football.vx = (dirX * 0.7 + dx * 0.3) * force;
+    football.vy = (dirY * 0.7 + dy * 0.3) * force;
+
+    // First kick triggers full celebratory commentary with ElevenLabs voice clip
+    if (!this.hasKickedFootball && this.onDialogue) {
+      this.hasKickedFootball = true;
       this.onDialogue({
         speaker: "Football Match",
         lines: [
@@ -812,17 +839,116 @@ export class GameEngine {
       }
     }
 
-    // Football physics simulation
-    football.x += football.vx;
-    football.y += football.vy;
-    football.vx *= 0.94; // friction
-    football.vy *= 0.94;
-    if (Math.abs(football.vx) < 0.05) football.vx = 0;
-    if (Math.abs(football.vy) < 0.05) football.vy = 0;
+    // Football physics & obstacle hitbox collision simulation
+    const ballSpeed = Math.hypot(football.vx, football.vy);
+    if (ballSpeed > 0) {
+      this.footballRollAngle += (football.vx + football.vy) * 0.12;
 
-    // Bounce football off map borders
-    if (football.x < 32 || football.x > (MAP_WIDTH - 2) * TILE_SIZE) football.vx *= -1;
-    if (football.y < 32 || football.y > (MAP_HEIGHT - 2) * TILE_SIZE) football.vy *= -1;
+      // Axis-separated movement and obstacle collision detection
+      // 1. Move X axis
+      const stepX = football.vx;
+      if (Math.abs(stepX) > 0.01) {
+        const targetX = football.x + stepX;
+        const left = targetX + 3;
+        const right = targetX + 21;
+        const top = football.y + 4;
+        const bottom = football.y + 20;
+
+        const minTileX = Math.floor(left / TILE_SIZE);
+        const maxTileX = Math.floor(right / TILE_SIZE);
+        const minTileY = Math.floor(top / TILE_SIZE);
+        const maxTileY = Math.floor(bottom / TILE_SIZE);
+
+        let collidedX = false;
+        for (let ty = minTileY; ty <= maxTileY; ty++) {
+          for (let tx = minTileX; tx <= maxTileX; tx++) {
+            if (tileMap.isSolid(tx, ty)) {
+              collidedX = true;
+              break;
+            }
+          }
+          if (collidedX) break;
+        }
+
+        if (collidedX) {
+          if (Math.abs(football.vx) > 1.2) {
+            soundManager.playBump();
+          }
+          football.vx = -football.vx * 0.7;
+          if (stepX > 0) {
+            football.x = maxTileX * TILE_SIZE - 21 - 0.1;
+          } else {
+            football.x = (minTileX + 1) * TILE_SIZE - 3 + 0.1;
+          }
+        } else {
+          football.x = targetX;
+        }
+      }
+
+      // 2. Move Y axis
+      const stepY = football.vy;
+      if (Math.abs(stepY) > 0.01) {
+        const targetY = football.y + stepY;
+        const left = football.x + 3;
+        const right = football.x + 21;
+        const top = targetY + 4;
+        const bottom = targetY + 20;
+
+        const minTileX = Math.floor(left / TILE_SIZE);
+        const maxTileX = Math.floor(right / TILE_SIZE);
+        const minTileY = Math.floor(top / TILE_SIZE);
+        const maxTileY = Math.floor(bottom / TILE_SIZE);
+
+        let collidedY = false;
+        for (let ty = minTileY; ty <= maxTileY; ty++) {
+          for (let tx = minTileX; tx <= maxTileX; tx++) {
+            if (tileMap.isSolid(tx, ty)) {
+              collidedY = true;
+              break;
+            }
+          }
+          if (collidedY) break;
+        }
+
+        if (collidedY) {
+          if (Math.abs(football.vy) > 1.2) {
+            soundManager.playBump();
+          }
+          football.vy = -football.vy * 0.7;
+          if (stepY > 0) {
+            football.y = maxTileY * TILE_SIZE - 21 - 0.1;
+          } else {
+            football.y = (minTileY + 1) * TILE_SIZE - 3 + 0.1;
+          }
+        } else {
+          football.y = targetY;
+        }
+      }
+
+      // Apply ground friction damping
+      football.vx *= 0.93;
+      football.vy *= 0.93;
+      if (Math.abs(football.vx) < 0.08) football.vx = 0;
+      if (Math.abs(football.vy) < 0.08) football.vy = 0;
+
+      // Absolute safety clamp to playable bounds
+      football.x = Math.max(33, Math.min((MAP_WIDTH - 2) * TILE_SIZE - 21, football.x));
+      football.y = Math.max(33, Math.min((MAP_HEIGHT - 2) * TILE_SIZE - 21, football.y));
+    }
+
+    // Player body contact / gentle dribble nudge when walking into ball
+    const playerCenterX = (player.x + player.subX) * TILE_SIZE + 16;
+    const playerCenterY = (player.y + player.subY) * TILE_SIZE + 16;
+    const ballCenterX = football.x + 12;
+    const ballCenterY = football.y + 12;
+    const distToBall = Math.hypot(playerCenterX - ballCenterX, playerCenterY - ballCenterY);
+
+    if (distToBall < 18 && player.isMoving) {
+      if (player.direction === 'right') football.vx = Math.max(football.vx, 3.2);
+      else if (player.direction === 'left') football.vx = Math.min(football.vx, -3.2);
+      else if (player.direction === 'down') football.vy = Math.max(football.vy, 3.2);
+      else if (player.direction === 'up') football.vy = Math.min(football.vy, -3.2);
+    }
 
     // Lake Ducks gentle random swimming simulation
     // Bounds of lake water: x in [42, 148], y in [684, 916]
@@ -913,7 +1039,13 @@ export class GameEngine {
         c.beginPath();
         c.ellipse(football.x + 12, football.y + 20, 8, 3, 0, 0, Math.PI * 2);
         c.fill();
-        c.drawImage(ballTile, Math.floor(football.x), Math.floor(football.y));
+
+        // Render rotating rolling ball
+        c.save();
+        c.translate(football.x + 12, football.y + 12);
+        c.rotate(this.footballRollAngle);
+        c.drawImage(ballTile, -12, -12);
+        c.restore();
       },
     });
 
@@ -1030,6 +1162,53 @@ export class GameEngine {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(promptText, promptX, promptY - 2);
+      ctx.restore();
+    }
+
+    // Floating kick prompt badge when player is near the soccer ball
+    const distToBallPrompt = Math.hypot(
+      playerPx + 16 - (football.x + 12),
+      playerPy + 16 - (football.y + 12)
+    );
+    if (distToBallPrompt <= 44 && !this.isDialogueActive && !this.isModalActive) {
+      const promptText = '⚽ [A] KICK';
+      const promptX = football.x + 12;
+      const promptY = football.y - 12 + Math.sin(performance.now() / 180) * 2.5;
+
+      ctx.save();
+      ctx.font = 'bold 8px monospace';
+      const textWidth = ctx.measureText(promptText).width;
+      const pad = 5;
+
+      // Soft drop shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      ctx.roundRect(promptX - textWidth / 2 - pad + 1, promptY - 7 + 1, textWidth + pad * 2, 13, 4);
+      ctx.fill();
+
+      // Pill background
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(promptX - textWidth / 2 - pad, promptY - 7, textWidth + pad * 2, 13, 4);
+      ctx.fill();
+      ctx.stroke();
+
+      // Downward pointer arrow towards the ball
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath();
+      ctx.moveTo(promptX - 3, promptY + 6);
+      ctx.lineTo(promptX + 3, promptY + 6);
+      ctx.lineTo(promptX, promptY + 9);
+      ctx.closePath();
+      ctx.fill();
+
+      // Badge label
+      ctx.fillStyle = '#4ade80';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(promptText, promptX, promptY - 0.5);
       ctx.restore();
     }
 
