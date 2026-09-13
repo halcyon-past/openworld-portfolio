@@ -7,46 +7,79 @@
 [![Canvas 2D](https://img.shields.io/badge/HTML5-Canvas_2D-E34F26?style=flat-square&logo=html5)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 [![Web Audio API](https://img.shields.io/badge/Audio-Web_Audio_API-orange?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
 
-An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pallet Cloud**. Explore interactive buildings, view projects broadcasting on a town square **Mega Jumbotron TV**, visit the **Innovation Pokédex Center**, challenge the **Silicon Gym**, play retro minigames in the **Developer Arcade**, or toggle instantly to an executive **Recruiter Dossier** mode.
+An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pallet Cloud**. Explore interactive buildings, view live projects broadcasting on a high-definition town square **Mega Jumbotron TV**, visit the **Innovation Pokédex Center**, challenge the **Silicon Gym**, play retro minigames in the **Developer Arcade**, or toggle instantly to an executive **Recruiter Dossier** mode.
 
 ---
 
 ## 🌟 Key Highlights & Features
 
 ### 🕹️ Custom 2.5D Retro Game Engine
-- **Hardware-Accelerated 60 FPS Canvas**: Built from scratch using native HTML5 Canvas 2D without bulky external game engines.
-- **Dynamic 2.5D Perspective**: Depth-sorted rendering via Painter's algorithm with realistic object occlusion between the player, buildings, trees, and NPCs.
-- **Procedural Pixel-Art Generation**: Over 40+ custom sprites generated procedurally in memory via `SpriteGenerator` (buildings, interiors, NPCs, cap-wearing trainer, animated fountain, jumbotron, and terrain tiles).
-- **BFS Shortest-Path Navigation**: Intelligent tap-to-walk / click-to-walk pathfinding with an animated glowing waypoint beacon.
-- **Dual Control Scheme**: Full support for desktop keyboard controls and an on-screen responsive **Virtual Gamepad** (D-Pad, [A] Interact, [B] Sprint, [START] Menu) optimized for mobile touch screens.
-- **Interactive NPC Voice Synthesis**: Web Speech API integration featuring custom voice persona profiles (Prof. Oak, Aritro Saha, Nurse Joy, Shopkeeper, and Pixel Pup).
-- **Chiptune Audio Synthesizer**: Native Web Audio API sound generator producing retro 8-bit sound effects (menu cursors, bumps, warp chimes, victory fanfare, and footsteps).
+- **Hardware-Accelerated 60 FPS Canvas**: Built completely from scratch using native HTML5 Canvas 2D without heavy external game engines.
+- **Dynamic 2.5D Perspective**: Depth-sorted rendering via Painter's algorithm with realistic occlusion between player, buildings, trees, and NPCs.
+- **Precise 1-to-1 Collision & Navigation**:
+  - Tight, accurate collision bounding boxes aligned to exact object bases.
+  - Zero invisible blocker walls—wide, unobstructed pathways across the entire map.
+  - Debounced obstacle collision bump sound (300ms throttle) ensuring smooth gliding along walls and scenery without audio stutter.
+- **Procedural Pixel-Art Generation**: Over 40+ custom sprites generated in-memory via `SpriteGenerator` (buildings, interiors, NPCs, animated fountain, 128px jumbotron, and terrain tiles).
+- **Intelligent BFS Shortest-Path Navigation**: Breadth-First Search pathfinding for one-tap travel across the town with an animated glowing waypoint marker.
+- **Dual Responsive Control Scheme**: Full desktop keyboard controls plus a mobile-optimized **Virtual Gamepad** (D-Pad, `[A]` Interact, `[B]` Sprint, `[START]` Menu).
+
+---
+
+### 📺 High-Definition Mega Jumbotron TV
+- **128x96 px Widescreen Stadium Display**: Positioned centrally in Pallet Cloud town square (`x: 11..14, y: 12..14`).
+- **Retina-Crisp Visuals**: Anti-aliased high-quality downscaling (`imageSmoothingQuality = 'high'`) with clear rounded corners (`116x52 px` active screen area).
+- **Live Rotating Project Previews**: Automatically cycles through Aritro's key engineering creations (*Quarantine*, *Structurify*, *Luffy Laser Dodge*, *PAWsitive*, *GlideConnect*, *EduHelper*) with real project screenshots every 5 seconds.
+- **Interactive Channel Cycling**: Press **`[A]`** anywhere directly in front of the TV (`x: 11, 12, 13, y: 15`) to instantly cycle channels manually!
+- **Broadcast Lower-Third Overlay**: High-contrast frosted glass banner with bold project title typography (`bold 8px`), golden tech badges (`bold 6.5px`), `CH 01/06` status indicator, pulsing red `🔴 LIVE` pill, and animated slide countdown timer.
+
+---
+
+### 🔊 Advanced Multi-Channel Audio & Settings System
+- **Dedicated Settings Center (`SettingsModal`)**: Accessible from the top HUD gear icon or the in-game Start Menu (`[START]` / `Esc` / `M`).
+- **Independent Volume Channels & Mutes**:
+  1. **Background Music (BGM)**: Independent volume slider (0%–100%) and mute toggle for 8-bit chiptune melodies.
+  2. **Sound Effects (SFX)**: Independent volume slider (0%–100%) with live test audio feedback and mute toggle.
+  3. **Character Voices (TTS)**: Independent volume slider (0%–100%) and voice mute toggle.
+  4. **Retro CRT TV Scanlines**: Switch on/off the authentic retro CRT television scanline overlay.
+- **Automatic Settings Persistence**: All audio volumes, mute toggles, and CRT filter preferences persist across browser sessions in `localStorage`.
+- **🐶 Synthesized Canine Puppy Voice Engine**:
+  - Pixel Pup now uses a **100% custom synthesized Web Audio API puppy bark engine** (`playPuppyBark('happy')` - multi-tone "Arf! ... Arf-arf!").
+  - Unnatural robotic TTS voice synthesis has been completely removed for the pet.
+  - Dialogue typewriter text produces delightful canine micro-bark yips with pitch modulation.
+- **Tailored NPC Voice Personas**:
+  - **Aritro Saha (Tech Lead / Gym Leader)**: Natural, confident human voice profile (explicitly mapped to Daniel voice).
+  - **Prof. Oak**: Distinguished, deep professor tone.
+  - **Nurse Joy**: Sweet, cheerful high tone.
+  - **Mart Clerk**: Crisp, polite shopkeeper pace.
+  - **Arcade Host**: Energetic, upbeat retro tone.
+  - **Town Notice Boards / Signs**: Clean, crisp public system announcer guide voice.
 
 ---
 
 ### 🏙️ Town Map & Interactive Landmarks
 
-| Landmark | Grid Location | Description |
-| :--- | :--- | :--- |
-| **⚡ Mega Jumbotron TV** | `x: 10..15, y: 12..15` | Giant outdoor TV broadcasting live rotating project showcases every 5s with CRT scanlines, glass reflection, and live channel indicator. Press **[A]** to cycle channels on demand! |
-| **🔴 Innovation Pokédex Center** | `x: 5..8, y: 14..16` | Inspect Aritro's full-stack and distributed engineering projects with Pokémon-style stats, radar graphs, live links, and PyPI badges. |
-| **🏢 Silicon Gym (BMS Arena)** | `x: 14..18, y: 22..25` | Explore enterprise experience at Bristol Myers Squibb, distributed ETL pipelines, and 8 Gym Badges of Honor. |
-| **🔵 Skill & Tech Stack Mart** | `x: 17..20, y: 14..16` | Inventory Bag stocked with Key Items (Python, Next.js, LangGraph), TMs & HMs (Docker, GCP, Terraform), and Battle Tools. |
-| **🔬 AI Research Lab** | `x: 19..23, y: 4..6` | Access the lab mainframe to view the Trainer Card, LeetCode Knight stats (1868 peak, 630+ solved), CGPA, and publications. |
-| **🏠 Aritro's Residence** | `x: 3..6, y: 4..6` | Contact terminal, social channels (GitHub, LinkedIn, LeetCode, X), SiliconSync blog feed, and beatbox studio. |
-| **🕹️ Developer Arcade Corner** | `x: 26..29, y: 14..16` | Fully playable retro games: *Developer Speed Test* (typing benchmark) and *Minimalist Python Snake*. |
-| **⛲ Pallet Cloud Wishing Fountain** | `x: 11..14, y: 5..7` | Animated marble fountain with procedural water droplet spray and concentric pool ripples. Toss in a PokéDollar for a CI/CD blessing! |
-| **🪑 Scenic Rest Benches** | Multiple | Located in Town Square, Northern Garden, and Southwestern Lake shore for taking a breather. |
-| **⚽ Interactive Football Match** | `x: 8, y: 6` | Physics-simulated soccer ball that bounces off borders when kicked across the lawn. |
+| Landmark | Grid Location | Footprint | Description |
+| :--- | :--- | :--- | :--- |
+| **⚡ Mega Jumbotron TV** | `x: 11..14, y: 12..14` | 3x1 Pillars (`y: 14`) | High-definition outdoor display showcasing rotating project previews. Walk up to row 15 and press **[A]** to cycle channels! |
+| **🔴 Innovation Pokédex Center** | `x: 5..8, y: 14..16` | 4x3 Building | Inspect Aritro's full-stack & distributed creations with Pokémon-style battle stats, radar graphs, live links, and PyPI badges. |
+| **🏢 Silicon Gym (BMS Arena)** | `x: 14..18, y: 22..25` | 5x4 Building | Explore enterprise systems engineering at Bristol Myers Squibb, distributed ETL pipelines, and 8 Gym Badges of Honor. |
+| **🔵 Skill & Tech Stack Mart** | `x: 17..20, y: 14..16` | 4x3 Building | Inventory Bag stocked with Key Items (Python, Next.js, LangGraph), TMs (Docker, GCP, Terraform), and Battle Tools. |
+| **🔬 AI Research Lab** | `x: 19..23, y: 4..6` | 5x3 Building | Access the lab mainframe to view the Trainer Card, LeetCode Knight stats (1868 peak, 630+ solved), CGPA, and research publications. |
+| **🏠 Aritro's Residence** | `x: 3..6, y: 4..6` | 4x3 Building | Contact terminal, social links (GitHub, LinkedIn, LeetCode, X), SiliconSync blog feed, and beatbox studio. |
+| **🕹️ Developer Arcade Corner** | `x: 26..29, y: 14..16` | 4x3 Building | Playable retro minigames: *Developer Speed Test* (typing benchmark) and *Minimalist Python Snake*. |
+| **⛲ Pallet Cloud Wishing Fountain** | `x: 11..12, y: 5..6` | 2x1 Basin (`y: 6`) | Animated marble fountain with procedural water droplet spray and concentric pool ripples. Toss in 100 PokéDollars for a CI/CD blessing! |
+| **🪑 Scenic Rest Benches** | Multiple Locations | 1x1 Each | Cozy wooden benches in Town Square (`9, 13`), Northern Garden (`14, 5`), and Lake Shore (`3, 23`) for enjoying the view. |
+| **⚽ Interactive Soccer Pitch** | `x: 8, y: 6` | Physics Object | Soccer ball simulated with velocity and friction that bounces off boundaries when kicked across the lawn. |
 
 ---
 
 ### 📄 Executive Recruiter Dossier Mode
 For hiring managers and recruiters who prefer a fast, streamlined review:
-- **One-Click Toggle**: Switch between the 2.5D game world and an executive portfolio dossier view at any time.
+- **One-Click Instant Toggle**: Switch between the 2.5D game world and an executive portfolio dossier view at any time.
 - **Direct Resume Download**: Instant access to Aritro's latest software engineering resume.
 - **Enterprise Highlights**: Bristol Myers Squibb experience, Hack4Bengal 3.0 championship breakdown, and technical stack summary.
-- **SEO & Social Cards**: Fully optimized OpenGraph cards, Twitter preview cards, dynamic `sitemap.xml`, and `robots.txt`.
+- **SEO & Metadata Optimization**: Fully configured OpenGraph cards, Twitter preview cards, dynamic `sitemap.xml`, and `robots.txt`.
 
 ---
 
@@ -55,15 +88,15 @@ For hiring managers and recruiters who prefer a fast, streamlined review:
 ### Keyboard (Desktop)
 - **Move**: `W`, `A`, `S`, `D` or `Arrow Keys`
 - **Interact / Talk / Enter / Cycle TV**: `Space`, `Enter`, or `Z`
-- **Sprint**: Hold `Shift`
+- **Sprint**: Hold `Shift` or `B`
 - **Start Menu**: `Esc` or `M`
-- **Navigate to Tile**: `Left-Click` anywhere on the map
+- **Navigate / Tap-to-Walk**: `Left-Click` anywhere on the map
 
 ### Touch / Mobile
 - **Movement**: Virtual D-Pad on the bottom left
-- **Action [A]**: Interact / Enter / Cycle TV
+- **Action [A]**: Interact / Talk / Enter / Cycle TV
 - **Sprint [B]**: Toggle running speed
-- **Start [START]**: Open player menu (Trainer Card, Pokédex, Bag, Town Map, Save, Recruiter View)
+- **Menu [START]**: Open player start menu (Trainer Card, Pokédex, Bag, Settings, Recruiter View)
 - **Tap to Walk**: Tap any reachable location on screen to pathfind automatically
 
 ---
@@ -77,7 +110,7 @@ For hiring managers and recruiters who prefer a fast, streamlined review:
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Visual FX**: [canvas-confetti](https://www.npmjs.com/package/canvas-confetti)
 - **Graphics Engine**: Native HTML5 Canvas 2D with custom pixel rasterizer
-- **Audio**: Web Audio API (Synthesized Chiptune) + Web Speech API (Text-to-Speech)
+- **Audio Engine**: Web Audio API (Synthesized Chiptune & Puppy Barks) + Web Speech API (Character Voices)
 
 ---
 
