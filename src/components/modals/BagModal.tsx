@@ -934,11 +934,6 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                     className="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white placeholder:text-slate-600 font-silk focus:border-yellow-400 focus:outline-hidden resize-none"
                   />
                 </div>
-
-                <div className="bg-yellow-950/60 border border-yellow-500/40 rounded p-2 text-[8px] sm:text-[9px] text-yellow-200 font-silk space-y-1">
-                  <div>📬 <b>Graphic HTML Mail Format:</b> Generates a stylized Pokémon mail layout with graphic Pokéball seal, routing stamps, and side-by-side categorized tables.</div>
-                  <div className="text-yellow-300 font-bold">✨ Use &quot;COPY GRAPHICAL MAIL (HTML)&quot; to paste directly into Gmail, Outlook, or Apple Mail as full editable graphic cards!</div>
-                </div>
               </div>
 
               {/* Right Column: Live Pokémon Pixel-Game Styled Mail Preview */}
