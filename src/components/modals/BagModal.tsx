@@ -336,7 +336,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
           </td>
           <td class="mobile-stack-col" style="padding: 10px 12px; width: 50%; background-color: #f8fafc; box-sizing: border-box; word-break: break-word;">
             <span style="color: #64748b; font-size: 10px; font-weight: bold; text-transform: uppercase; display: block;">TO (RECIPIENT):</span>
-            <span style="font-weight: bold; color: #0f172a; font-size: 13px;">Aritro Saha (Tech Lead / Gym Leader)</span>
+            <span style="font-weight: bold; color: #0f172a; font-size: 13px;">Aritro Saha</span>
             <div style="color: #475569; font-size: 11px; margin-top: 2px;">Associate Software Developer &bull; <a href="mailto:aritrosaha2025@gmail.com" style="color: #2563eb; text-decoration: none; word-break: break-all;">aritrosaha2025@gmail.com</a></div>
           </td>
         </tr>
