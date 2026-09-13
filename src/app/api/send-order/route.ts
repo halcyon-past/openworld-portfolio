@@ -12,22 +12,59 @@ export async function POST(request: Request) {
     // If Resend API Key is set in environment, send real email directly via Resend
     if (apiKey) {
       const resend = new Resend(apiKey);
+      const cleanCustomerEmail = typeof email === 'string' && email.includes('@') ? email.trim() : null;
 
+      // 1. Primary dispatch to Aritro's inbox
       const { data, error } = await resend.emails.send({
         from: fromEmail,
         to: [toEmail],
-        replyTo: email && email.includes('@') ? email : undefined,
+        replyTo: cleanCustomerEmail || undefined,
         subject: `[Poké Mart Order] Skills Requisition from ${name || 'Prospective Collaborator'} (${cartCount || 0} Skills)`,
         html: htmlContent,
         text: plainContent,
       });
 
       if (error) {
-        console.error('Resend API Error:', error);
+        console.error('Resend API Error sending to owner:', error);
         return NextResponse.json({ success: false, error: error.message }, { status: 500 });
       }
 
-      return NextResponse.json({ success: true, mode: 'api', id: data?.id });
+      // 2. Also send an immediate customer receipt copy to sender's email
+      let senderCopySent = false;
+      let senderCopyNotice: string | null = null;
+
+      if (cleanCustomerEmail) {
+        try {
+          const senderRes = await resend.emails.send({
+            from: fromEmail,
+            to: [cleanCustomerEmail],
+            replyTo: toEmail,
+            subject: `[Copy / Receipt] Your Poké Mart Requisition to Aritro Saha (${cartCount || 0} Skills)`,
+            html: htmlContent,
+            text: plainContent,
+          });
+
+          if (senderRes.data?.id) {
+            senderCopySent = true;
+          } else if (senderRes.error) {
+            // In free testing domains (onboarding@resend.dev), Resend restricts sending to unverified emails
+            console.warn('Sender copy notification error (e.g. Resend free domain restriction):', senderRes.error);
+            senderCopyNotice = senderRes.error.message;
+          }
+        } catch (copyErr) {
+          console.warn('Could not send copy to customer email:', copyErr);
+          senderCopyNotice = copyErr instanceof Error ? copyErr.message : 'Notice delivery failed';
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        mode: 'api',
+        id: data?.id,
+        senderCopySent,
+        senderCopyNotice,
+        customerEmail: cleanCustomerEmail,
+      });
     }
 
     // If no API key configured yet, return fallback signal so client seamlessly falls back

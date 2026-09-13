@@ -59,6 +59,11 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
   const [isSending, setIsSending] = useState(false);
   const [sendSuccessMode, setSendSuccessMode] = useState<'api' | 'mailto'>('api');
   const [sendErrorMsg, setSendErrorMsg] = useState<string | null>(null);
+  const [senderCopyStatus, setSenderCopyStatus] = useState<{
+    sent: boolean;
+    email: string | null;
+    notice?: string | null;
+  } | null>(null);
 
   const categories = PORTFOLIO_DATA.skillPockets;
   const currentCategory: SkillPocket = categories[selectedCategoryIdx] || categories[0];
@@ -437,6 +442,11 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
       if (data.success && data.mode === 'api') {
         setIsSending(false);
         setSendSuccessMode('api');
+        setSenderCopyStatus({
+          sent: !!data.senderCopySent,
+          email: data.customerEmail || null,
+          notice: data.senderCopyNotice || null,
+        });
         setViewMode('success');
         return;
       } else if (!data.success) {
@@ -453,6 +463,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
 
     setIsSending(false);
     setSendSuccessMode('api');
+    setSenderCopyStatus(null);
     setViewMode('success');
   };
 
@@ -889,7 +900,10 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[9px] text-slate-400 font-silk block">Your Email (for replies)</label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[9px] text-slate-400 font-silk block">Your Email (for replies & instant receipt copy)</label>
+                    <span className="text-[8px] text-emerald-400 font-silk">Auto-receives copy 📬</span>
+                  </div>
                   <input
                     type="email"
                     value={clientEmail}
@@ -1152,6 +1166,26 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   {sendSuccessMode === 'api' ? 'Direct API Transmission (Instant)' : 'Email Client Pre-Fill'}
                 </span>
               </div>
+              {sendSuccessMode === 'api' && senderCopyStatus && (
+                <div className="border-t border-slate-800 pt-1 mt-1 text-[9px]">
+                  {senderCopyStatus.sent ? (
+                    <div className="text-emerald-300 flex items-center gap-1">
+                      <span>✓</span>
+                      <span>
+                        Sender copy delivered to: <strong className="text-white">{senderCopyStatus.email}</strong>
+                      </span>
+                    </div>
+                  ) : senderCopyStatus.email ? (
+                    <div className="text-amber-300 leading-snug">
+                      <span>ℹ Notice:</span> Direct copy sent to Aritro with your reply-to set to <strong className="text-white">{senderCopyStatus.email}</strong>. {senderCopyStatus.notice ? `(${senderCopyStatus.notice})` : 'A full copy was also saved to your clipboard!'}
+                    </div>
+                  ) : (
+                    <div className="text-slate-400">
+                      • Note: Provide an email in checkout to receive an automatic inbox copy.
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="flex gap-3 pt-2">
