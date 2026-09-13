@@ -301,11 +301,15 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
     <!-- Mail Header Bar with Graphic Pokéball Badge -->
     <table width="100%" cellpadding="0" cellspacing="0" border="0" class="mobile-header-pad" style="background-color: #1e3a8a; color: #ffffff; padding: 16px 20px;">
       <tr>
-        <td width="46" valign="middle" style="padding-right: 10px;">
-          <!-- Graphical Pixel-Style Pokéball -->
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(180deg, #dc2626 48%, #1e293b 48%, #1e293b 54%, #f8fafc 54%); border: 3px solid #0f172a; position: relative; box-sizing: border-box;">
-            <div style="width: 12px; height: 12px; background-color: #ffffff; border: 3px solid #0f172a; border-radius: 50%; position: absolute; top: 10px; left: 10px; box-sizing: border-box;"></div>
-          </div>
+        <td width="46" valign="middle" style="padding-right: 12px;">
+          <!-- Authentic Pokéball Badge -->
+          <img
+            src="https://raw.githubusercontent.com/halcyon-past/openworld-portfolio/main/public/assets/pokeball.png"
+            width="42"
+            height="42"
+            alt="Pokéball"
+            style="display: block; width: 42px; height: 42px; border: 0; outline: none; text-decoration: none;"
+          />
         </td>
         <td valign="middle">
           <div class="mobile-header-title" style="font-size: 16px; font-weight: 800; letter-spacing: 1px; color: #fbbf24; text-transform: uppercase; line-height: 1.2;">

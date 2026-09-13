@@ -95,9 +95,11 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onStartGame, onOpe
               className="w-full h-full object-contain drop-shadow-md"
             />
             {/* Mini pixel pokeball badge in bottom-right corner */}
-            <div className="absolute -bottom-2 -right-2 w-7 h-7 rounded-full border-2 border-slate-900 bg-gradient-to-b from-red-500 to-white shadow-md flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-slate-900 border border-white" />
-            </div>
+            <img
+              src="/assets/pokeball.png"
+              alt="Pokéball"
+              className="absolute -bottom-2 -right-2 w-7 h-7 object-contain drop-shadow-md"
+            />
           </div>
         </div>
 
