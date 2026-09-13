@@ -180,20 +180,20 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
           const itemsList = items
             .map(
               (item) => `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; margin-bottom: 4px; background-color: #ffffff; border: 1px solid ${scheme.border}; border-radius: 4px; font-size: 12px;">
-                <span style="font-weight: bold; color: #1e293b;">★ ${item.name}</span>
-                <span style="font-size: 10px; font-weight: bold; color: ${scheme.text}; background-color: ${scheme.bg}; padding: 2px 6px; border-radius: 10px; border: 1px solid ${scheme.border};">${item.level}</span>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; margin-bottom: 4px; background-color: #ffffff; border: 1px solid ${scheme.border}; border-radius: 4px; font-size: 12px;">
+                <span style="font-weight: bold; color: #1e293b; word-break: break-word;">★ ${item.name}</span>
+                <span style="font-size: 10px; font-weight: bold; color: ${scheme.text}; background-color: ${scheme.bg}; padding: 2px 6px; border-radius: 10px; border: 1px solid ${scheme.border}; white-space: nowrap; margin-left: 6px;">${item.level}</span>
               </div>
             `
             )
             .join('');
 
           return `
-            <td width="50%" valign="top" style="padding: 6px;">
-              <div style="background-color: ${scheme.bg}; border: 2px solid ${scheme.border}; border-radius: 8px; padding: 10px; height: 100%;">
+            <td class="mobile-cat-col" width="50%" valign="top" style="padding: 5px; box-sizing: border-box;">
+              <div style="background-color: ${scheme.bg}; border: 2px solid ${scheme.border}; border-radius: 8px; padding: 10px; height: 100%; box-sizing: border-box;">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid ${scheme.border}; padding-bottom: 6px; margin-bottom: 8px;">
                   <span style="font-size: 12px; font-weight: bold; color: ${scheme.text}; letter-spacing: 0.5px; text-transform: uppercase;">${cat}</span>
-                  <span style="font-size: 9px; font-weight: bold; color: ${scheme.text}; background-color: #ffffff; padding: 1px 6px; border-radius: 4px; border: 1px solid ${scheme.border};">${scheme.badge}</span>
+                  <span style="font-size: 9px; font-weight: bold; color: ${scheme.text}; background-color: #ffffff; padding: 1px 6px; border-radius: 4px; border: 1px solid ${scheme.border}; white-space: nowrap;">${scheme.badge}</span>
                 </div>
                 ${itemsList}
               </div>
@@ -207,7 +207,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
             ${
               secondCol
                 ? renderCol(secondCol[0], secondCol[1])
-                : `<td width="50%" valign="top" style="padding: 6px;"></td>`
+                : `<td class="mobile-cat-empty" width="50%" valign="top" style="padding: 5px;"></td>`
             }
           </tr>
         `;
@@ -216,35 +216,106 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
 
     return `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="x-apple-disable-message-reformatting">
   <title>Pokémon Tech Mart Requisition</title>
+  <style>
+    /* Email client resets */
+    body, table, td, p, a, li, blockquote {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    table, td {
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    img {
+      -ms-interpolation-mode: bicubic;
+      border: 0;
+      height: auto;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+    table {
+      border-collapse: collapse !important;
+    }
+    /* Mobile Responsive Breakpoints */
+    @media only screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-width: 2px !important;
+        border-radius: 8px !important;
+      }
+      .mobile-body-pad {
+        padding: 14px 10px !important;
+      }
+      .mobile-header-pad {
+        padding: 12px 14px !important;
+      }
+      .mobile-header-title {
+        font-size: 14px !important;
+        letter-spacing: 0.5px !important;
+      }
+      .mobile-header-subtitle {
+        font-size: 9px !important;
+        line-height: 1.3 !important;
+      }
+      .mobile-badge {
+        display: none !important;
+      }
+      .mobile-stack-col {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .mobile-route-sender {
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+      .mobile-cat-col {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 4px 0 !important;
+      }
+      .mobile-cat-empty {
+        display: none !important;
+      }
+      .mobile-footer-seal {
+        text-align: left !important;
+        margin-top: 10px !important;
+      }
+    }
+  </style>
 </head>
-<body style="margin: 0; padding: 20px; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  <div style="max-width: 640px; margin: 0 auto; background-color: #fdfbf7; border: 4px solid #1e293b; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+<body style="margin: 0; padding: 12px 6px; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <div class="email-container" style="max-width: 620px; margin: 0 auto; background-color: #fdfbf7; border: 3px solid #1e293b; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
     
     <!-- Retro Pokémon Mail Top Strip (Airmail style chevron) -->
-    <div style="height: 8px; background: repeating-linear-gradient(45deg, #ef4444, #ef4444 15px, #ffffff 15px, #ffffff 30px, #3b82f6 30px, #3b82f6 45px, #ffffff 45px, #ffffff 60px);"></div>
+    <div style="height: 6px; background: repeating-linear-gradient(45deg, #ef4444, #ef4444 15px, #ffffff 15px, #ffffff 30px, #3b82f6 30px, #3b82f6 45px, #ffffff 45px, #ffffff 60px);"></div>
     
     <!-- Mail Header Bar with Graphic Pokéball Badge -->
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #1e3a8a; color: #ffffff; padding: 16px 20px;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" class="mobile-header-pad" style="background-color: #1e3a8a; color: #ffffff; padding: 16px 20px;">
       <tr>
-        <td width="54" valign="middle">
+        <td width="46" valign="middle" style="padding-right: 10px;">
           <!-- Graphical Pixel-Style Pokéball -->
-          <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(180deg, #dc2626 48%, #1e293b 48%, #1e293b 54%, #f8fafc 54%); border: 3px solid #0f172a; position: relative; box-sizing: border-box;">
-            <div style="width: 14px; height: 14px; background-color: #ffffff; border: 3px solid #0f172a; border-radius: 50%; position: absolute; top: 12px; left: 12px; box-sizing: border-box;"></div>
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(180deg, #dc2626 48%, #1e293b 48%, #1e293b 54%, #f8fafc 54%); border: 3px solid #0f172a; position: relative; box-sizing: border-box;">
+            <div style="width: 12px; height: 12px; background-color: #ffffff; border: 3px solid #0f172a; border-radius: 50%; position: absolute; top: 10px; left: 10px; box-sizing: border-box;"></div>
           </div>
         </td>
-        <td valign="middle" style="padding-left: 12px;">
-          <div style="font-size: 16px; font-weight: 800; letter-spacing: 1px; color: #fbbf24; text-transform: uppercase;">
+        <td valign="middle">
+          <div class="mobile-header-title" style="font-size: 16px; font-weight: 800; letter-spacing: 1px; color: #fbbf24; text-transform: uppercase; line-height: 1.2;">
             PALLET CLOUD POKÉ MART
           </div>
-          <div style="font-size: 11px; color: #93c5fd; letter-spacing: 0.5px;">
+          <div class="mobile-header-subtitle" style="font-size: 10px; color: #93c5fd; letter-spacing: 0.5px; margin-top: 2px;">
             SPECIAL TALENT REQUISITION PARCEL • SILPH CO. POSTAL SERVICE
           </div>
         </td>
-        <td align="right" valign="middle">
+        <td align="right" valign="middle" class="mobile-badge">
           <div style="display: inline-block; background-color: #0f172a; border: 1px solid #fbbf24; border-radius: 6px; padding: 4px 8px; text-align: center;">
             <div style="font-size: 9px; color: #fbbf24; font-weight: bold;">ORIGIN: PALLET TOWN</div>
             <div style="font-size: 8px; color: #cbd5e1;">SERIES 2026</div>
@@ -253,54 +324,52 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
       </tr>
     </table>
 
-    <div style="padding: 20px;">
+    <div class="mobile-body-pad" style="padding: 18px;">
       
       <!-- Routing Header Table -->
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 18px; font-size: 12px;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 16px; font-size: 12px;">
         <tr>
-          <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; width: 50%;">
+          <td class="mobile-stack-col mobile-route-sender" style="padding: 10px 12px; width: 50%; box-sizing: border-box; word-break: break-word;">
             <span style="color: #64748b; font-size: 10px; font-weight: bold; text-transform: uppercase; display: block;">FROM (SENDER):</span>
             <span style="font-weight: bold; color: #0f172a; font-size: 13px;">${safeName}</span>
-            <div style="color: #475569; font-size: 11px;">${safeRole} &bull; <a href="mailto:${safeEmail}" style="color: #2563eb; text-decoration: none;">${safeEmail}</a></div>
+            <div style="color: #475569; font-size: 11px; margin-top: 2px;">${safeRole} &bull; <a href="mailto:${safeEmail}" style="color: #2563eb; text-decoration: none; word-break: break-all;">${safeEmail}</a></div>
           </td>
-          <td style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; width: 50%; background-color: #f8fafc;">
+          <td class="mobile-stack-col" style="padding: 10px 12px; width: 50%; background-color: #f8fafc; box-sizing: border-box; word-break: break-word;">
             <span style="color: #64748b; font-size: 10px; font-weight: bold; text-transform: uppercase; display: block;">TO (RECIPIENT):</span>
             <span style="font-weight: bold; color: #0f172a; font-size: 13px;">Aritro Saha (Tech Lead / Gym Leader)</span>
-            <div style="color: #475569; font-size: 11px;">Associate Software Developer &bull; <a href="mailto:aritrosaha2025@gmail.com" style="color: #2563eb; text-decoration: none;">aritrosaha2025@gmail.com</a></div>
+            <div style="color: #475569; font-size: 11px; margin-top: 2px;">Associate Software Developer &bull; <a href="mailto:aritrosaha2025@gmail.com" style="color: #2563eb; text-decoration: none; word-break: break-all;">aritrosaha2025@gmail.com</a></div>
           </td>
         </tr>
       </table>
 
       <!-- Project Message Section -->
-      <div style="margin-bottom: 20px;">
+      <div style="margin-bottom: 18px;">
         <div style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">
           ✉️ REQUISITION INQUIRY & MESSAGE:
         </div>
-        <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-top: 1px solid #fde68a; border-right: 1px solid #fde68a; border-bottom: 1px solid #fde68a; border-radius: 0 8px 8px 0; padding: 14px 16px; font-size: 13px; line-height: 1.6; color: #1e293b;">
-          &ldquo;${safeMessage}&rdquo;
-        </div>
+        <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-top: 1px solid #fde68a; border-right: 1px solid #fde68a; border-bottom: 1px solid #fde68a; border-radius: 0 8px 8px 0; padding: 12px 14px; font-size: 13px; line-height: 1.6; color: #1e293b; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">&ldquo;${safeMessage}&rdquo;</div>
       </div>
 
       <!-- Skills Ordered Heading -->
-      <div style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="margin-bottom: 8px;">
         <span style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">
           🎒 TECHNICAL SKILLS ORDERED FROM MART (${cart.length} ITEMS):
         </span>
       </div>
 
-      <!-- Skills Grid (Side-by-side grouped table) -->
-      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">
+      <!-- Skills Grid (Side-by-side on desktop, stacked on mobile) -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 18px;">
         ${categoriesHtml}
       </table>
 
       <!-- Footer Stamp & Certifications -->
       <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 2px dashed #cbd5e1; padding-top: 14px; font-size: 11px; color: #64748b;">
         <tr>
-          <td valign="middle">
+          <td valign="middle" class="mobile-stack-col" style="padding-bottom: 6px;">
             <span style="font-weight: bold; color: #0f172a;">AUTHENTIC PALLET CLOUD RPG DISPATCH</span><br />
             Bristol Myers Squibb Alumni &bull; Hack4Bengal 3.0 Champion
           </td>
-          <td align="right" valign="middle">
+          <td align="right" valign="middle" class="mobile-stack-col mobile-footer-seal">
             <div style="display: inline-block; border: 2px solid #059669; border-radius: 4px; padding: 3px 8px; color: #059669; font-weight: bold; font-size: 10px; transform: rotate(-2deg); background-color: #ecfdf5;">
               ✓ VERIFIED POKÉ MART SEAL
             </div>
@@ -311,7 +380,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
     </div>
 
     <!-- Bottom Airmail Chevron -->
-    <div style="height: 8px; background: repeating-linear-gradient(45deg, #3b82f6, #3b82f6 15px, #ffffff 15px, #ffffff 30px, #ef4444 30px, #ef4444 45px, #ffffff 45px, #ffffff 60px);"></div>
+    <div style="height: 6px; background: repeating-linear-gradient(45deg, #3b82f6, #3b82f6 15px, #ffffff 15px, #ffffff 30px, #ef4444 30px, #ef4444 45px, #ffffff 45px, #ffffff 60px);"></div>
   </div>
 </body>
 </html>
@@ -810,7 +879,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                     type="text"
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
-                    placeholder="e.g. Satoshi Tajiri / Recruiter"
+                    placeholder="e.g. Sundar Pichai / Recruiter"
                     className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white placeholder:text-slate-600 font-silk focus:border-yellow-400 focus:outline-hidden"
                   />
                 </div>
