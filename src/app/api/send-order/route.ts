@@ -7,7 +7,7 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.RESEND_API_KEY;
     const toEmail = process.env.ORDER_RECIPIENT_EMAIL || 'aritrosaha2025@gmail.com';
-    const fromEmail = process.env.ORDER_SENDER_EMAIL || 'PokeMart Orders <onboarding@resend.dev>';
+    const fromEmail = process.env.ORDER_SENDER_EMAIL || 'PokeMart Orders <orders@aritro.cloud>';
 
     // If Resend API Key is set in environment, send real email directly via Resend
     if (apiKey) {
