@@ -34,6 +34,9 @@ class SoundManager {
   private isMuted: boolean = false;
   private bgmGain: GainNode | null = null;
   private sfxGain: GainNode | null = null;
+  private beatboxBus: GainNode | null = null;
+  private beatboxCompressor: DynamicsCompressorNode | null = null;
+  private cachedNoiseBuffer: AudioBuffer | null = null;
   private isBgmPlaying: boolean = false;
   private bgmInterval: ReturnType<typeof setInterval> | null = null;
   private currentNoteIndex: number = 0;
@@ -66,6 +69,24 @@ class SoundManager {
       const sfxVol = (this.isMuted || this.isSfxMuted) ? 0 : this.sfxVolume * 0.28;
       this.sfxGain.gain.value = sfxVol;
       this.sfxGain.connect(this.ctx.destination);
+
+      // Dedicated Master Beatbox Bus with Punchy Dynamics Compressor
+      this.beatboxCompressor = this.ctx.createDynamicsCompressor();
+      this.beatboxCompressor.threshold.setValueAtTime(-14, this.ctx.currentTime);
+      this.beatboxCompressor.knee.setValueAtTime(6, this.ctx.currentTime);
+      this.beatboxCompressor.ratio.setValueAtTime(4.5, this.ctx.currentTime);
+      this.beatboxCompressor.attack.setValueAtTime(0.002, this.ctx.currentTime);
+      this.beatboxCompressor.release.setValueAtTime(0.12, this.ctx.currentTime);
+
+      this.beatboxBus = this.ctx.createGain();
+      const bbVol = (this.isMuted || this.isSfxMuted) ? 0 : Math.min(1.0, this.sfxVolume * 0.95);
+      this.beatboxBus.gain.value = bbVol;
+
+      this.beatboxCompressor.connect(this.beatboxBus);
+      this.beatboxBus.connect(this.ctx.destination);
+
+      // Pre-warm 1s noise buffer for zero-lag percussion triggers
+      this.cachedNoiseBuffer = this.createNoiseBuffer(1.0);
     }
 
     if (this.ctx && this.ctx.state === 'suspended') {
@@ -139,9 +160,15 @@ class SoundManager {
   }
 
   private updateSfxGain() {
-    if (this.sfxGain && this.ctx) {
-      const vol = (this.isMuted || this.isSfxMuted) ? 0 : this.sfxVolume * 0.28;
-      this.sfxGain.gain.setValueAtTime(vol, this.ctx.currentTime);
+    if (this.ctx) {
+      if (this.sfxGain) {
+        const vol = (this.isMuted || this.isSfxMuted) ? 0 : this.sfxVolume * 0.28;
+        this.sfxGain.gain.setValueAtTime(vol, this.ctx.currentTime);
+      }
+      if (this.beatboxBus) {
+        const bbVol = (this.isMuted || this.isSfxMuted) ? 0 : Math.min(1.0, this.sfxVolume * 0.95);
+        this.beatboxBus.gain.setValueAtTime(bbVol, this.ctx.currentTime);
+      }
     }
   }
 
@@ -804,189 +831,308 @@ class SoundManager {
     return buffer;
   }
 
+  /** Pre-warmed noise buffer provider */
+  private getNoiseBuffer(): AudioBuffer | null {
+    if (this.cachedNoiseBuffer) return this.cachedNoiseBuffer;
+    this.cachedNoiseBuffer = this.createNoiseBuffer(1.0);
+    return this.cachedNoiseBuffer;
+  }
+
   /**
-   * Authentic Acoustic Beatbox Synthesizer
-   * Accurately synthesizes human vocal percussion (Kicks, K-Snares, Hi-Hats, Scratches, Throat Bass, Clicks)
+   * Authentic Studio-Mastered Acoustic Beatbox Synthesizer
+   * Produces loud, punchy, authentic human vocal percussion with zero latency
+   * Designed specifically for real-time MPC-style finger drumming!
    */
   public playBeatboxSound(type: 'kick' | 'snare' | 'hihat' | 'scratch' | 'throatbass' | 'click') {
-    if (this.isMuted) return;
+    if (this.isMuted || this.isSfxMuted) return;
     this.initContext();
-    if (!this.ctx || !this.sfxGain) return;
+    if (!this.ctx) return;
 
     try {
       const t = this.ctx.currentTime;
+      // Route through the dedicated beatbox compressor bus for maximum punch and zero clipping
+      const dest = this.beatboxCompressor || this.beatboxBus || this.sfxGain;
+      if (!dest) return;
 
       if (type === 'kick') {
         // 1. Beatbox Lip Kick ("B" Plosive):
-        // Air puff transient (low-pass noise burst) + deep tonal chest drop (220Hz -> 45Hz)
-        const osc = this.ctx.createOscillator();
-        const oscGain = this.ctx.createGain();
+        // Punchy sub-bass chest thump + lip air puff transient + warm low-end drive
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(240, t);
-        osc.frequency.exponentialRampToValueAtTime(45, t + 0.16);
+        // A. Sub-bass chest thump (Sine wave with fast pitch plunge)
+        const subOsc = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(260, t);
+        subOsc.frequency.exponentialRampToValueAtTime(85, t + 0.03);
+        subOsc.frequency.exponentialRampToValueAtTime(42, t + 0.18);
 
-        oscGain.gain.setValueAtTime(0.6, t);
-        oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        subGain.gain.setValueAtTime(1.0, t);
+        subGain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
 
-        osc.connect(oscGain);
-        oscGain.connect(this.sfxGain);
+        subOsc.connect(subGain);
+        subGain.connect(dest);
+        subOsc.start(t);
+        subOsc.stop(t + 0.22);
 
-        osc.start(t);
-        osc.stop(t + 0.18);
+        // B. Mid punch / mouth cavity harmonic (Triangle wave)
+        const punchOsc = this.ctx.createOscillator();
+        const punchGain = this.ctx.createGain();
+        punchOsc.type = 'triangle';
+        punchOsc.frequency.setValueAtTime(180, t);
+        punchOsc.frequency.exponentialRampToValueAtTime(55, t + 0.07);
 
-        // Lip pop noise puff
-        const noiseBuffer = this.createNoiseBuffer(0.04);
+        punchGain.gain.setValueAtTime(0.75, t);
+        punchGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+        punchOsc.connect(punchGain);
+        punchGain.connect(dest);
+        punchOsc.start(t);
+        punchOsc.stop(t + 0.08);
+
+        // C. Acoustic Lip Pop / Air Plosive (Low-pass noise burst)
+        const noiseBuffer = this.getNoiseBuffer();
         if (noiseBuffer) {
           const noise = this.ctx.createBufferSource();
           noise.buffer = noiseBuffer;
 
           const filter = this.ctx.createBiquadFilter();
           filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(280, t);
+          filter.frequency.setValueAtTime(480, t);
+          filter.frequency.linearRampToValueAtTime(140, t + 0.05);
 
           const noiseGain = this.ctx.createGain();
-          noiseGain.gain.setValueAtTime(0.35, t);
-          noiseGain.gain.exponentialRampToValueAtTime(0.01, t + 0.04);
+          noiseGain.gain.setValueAtTime(0.85, t);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
 
           noise.connect(filter);
           filter.connect(noiseGain);
-          noiseGain.connect(this.sfxGain);
+          noiseGain.connect(dest);
 
           noise.start(t);
+          noise.stop(t + 0.05);
         }
       } else if (type === 'snare') {
         // 2. Beatbox K-Snare / "Psh" Snare:
-        // Acoustic tongue-palate air release using bandpass-filtered noise + resonant body snap
-        const noiseBuffer = this.createNoiseBuffer(0.16);
+        // Acoustic tongue-palate crack transient + resonant hollow mouth bandpass + sizzling air spray
+
+        // A. Sharp tongue-palate crack transient (fast downward chirp)
+        const crackOsc = this.ctx.createOscillator();
+        const crackGain = this.ctx.createGain();
+        crackOsc.type = 'triangle';
+        crackOsc.frequency.setValueAtTime(1600, t);
+        crackOsc.frequency.exponentialRampToValueAtTime(180, t + 0.025);
+
+        crackGain.gain.setValueAtTime(0.9, t);
+        crackGain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+
+        crackOsc.connect(crackGain);
+        crackGain.connect(dest);
+        crackOsc.start(t);
+        crackOsc.stop(t + 0.035);
+
+        // B. Acoustic mouth body pop
+        const bodyOsc = this.ctx.createOscillator();
+        const bodyGain = this.ctx.createGain();
+        bodyOsc.type = 'sine';
+        bodyOsc.frequency.setValueAtTime(320, t);
+        bodyOsc.frequency.exponentialRampToValueAtTime(95, t + 0.07);
+
+        bodyGain.gain.setValueAtTime(0.65, t);
+        bodyGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+        bodyOsc.connect(bodyGain);
+        bodyGain.connect(dest);
+        bodyOsc.start(t);
+        bodyOsc.stop(t + 0.08);
+
+        // C. Resonant hollow "K" acoustic noise spray
+        const noiseBuffer = this.getNoiseBuffer();
         if (noiseBuffer) {
           const noise = this.ctx.createBufferSource();
           noise.buffer = noiseBuffer;
 
-          // Bandpass filter centered at 3400Hz gives the distinctive hollow acoustic "K" texture
+          // Bandpass centered at 3400Hz for the distinctive acoustic "K" snap
           const bandpass = this.ctx.createBiquadFilter();
           bandpass.type = 'bandpass';
           bandpass.frequency.setValueAtTime(3400, t);
-          bandpass.Q.setValueAtTime(2.2, t);
+          bandpass.Q.setValueAtTime(2.4, t);
 
           const noiseGain = this.ctx.createGain();
-          noiseGain.gain.setValueAtTime(0.5, t);
-          noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+          noiseGain.gain.setValueAtTime(0.95, t);
+          noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
 
           noise.connect(bandpass);
           bandpass.connect(noiseGain);
-          noiseGain.connect(this.sfxGain);
+          noiseGain.connect(dest);
 
           noise.start(t);
+          noise.stop(t + 0.16);
         }
-
-        // Tonal palate release click
-        const toneOsc = this.ctx.createOscillator();
-        const toneGain = this.ctx.createGain();
-        toneOsc.type = 'triangle';
-        toneOsc.frequency.setValueAtTime(360, t);
-        toneOsc.frequency.exponentialRampToValueAtTime(90, t + 0.05);
-
-        toneGain.gain.setValueAtTime(0.25, t);
-        toneGain.gain.exponentialRampToValueAtTime(0.01, t + 0.05);
-
-        toneOsc.connect(toneGain);
-        toneGain.connect(this.sfxGain);
-
-        toneOsc.start(t);
-        toneOsc.stop(t + 0.05);
       } else if (type === 'hihat') {
         // 3. Beatbox Hi-Hat (Vocal "Ts" Sound):
-        // High-pass filtered noise with ultra-fast attack and 35ms crisp decay
-        const noiseBuffer = this.createNoiseBuffer(0.05);
+        // Ultra-crisp, bright dental burst designed for rapid 16th-note drum rolls
+        const noiseBuffer = this.getNoiseBuffer();
         if (noiseBuffer) {
           const noise = this.ctx.createBufferSource();
           noise.buffer = noiseBuffer;
 
           const filter = this.ctx.createBiquadFilter();
           filter.type = 'highpass';
-          filter.frequency.setValueAtTime(8000, t);
-          filter.Q.setValueAtTime(2.5, t);
+          filter.frequency.setValueAtTime(7600, t);
+          filter.Q.setValueAtTime(2.8, t);
 
           const gain = this.ctx.createGain();
-          gain.gain.setValueAtTime(0.35, t);
-          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+          gain.gain.setValueAtTime(0.9, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
 
           noise.connect(filter);
           filter.connect(gain);
-          gain.connect(this.sfxGain);
+          gain.connect(dest);
 
           noise.start(t);
+          noise.stop(t + 0.045);
         }
+
+        // Dental click needle attack
+        const clickOsc = this.ctx.createOscillator();
+        const clickGain = this.ctx.createGain();
+        clickOsc.type = 'sine';
+        clickOsc.frequency.setValueAtTime(9500, t);
+        clickGain.gain.setValueAtTime(0.5, t);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.008);
+
+        clickOsc.connect(clickGain);
+        clickGain.connect(dest);
+        clickOsc.start(t);
+        clickOsc.stop(t + 0.008);
       } else if (type === 'scratch') {
         // 4. Beatbox Vocal Turntable Scratch ("Wikki-Wikki"):
-        // Sawtooth frequency sweep with resonant vocal formant bandpass filter
+        // Expressive push-pull pitch sweep through resonant mouth formant filter
         const osc = this.ctx.createOscillator();
         const filter = this.ctx.createBiquadFilter();
         const gain = this.ctx.createGain();
 
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(320, t);
-        osc.frequency.linearRampToValueAtTime(860, t + 0.07);
-        osc.frequency.linearRampToValueAtTime(420, t + 0.15);
+        osc.frequency.setValueAtTime(280, t);
+        osc.frequency.linearRampToValueAtTime(920, t + 0.05); // push
+        osc.frequency.linearRampToValueAtTime(360, t + 0.10); // pull
+        osc.frequency.linearRampToValueAtTime(780, t + 0.15); // flick
 
-        // Resonant bandpass for mouth cavity resonance
         filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(1300, t);
-        filter.Q.setValueAtTime(4.5, t);
+        filter.frequency.setValueAtTime(1400, t);
+        filter.frequency.linearRampToValueAtTime(1900, t + 0.06);
+        filter.frequency.linearRampToValueAtTime(1200, t + 0.15);
+        filter.Q.setValueAtTime(5.5, t);
 
-        gain.gain.setValueAtTime(0.3, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+        gain.gain.setValueAtTime(0.85, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(this.sfxGain);
+        gain.connect(dest);
 
         osc.start(t);
-        osc.stop(t + 0.15);
+        osc.stop(t + 0.18);
       } else if (type === 'throatbass') {
         // 5. Throat Bass (Deep sub-harmonic vocal vibration):
-        // 58Hz sub-bass with harmonic grit and gentle lowpass
-        const osc = this.ctx.createOscillator();
+        // Dual detuned oscillators for heavy acoustic rumble + resonant vocal tract filtering
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
         const filter = this.ctx.createBiquadFilter();
         const gain = this.ctx.createGain();
 
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(58, t);
-        osc.frequency.setValueAtTime(55, t + 0.2);
+        // Guttural false-cord vibration: 55Hz base + octave overtone
+        osc1.type = 'sawtooth';
+        osc1.frequency.setValueAtTime(55, t);
+        osc1.frequency.linearRampToValueAtTime(52, t + 0.32);
+
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(110, t);
+        osc2.frequency.linearRampToValueAtTime(104, t + 0.32);
 
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(380, t);
-        filter.Q.setValueAtTime(3.0, t);
+        filter.frequency.setValueAtTime(440, t);
+        filter.Q.setValueAtTime(4.2, t);
 
-        gain.gain.setValueAtTime(0.45, t);
-        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.28);
+        gain.gain.setValueAtTime(0.95, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.35);
 
-        osc.connect(filter);
+        osc1.connect(filter);
+        osc2.connect(filter);
         filter.connect(gain);
-        gain.connect(this.sfxGain);
+        gain.connect(dest);
 
-        osc.start(t);
-        osc.stop(t + 0.28);
+        osc1.start(t);
+        osc2.start(t);
+        osc1.stop(t + 0.35);
+        osc2.stop(t + 0.35);
       } else if (type === 'click') {
         // 6. Tongue Click / Rimshot ("Ka" Click):
-        // Ultra fast 15ms resonant tongue pop
+        // Ultra-snappy acoustic vacuum pop with hollow mouth resonance
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(1800, t);
-        osc.frequency.exponentialRampToValueAtTime(480, t + 0.02);
+        osc.frequency.setValueAtTime(2400, t);
+        osc.frequency.exponentialRampToValueAtTime(420, t + 0.018);
 
-        gain.gain.setValueAtTime(0.4, t);
+        gain.gain.setValueAtTime(0.9, t);
         gain.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
 
         osc.connect(gain);
-        gain.connect(this.sfxGain);
-
+        gain.connect(dest);
         osc.start(t);
         osc.stop(t + 0.025);
+
+        // Acoustic rim snap transient
+        const noiseBuffer = this.getNoiseBuffer();
+        if (noiseBuffer) {
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = noiseBuffer;
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(2200, t);
+          filter.Q.setValueAtTime(4.0, t);
+
+          const snapGain = this.ctx.createGain();
+          snapGain.gain.setValueAtTime(0.7, t);
+          snapGain.gain.exponentialRampToValueAtTime(0.001, t + 0.012);
+
+          noise.connect(filter);
+          filter.connect(snapGain);
+          snapGain.connect(dest);
+
+          noise.start(t);
+          noise.stop(t + 0.012);
+        }
       }
+    } catch {
+      // ignore
+    }
+  }
+
+  /** Crisp metronome tick for rhythm practice */
+  public playMetronomeTick(isHigh: boolean = false) {
+    if (this.isMuted || this.isSfxMuted) return;
+    this.initContext();
+    if (!this.ctx) return;
+    try {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const dest = this.beatboxCompressor || this.beatboxBus || this.sfxGain;
+      if (!dest) return;
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(isHigh ? 1600 : 880, t);
+      gain.gain.setValueAtTime(isHigh ? 0.45 : 0.3, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+
+      osc.connect(gain);
+      gain.connect(dest);
+      osc.start(t);
+      osc.stop(t + 0.035);
     } catch {
       // ignore
     }
