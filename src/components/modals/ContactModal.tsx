@@ -11,8 +11,8 @@ type BeatboxPadType = 'kick' | 'snare' | 'hihat' | 'scratch' | 'throatbass' | 'c
 
 interface PadConfig {
   id: BeatboxPadType;
-  keyLabel: string;
-  altKey: string;
+  numKey: string;
+  alphaKey: string;
   name: string;
   subtitle: string;
   icon: string;
@@ -24,8 +24,8 @@ interface PadConfig {
 const BEATBOX_PADS: PadConfig[] = [
   {
     id: 'kick',
-    keyLabel: 'Q',
-    altKey: '1',
+    numKey: '1',
+    alphaKey: 'Q',
     name: 'LIP KICK',
     subtitle: '"B" Plosive & Chest Thump',
     icon: '💥',
@@ -35,8 +35,8 @@ const BEATBOX_PADS: PadConfig[] = [
   },
   {
     id: 'snare',
-    keyLabel: 'W',
-    altKey: '2',
+    numKey: '2',
+    alphaKey: 'W',
     name: 'K-SNARE',
     subtitle: '"Psh" Tongue-Palate Crack',
     icon: '⚡',
@@ -46,8 +46,8 @@ const BEATBOX_PADS: PadConfig[] = [
   },
   {
     id: 'hihat',
-    keyLabel: 'E',
-    altKey: '3',
+    numKey: '3',
+    alphaKey: 'E',
     name: 'HI-HAT',
     subtitle: '"Ts" Crisp Dental Attack',
     icon: '🎵',
@@ -57,8 +57,8 @@ const BEATBOX_PADS: PadConfig[] = [
   },
   {
     id: 'scratch',
-    keyLabel: 'A',
-    altKey: '4',
+    numKey: '4',
+    alphaKey: 'A',
     name: 'SCRATCH',
     subtitle: 'Vocal Turntable "Wikki"',
     icon: '💿',
@@ -68,8 +68,8 @@ const BEATBOX_PADS: PadConfig[] = [
   },
   {
     id: 'throatbass',
-    keyLabel: 'S',
-    altKey: '5',
+    numKey: '5',
+    alphaKey: 'S',
     name: 'THROAT BASS',
     subtitle: 'Sub-Harmonic Guttural Growl',
     icon: '🔊',
@@ -79,8 +79,8 @@ const BEATBOX_PADS: PadConfig[] = [
   },
   {
     id: 'click',
-    keyLabel: 'D',
-    altKey: '6',
+    numKey: '6',
+    alphaKey: 'D',
     name: 'TONGUE POP',
     subtitle: '"Ka" Inward Rimshot Snap',
     icon: '🎯',
@@ -105,42 +105,52 @@ export const ContactModal: React.FC<ContactModalProps> = ({ onClose }) => {
     }, 130);
   }, []);
 
-  // Keyboard MPC Finger Drumming
+  // Keyboard MPC Finger Drumming (Number keys 1-6 & Numpad 1-6 & Q-W-E-A-S-D)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is inside an input/textarea
+      // Ignore if user is typing inside an input or textarea
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
       }
 
-      const key = e.key.toLowerCase();
-      if (key === 'q' || key === '1') {
+      const key = e.key;
+      const code = e.code;
+      const lowerKey = key.toLowerCase();
+
+      if (key === '1' || code === 'Digit1' || code === 'Numpad1' || lowerKey === 'q') {
         e.preventDefault();
+        e.stopPropagation();
         triggerPad('kick');
-      } else if (key === 'w' || key === '2') {
+      } else if (key === '2' || code === 'Digit2' || code === 'Numpad2' || lowerKey === 'w') {
         e.preventDefault();
+        e.stopPropagation();
         triggerPad('snare');
-      } else if (key === 'e' || key === '3') {
+      } else if (key === '3' || code === 'Digit3' || code === 'Numpad3' || lowerKey === 'e') {
         e.preventDefault();
+        e.stopPropagation();
         triggerPad('hihat');
-      } else if (key === 'a' || key === '4') {
+      } else if (key === '4' || code === 'Digit4' || code === 'Numpad4' || lowerKey === 'a') {
         e.preventDefault();
+        e.stopPropagation();
         triggerPad('scratch');
-      } else if (key === 's' || key === '5') {
+      } else if (key === '5' || code === 'Digit5' || code === 'Numpad5' || lowerKey === 's') {
         e.preventDefault();
+        e.stopPropagation();
         triggerPad('throatbass');
-      } else if (key === 'd' || key === '6') {
+      } else if (key === '6' || code === 'Digit6' || code === 'Numpad6' || lowerKey === 'd') {
         e.preventDefault();
+        e.stopPropagation();
         triggerPad('click');
-      } else if (key === 'b' || key === 'escape') {
+      } else if (key === 'Escape' || lowerKey === 'b') {
         e.preventDefault();
+        e.stopPropagation();
         soundManager.playCancel();
         onClose();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
   }, [triggerPad, onClose]);
 
   // Demo Beatbox Jam (90 BPM 16-step hip-hop groove)
@@ -295,8 +305,8 @@ export const ContactModal: React.FC<ContactModalProps> = ({ onClose }) => {
                       LOUD & PUNCHY
                     </span>
                   </div>
-                  <p className="text-[8px] text-slate-400 font-silk">
-                    Vocal Percussion Synthesizer • Keyboard Keys [Q, W, E, A, S, D] or Tap Pads
+                  <p className="text-[8px] sm:text-[9px] text-slate-300 font-silk">
+                    Play with Number Keys <strong className="text-amber-300 font-bold">[1, 2, 3, 4, 5, 6]</strong> or <span className="text-slate-400">[Q, W, E, A, S, D]</span> • Tap pads to trigger
                   </p>
                 </div>
               </div>
@@ -374,12 +384,17 @@ export const ContactModal: React.FC<ContactModalProps> = ({ onClose }) => {
                       isActive ? pad.activeClass : 'hover:-translate-y-0.5'
                     }`}
                   >
-                    {/* Top Row: Key Badge & Icon */}
+                    {/* Top Row: Number Key Badge & Icon */}
                     <div className="flex items-center justify-between w-full pointer-events-none">
                       <span className="text-base sm:text-lg">{pad.icon}</span>
-                      <span className="px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold bg-black/50 text-white rounded border border-white/20 font-silk">
-                        [{pad.keyLabel}]
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <span className="px-1.5 py-0.5 text-[9px] sm:text-[10px] font-black bg-amber-400 text-slate-950 rounded font-pixel shadow-xs">
+                          {pad.numKey}
+                        </span>
+                        <span className="px-1 py-0.5 text-[7px] sm:text-[8px] font-bold bg-black/50 text-white/80 rounded border border-white/20 font-silk">
+                          {pad.alphaKey}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Bottom Row: Sound Name & Human Technique */}
@@ -397,23 +412,23 @@ export const ContactModal: React.FC<ContactModalProps> = ({ onClose }) => {
             </div>
 
             {/* Rhythm Guides & Beat Recipes */}
-            <div className="bg-slate-900/80 border border-slate-800 rounded-lg p-2.5 text-[8px] sm:text-[9px] font-silk text-slate-300 space-y-1">
-              <div className="text-rose-400 font-bold font-pixel flex items-center gap-1 text-[8px]">
-                <Volume2 className="w-3 h-3" />
-                <span>HOW TO MAKE BEATS (FINGER DRUMMING CHEAT SHEET):</span>
+            <div className="bg-slate-900/90 border border-slate-800 rounded-lg p-2.5 text-[8px] sm:text-[9px] font-silk text-slate-300 space-y-1.5">
+              <div className="text-rose-400 font-bold font-pixel flex items-center gap-1 text-[8px] sm:text-[9px]">
+                <Volume2 className="w-3.5 h-3.5" />
+                <span>KEYBOARD FINGER DRUMMING RECIPES (PRESS NUMBER KEYS):</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-slate-400">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-slate-300">
                 <div>
-                  <span className="text-amber-300 font-semibold">Boom-Bap:</span> Tap <code className="bg-black/50 px-1 py-0.2 rounded text-white">[Q]</code> ➔ <code className="bg-black/50 px-1 py-0.2 rounded text-white">[E]</code> ➔ <code className="bg-black/50 px-1 py-0.2 rounded text-white">[W]</code> ➔ <code className="bg-black/50 px-1 py-0.2 rounded text-white">[E]</code>
+                  <span className="text-amber-300 font-bold">Boom-Bap:</span> Press <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">1</code> ➔ <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">3</code> ➔ <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">2</code> ➔ <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">3</code> <span className="text-slate-400 text-[8px]">(Lip Kick ➔ Hat ➔ K-Snare ➔ Hat)</span>
                 </div>
                 <div>
-                  <span className="text-blue-300 font-semibold">Bass Drop:</span> Tap <code className="bg-black/50 px-1 py-0.2 rounded text-white">[Q]</code> ➔ <code className="bg-black/50 px-1 py-0.2 rounded text-white">[S]</code> ➔ <code className="bg-black/50 px-1 py-0.2 rounded text-white">[W]</code>
+                  <span className="text-blue-300 font-bold">Bass Drop:</span> Press <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">1</code> ➔ <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">5</code> ➔ <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">2</code> <span className="text-slate-400 text-[8px]">(Lip Kick ➔ Throat Bass ➔ Snare)</span>
                 </div>
                 <div>
-                  <span className="text-purple-300 font-semibold">Turntable Scratch:</span> Rapidly hit <code className="bg-black/50 px-1 py-0.2 rounded text-white">[A]</code> ➔ <code className="bg-black/50 px-1 py-0.2 rounded text-white">[A]</code> ➔ <code className="bg-black/50 px-1 py-0.2 rounded text-white">[W]</code>
+                  <span className="text-purple-300 font-bold">Turntable Scratch:</span> Hit <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">4</code> ➔ <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">4</code> ➔ <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">2</code> <span className="text-slate-400 text-[8px]">(Scratch ➔ Scratch ➔ Snare)</span>
                 </div>
                 <div>
-                  <span className="text-pink-300 font-semibold">16th-Note Roll:</span> Tap <code className="bg-black/50 px-1 py-0.2 rounded text-white">[E]</code> rapidly while dropping <code className="bg-black/50 px-1 py-0.2 rounded text-white">[Q]</code> & <code className="bg-black/50 px-1 py-0.2 rounded text-white">[W]</code>
+                  <span className="text-pink-300 font-bold">16th-Note Roll:</span> Rapid-fire <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">3</code> with <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">1</code> & <code className="bg-amber-400 text-slate-950 font-bold px-1.5 py-0.5 rounded font-pixel text-[8px]">2</code> drops
                 </div>
               </div>
             </div>
