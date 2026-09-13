@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { GameCanvas } from '@/components/game/GameCanvas';
 import { LoadingScreen } from '@/components/game/LoadingScreen';
 import { DialogueBox } from '@/components/ui/DialogueBox';
@@ -37,16 +37,98 @@ export default function Home() {
 
   const [recruiterOrigin, setRecruiterOrigin] = useState<'home' | 'game'>('game');
 
+  // Mobile Back Button / Browser Navigation History Controller
+  const overlayHistoryCountRef = useRef<number>(0);
+  const isProgrammaticBackRef = useRef<boolean>(false);
+
+  // Push an overlay state to history so system Back button closes the overlay
+  const pushOverlayHistory = useCallback((overlayName: string) => {
+    if (typeof window !== 'undefined') {
+      window.history.pushState({ openworld_overlay: overlayName }, '');
+      overlayHistoryCountRef.current++;
+    }
+  }, []);
+
+  // Pop all open overlays from browser history programmatically when closed via on-screen buttons
+  const popAllOverlayHistory = useCallback(() => {
+    if (typeof window !== 'undefined' && overlayHistoryCountRef.current > 0) {
+      const count = overlayHistoryCountRef.current;
+      overlayHistoryCountRef.current = 0;
+      isProgrammaticBackRef.current = true;
+      window.history.go(-count);
+    }
+  }, []);
+
+  // Listen to popstate (Mobile Back Button / Android Hardware Back / Browser Back)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Stamp initial history state
+    window.history.replaceState({ openworld_root: true }, '');
+
+    const handlePopState = (event: PopStateEvent) => {
+      // If this popstate was triggered by our own programmatic close, ignore
+      if (isProgrammaticBackRef.current) {
+        isProgrammaticBackRef.current = false;
+        return;
+      }
+
+      // User pressed the mobile / browser back button!
+      const overlay = event.state?.openworld_overlay;
+
+      if (overlay) {
+        // Stepped back to a parent overlay (e.g. from Pokédex back to Start Menu)
+        soundManager.playSelect();
+        if (overlay === 'dialogue') {
+          gameEngine.isDialogueActive = true;
+        } else if (overlay === 'recruiter') {
+          setIsRecruiterMode(true);
+        } else {
+          setActiveModal(overlay);
+          gameEngine.isModalActive = true;
+        }
+        overlayHistoryCountRef.current = Math.max(1, overlayHistoryCountRef.current - 1);
+      } else {
+        // Stepped back to root: close any open modal/dialogue/recruiter view and return to game
+        soundManager.playCancel();
+        setActiveModal(null);
+        gameEngine.isModalActive = false;
+        setActiveDialogue(null);
+        gameEngine.isDialogueActive = false;
+        setIsRecruiterMode(false);
+        soundManager.startBGM();
+        overlayHistoryCountRef.current = 0;
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleStartGame = () => {
     setIsLoading(false);
     setIsRecruiterMode(false);
   };
 
-  const handleOpenRecruiter = (origin: 'home' | 'game' = 'game') => {
+  const handleOpenRecruiter = useCallback((origin: 'home' | 'game' = 'game') => {
     setRecruiterOrigin(origin);
     setIsLoading(false);
     setIsRecruiterMode(true);
-  };
+    if (origin === 'game') {
+      pushOverlayHistory('recruiter');
+    }
+  }, [pushOverlayHistory]);
+
+  const handleCloseRecruiter = useCallback(() => {
+    setIsRecruiterMode(false);
+    popAllOverlayHistory();
+    if (recruiterOrigin === 'home') {
+      setIsLoading(true);
+      soundManager.stopBGM();
+    } else {
+      soundManager.startBGM();
+    }
+  }, [popAllOverlayHistory, recruiterOrigin]);
 
   const handleToggleMute = () => {
     const muted = soundManager.toggleMute();
@@ -60,25 +142,29 @@ export default function Home() {
   const handleOpenModal = useCallback((modal: string) => {
     gameEngine.isModalActive = true;
     setActiveModal(modal);
-  }, []);
+    pushOverlayHistory(modal);
+  }, [pushOverlayHistory]);
 
   const handleCloseModal = useCallback(() => {
     gameEngine.isModalActive = false;
     setActiveModal(null);
-  }, []);
+    popAllOverlayHistory();
+  }, [popAllOverlayHistory]);
 
   const handleDialogue = useCallback(
     (dialogue: { speaker: string; lines: string[]; avatar?: string }) => {
       gameEngine.isDialogueActive = true;
       setActiveDialogue(dialogue);
+      pushOverlayHistory('dialogue');
     },
-    []
+    [pushOverlayHistory]
   );
 
   const handleCloseDialogue = useCallback(() => {
     gameEngine.isDialogueActive = false;
     setActiveDialogue(null);
-  }, []);
+    popAllOverlayHistory();
+  }, [popAllOverlayHistory]);
 
   const handleWildEncounter = useCallback((text: string) => {
     setWildEncounterText(text);
@@ -114,15 +200,7 @@ export default function Home() {
       {!isLoading && isRecruiterMode && (
         <RecruiterDossierView
           returnLabel={recruiterOrigin === 'home' ? 'RETURN TO HOME SCREEN' : 'RETURN TO POKÉMON RPG'}
-          onReturn={() => {
-            setIsRecruiterMode(false);
-            if (recruiterOrigin === 'home') {
-              setIsLoading(true);
-              soundManager.stopBGM();
-            } else {
-              soundManager.startBGM();
-            }
-          }}
+          onReturn={handleCloseRecruiter}
         />
       )}
 
@@ -169,7 +247,7 @@ export default function Home() {
       {activeModal === 'startmenu' && (
         <StartMenu
           onSelect={(item) => {
-            setActiveModal(item);
+            handleOpenModal(item);
           }}
           onClose={handleCloseModal}
         />
