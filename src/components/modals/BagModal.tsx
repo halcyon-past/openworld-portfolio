@@ -39,6 +39,7 @@ interface CartItem {
 export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
   const [selectedCategoryIdx, setSelectedCategoryIdx] = useState(0);
   const [selectedItemIdx, setSelectedItemIdx] = useState(0);
+  const [mobileTab, setMobileTab] = useState<'catalog' | 'details' | 'cart'>('catalog');
   const [cart, setCart] = useState<CartItem[]>([
     { name: 'Python', category: 'Languages', level: 'Expert', tag: 'Core' },
     { name: 'Next.js', category: 'Frontend', level: 'Expert', tag: 'FullStack' },
@@ -351,41 +352,46 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/75 backdrop-blur-xs font-pixel">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-1 sm:p-4 md:p-6 bg-black/80 backdrop-blur-xs font-pixel">
       {/* Retro Blue & Gold Poké Mart Shop Shell */}
-      <div className="relative w-full max-w-4xl bg-gradient-to-b from-[#1e3a8a] via-[#172554] to-[#0f172a] border-4 sm:border-8 border-slate-950 rounded-xl shadow-[0_20px_60px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="relative w-full max-w-4xl bg-gradient-to-b from-[#1e3a8a] via-[#172554] to-[#0f172a] border-2 sm:border-8 border-slate-950 rounded-xl shadow-[0_20px_60px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col h-[94vh] sm:max-h-[92vh]">
         
         {/* Header Bar */}
-        <div className="bg-[#09153a] px-4 py-2.5 border-b-4 border-slate-950 flex justify-between items-center shrink-0">
+        <div className="bg-[#09153a] px-3 sm:px-4 py-2 sm:py-2.5 border-b-2 sm:border-b-4 border-slate-950 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-blue-500 border-2 border-yellow-300 flex items-center justify-center text-[10px] text-yellow-300 font-bold">
+            <div className="w-5 h-5 rounded-full bg-blue-500 border-2 border-yellow-300 flex items-center justify-center text-[10px] text-yellow-300 font-bold shrink-0">
               $
             </div>
-            <span className="text-xs md:text-sm font-bold text-white tracking-wider flex items-center gap-2">
-              <span>PALLET CLOUD POKÉ MART</span>
-              <span className="text-[10px] text-yellow-400 font-silk bg-yellow-950/80 px-2 py-0.5 rounded border border-yellow-500/50">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 leading-tight">
+              <span className="text-xs sm:text-sm font-bold text-white tracking-wider">
+                POKÉ MART
+              </span>
+              <span className="text-[8px] sm:text-[10px] text-yellow-400 font-silk bg-yellow-950/80 px-1.5 py-0.5 rounded border border-yellow-500/50 w-fit">
                 TECH STACK SHOP
               </span>
-            </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* View Cart Toggle Button */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* View Cart / Checkout Toggle Button */}
             {viewMode === 'shop' && (
               <button
                 onClick={() => {
                   soundManager.playSelect();
                   setViewMode('checkout');
                 }}
-                className={`px-3 py-1 rounded text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
+                className={`px-2.5 sm:px-3 py-1 rounded text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer border ${
                   cart.length > 0
-                    ? 'bg-yellow-400 hover:bg-yellow-300 text-slate-950 border-yellow-500 shadow-md animate-pulse'
+                    ? 'bg-yellow-400 hover:bg-yellow-300 text-slate-950 border-yellow-500 shadow-md'
                     : 'bg-slate-800 text-slate-400 border-slate-700'
                 }`}
               >
-                <ShoppingCart className="w-3.5 h-3.5" />
-                <span>CART ({cart.length})</span>
-                {cart.length > 0 && <span className="text-[10px]">ORDER ►</span>}
+                <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden xs:inline">CART</span>
+                <span className="bg-slate-950/80 text-yellow-300 px-1.5 py-0.2 rounded-full text-[9px] font-silk">
+                  {cart.length}
+                </span>
+                {cart.length > 0 && <span className="text-[10px] text-slate-950 hidden sm:inline">ORDER ►</span>}
               </button>
             )}
 
@@ -394,7 +400,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                 soundManager.playCancel();
                 onClose();
               }}
-              className="p-1 rounded bg-slate-900/80 hover:bg-slate-900 text-white cursor-pointer"
+              className="p-1 sm:p-1.5 rounded bg-slate-900/80 hover:bg-slate-900 text-white cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -406,8 +412,8 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
         {/* ======================================================== */}
         {viewMode === 'shop' && (
           <>
-            {/* Category Navigation Tabs */}
-            <div className="bg-[#0f1f4b] p-2 flex flex-wrap gap-1.5 border-b-2 border-slate-950 shrink-0">
+            {/* Category Navigation Tabs - Smooth Horizontal Scrollable on Mobile */}
+            <div className="bg-[#0f1f4b] p-1.5 sm:p-2 flex gap-1 sm:gap-1.5 border-b-2 border-slate-950 shrink-0 overflow-x-auto no-scrollbar scroll-smooth">
               {categories.map((cat, idx) => {
                 const isSelected = idx === selectedCategoryIdx;
                 const Icon = getCategoryIcon(cat.category);
@@ -416,14 +422,17 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                 return (
                   <button
                     key={cat.category}
-                    onClick={() => handleCategoryTab(idx)}
-                    className={`py-1.5 px-3 rounded text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
+                    onClick={() => {
+                      handleCategoryTab(idx);
+                      setMobileTab('catalog');
+                    }}
+                    className={`py-1.5 px-2.5 sm:px-3 rounded text-[9px] sm:text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer border whitespace-nowrap shrink-0 ${
                       isSelected
                         ? 'bg-yellow-400 text-slate-950 border-yellow-300 shadow-md -translate-y-0.5'
                         : 'bg-slate-900/80 text-blue-200 border-blue-900/60 hover:bg-blue-900/60 hover:text-white'
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     <span>{cat.category}</span>
                     {countInCart > 0 && (
                       <span className="bg-blue-900 text-yellow-300 px-1 rounded-full text-[8px] font-silk">
@@ -435,94 +444,157 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
               })}
             </div>
 
-            {/* Shop Dual Panels */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 p-3 md:p-4 overflow-y-auto flex-1">
+            {/* Mobile View Switcher (Catalog vs Item Details vs Cart) */}
+            <div className="flex md:hidden bg-[#0a1329] border-b border-slate-800 text-[10px] font-silk">
+              <button
+                onClick={() => {
+                  soundManager.playSelect();
+                  setMobileTab('catalog');
+                }}
+                className={`flex-1 py-1.5 text-center font-bold border-b-2 transition-colors ${
+                  mobileTab === 'catalog'
+                    ? 'border-yellow-400 text-yellow-300 bg-blue-950/60'
+                    : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                1. ITEMS ({currentCategory.items.length})
+              </button>
+              <button
+                onClick={() => {
+                  soundManager.playSelect();
+                  setMobileTab('details');
+                }}
+                className={`flex-1 py-1.5 text-center font-bold border-b-2 transition-colors ${
+                  mobileTab === 'details'
+                    ? 'border-yellow-400 text-yellow-300 bg-blue-950/60'
+                    : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                2. DETAILS
+              </button>
+              <button
+                onClick={() => {
+                  soundManager.playSelect();
+                  setMobileTab('cart');
+                }}
+                className={`flex-1 py-1.5 text-center font-bold border-b-2 transition-colors ${
+                  mobileTab === 'cart'
+                    ? 'border-yellow-400 text-yellow-300 bg-blue-950/60'
+                    : 'border-transparent text-slate-400 hover:text-white'
+                }`}
+              >
+                3. CART ({cart.length})
+              </button>
+            </div>
+
+            {/* Shop Dual Panels (Grid on desktop, Tabbed/Stacked on Mobile) */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-2.5 sm:gap-3 p-2 sm:p-4 overflow-y-auto flex-1">
               
               {/* Left Column: Items in Category */}
-              <div className="md:col-span-6 bg-[#111927] border-4 border-[#1e293b] rounded-lg p-2 flex flex-col gap-1.5 shrink-0 overflow-y-auto max-h-[260px] md:max-h-none">
+              <div
+                className={`md:col-span-6 bg-[#111927] border-2 sm:border-4 border-[#1e293b] rounded-lg p-2 flex flex-col gap-1.5 overflow-y-auto ${
+                  mobileTab !== 'catalog' ? 'hidden md:flex' : 'flex'
+                }`}
+              >
                 <div className="text-[9px] text-yellow-400 font-silk px-2 py-1 uppercase tracking-wider flex justify-between border-b border-slate-800 pb-1.5">
                   <span className="flex items-center gap-1.5">
                     <Sparkles className="w-3 h-3 text-yellow-400" />
                     {currentCategory.category} SHELF
                   </span>
-                  <span>{currentCategory.items.length} SKILLS AVAILABLE</span>
+                  <span>{currentCategory.items.length} SKILLS</span>
                 </div>
 
-                {currentCategory.items.map((item, idx) => {
-                  const isSelected = idx === selectedItemIdx;
-                  const inCart = isItemInCart(item.name);
+                <div className="space-y-1.5 overflow-y-auto pr-0.5">
+                  {currentCategory.items.map((item, idx) => {
+                    const isSelected = idx === selectedItemIdx;
+                    const inCart = isItemInCart(item.name);
 
-                  return (
-                    <div
-                      key={item.name}
-                      onClick={() => handleItemClick(idx)}
-                      className={`w-full px-2.5 py-2 rounded flex items-center justify-between transition-all cursor-pointer border ${
-                        isSelected
-                          ? 'bg-blue-600/90 text-white border-blue-400 shadow-md'
-                          : 'bg-slate-900/70 hover:bg-slate-800/80 text-slate-200 border-slate-800'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 truncate">
-                        <span className="text-[10px] text-yellow-400">{isSelected ? '►' : '•'}</span>
-                        <span className="text-xs font-bold truncate">{item.name}</span>
-                        <span className="text-[8px] px-1.5 py-0.5 rounded bg-slate-950/80 text-slate-300 font-silk">
-                          {item.tag}
-                        </span>
-                      </div>
+                    return (
+                      <div
+                        key={item.name}
+                        onClick={() => {
+                          handleItemClick(idx);
+                          // Auto open details on mobile if tapped
+                          if (window.innerWidth < 768) {
+                            setMobileTab('details');
+                          }
+                        }}
+                        className={`w-full px-2.5 py-2 rounded flex items-center justify-between transition-all cursor-pointer border ${
+                          isSelected
+                            ? 'bg-blue-600/90 text-white border-blue-400 shadow-md'
+                            : 'bg-slate-900/70 hover:bg-slate-800/80 text-slate-200 border-slate-800'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate pr-1">
+                          <span className="text-[10px] text-yellow-400 shrink-0">{isSelected ? '►' : '•'}</span>
+                          <span className="text-xs font-bold truncate">{item.name}</span>
+                          <span className="text-[8px] px-1.5 py-0.5 rounded bg-slate-950/80 text-slate-300 font-silk shrink-0 hidden xs:inline">
+                            {item.tag}
+                          </span>
+                        </div>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-[8px] text-emerald-400 font-silk font-bold">
-                          {item.level}
-                        </span>
-                        
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleCartItem(item, currentCategory.category);
-                          }}
-                          className={`px-2 py-1 rounded text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                            inCart
-                              ? 'bg-emerald-500 hover:bg-rose-500 text-slate-950 hover:text-white'
-                              : 'bg-yellow-400 hover:bg-yellow-300 text-slate-950'
-                          }`}
-                          title={inCart ? 'Remove from Cart' : 'Add to Cart'}
-                        >
-                          {inCart ? (
-                            <>
-                              <CheckCircle2 className="w-3 h-3" />
-                              <span>IN CART</span>
-                            </>
-                          ) : (
-                            <>
-                              <Plus className="w-3 h-3" />
-                              <span>ADD</span>
-                            </>
-                          )}
-                        </button>
+                        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                          <span className="text-[8px] text-emerald-400 font-silk font-bold">
+                            {item.level}
+                          </span>
+                          
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleCartItem(item, currentCategory.category);
+                            }}
+                            className={`px-2 py-1 rounded text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                              inCart
+                                ? 'bg-emerald-500 hover:bg-rose-500 text-slate-950 hover:text-white'
+                                : 'bg-yellow-400 hover:bg-yellow-300 text-slate-950'
+                            }`}
+                            title={inCart ? 'Remove from Cart' : 'Add to Cart'}
+                          >
+                            {inCart ? (
+                              <>
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span className="text-[8px] sm:text-[9px]">IN CART</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="w-3 h-3" />
+                                <span className="text-[8px] sm:text-[9px]">ADD</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Right Column: Item Inspection Box & Live Cart Summary */}
-              <div className="md:col-span-6 flex flex-col gap-3">
+              <div
+                className={`md:col-span-6 flex flex-col gap-2.5 sm:gap-3 ${
+                  mobileTab === 'catalog' ? 'hidden md:flex' : 'flex'
+                }`}
+              >
                 {/* Item Details Box */}
-                <div className="bg-[#fcf8f2] text-slate-900 border-4 border-[#1e293b] rounded-lg p-3.5 flex flex-col gap-2.5 shadow-md">
-                  <div className="border-b-2 border-slate-300 pb-2 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-blue-600" />
-                        {currentItem.name}
+                <div
+                  className={`bg-[#fcf8f2] text-slate-900 border-2 sm:border-4 border-[#1e293b] rounded-lg p-3 sm:p-3.5 flex flex-col gap-2 sm:gap-2.5 shadow-md ${
+                    mobileTab === 'cart' ? 'hidden md:flex' : 'flex'
+                  }`}
+                >
+                  <div className="border-b-2 border-slate-300 pb-2 flex items-center justify-between gap-2">
+                    <div className="truncate">
+                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5 truncate">
+                        <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
+                        <span className="truncate">{currentItem.name}</span>
                       </h3>
-                      <div className="text-[10px] text-emerald-700 font-bold font-silk">
-                        PROFICIENCY RATING: {currentItem.level.toUpperCase()}
+                      <div className="text-[9px] sm:text-[10px] text-emerald-700 font-bold font-silk">
+                        RATING: {currentItem.level.toUpperCase()}
                       </div>
                     </div>
 
                     <button
                       onClick={() => toggleCartItem(currentItem, currentCategory.category)}
-                      className={`px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer ${
+                      className={`px-2.5 sm:px-3 py-1.5 rounded text-[10px] sm:text-xs font-bold flex items-center gap-1 shadow-sm transition-all cursor-pointer shrink-0 ${
                         isItemInCart(currentItem.name)
                           ? 'bg-rose-600 hover:bg-rose-500 text-white'
                           : 'bg-emerald-600 hover:bg-emerald-500 text-white'
@@ -531,7 +603,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                       {isItemInCart(currentItem.name) ? (
                         <>
                           <Minus className="w-3.5 h-3.5" />
-                          <span>REMOVE FROM CART</span>
+                          <span>REMOVE</span>
                         </>
                       ) : (
                         <>
@@ -543,42 +615,47 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   </div>
 
                   <div className="space-y-1">
-                    <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">
+                    <div className="text-[8px] sm:text-[9px] text-slate-500 font-bold uppercase tracking-wider">
                       Technical Overview & Enterprise Use
                     </div>
-                    <p className="text-xs text-slate-700 leading-relaxed font-silk bg-slate-100 p-2.5 rounded border border-slate-200">
+                    <p className="text-xs text-slate-700 leading-relaxed font-silk bg-slate-100 p-2 sm:p-2.5 rounded border border-slate-200 max-h-[90px] md:max-h-none overflow-y-auto">
                       {currentItem.description}
                     </p>
                   </div>
 
-                  <div className="bg-blue-50 p-2 rounded border border-blue-200 text-[9px] text-blue-900 font-silk">
-                    🏷️ <span className="font-bold">Category:</span> {currentCategory.category} • Tag: {currentItem.tag}
+                  <div className="bg-blue-50 p-1.5 sm:p-2 rounded border border-blue-200 text-[8px] sm:text-[9px] text-blue-900 font-silk flex justify-between items-center">
+                    <span>🏷️ {currentCategory.category}</span>
+                    <span className="font-mono bg-blue-100 px-1 rounded">{currentItem.tag}</span>
                   </div>
                 </div>
 
                 {/* Quick Cart Drawer / Checkout Teaser */}
-                <div className="bg-[#111927] border-4 border-[#1e293b] rounded-lg p-3 flex flex-col gap-2 flex-1 justify-between">
+                <div
+                  className={`bg-[#111927] border-2 sm:border-4 border-[#1e293b] rounded-lg p-2.5 sm:p-3 flex flex-col gap-2 flex-1 justify-between ${
+                    mobileTab === 'details' ? 'hidden md:flex' : 'flex'
+                  }`}
+                >
                   <div>
                     <div className="flex justify-between items-center text-xs font-bold text-yellow-300 pb-1.5 border-b border-slate-800">
                       <span className="flex items-center gap-1.5">
                         <ShoppingCart className="w-3.5 h-3.5 text-yellow-400" />
-                        MART CART SUMMARY
+                        <span>CART SUMMARY</span>
                       </span>
-                      <span className="text-[10px] text-slate-400 font-silk">
-                        {cart.length} SKILLS SELECTED
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 font-silk">
+                        {cart.length} SELECTED
                       </span>
                     </div>
 
                     {cart.length === 0 ? (
-                      <div className="text-center py-5 text-[10px] text-slate-400 font-silk">
-                        Your cart is empty! Click &quot;ADD&quot; on any skill above to build your order inquiry.
+                      <div className="text-center py-4 sm:py-5 text-[10px] text-slate-400 font-silk">
+                        Cart empty. Add skills to compose order!
                       </div>
                     ) : (
-                      <div className="flex flex-wrap gap-1.5 pt-2 max-h-[110px] overflow-y-auto">
+                      <div className="flex flex-wrap gap-1 pt-2 max-h-[120px] overflow-y-auto">
                         {cart.map((item) => (
                           <span
                             key={item.name}
-                            className="bg-blue-950 border border-blue-600/60 text-blue-200 text-[9px] pl-2 pr-1 py-0.5 rounded flex items-center gap-1"
+                            className="bg-blue-950 border border-blue-600/60 text-blue-200 text-[8px] sm:text-[9px] pl-2 pr-1 py-0.5 rounded flex items-center gap-1"
                           >
                             <span>{item.name}</span>
                             <button
@@ -600,7 +677,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                         className="text-[9px] text-rose-400 hover:text-rose-300 font-silk flex items-center gap-1 cursor-pointer"
                       >
                         <Trash2 className="w-3 h-3" />
-                        <span>CLEAR CART</span>
+                        <span>CLEAR</span>
                       </button>
 
                       <button
@@ -608,9 +685,9 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                           soundManager.playFanfare();
                           setViewMode('checkout');
                         }}
-                        className="px-4 py-2 rounded bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 text-xs font-bold flex items-center gap-2 shadow-lg cursor-pointer transform hover:scale-102 transition-all"
+                        className="px-3 sm:px-4 py-1.5 sm:py-2 rounded bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-lg cursor-pointer transform hover:scale-102 transition-all"
                       >
-                        <span>CHECKOUT & WRITE MESSAGE</span>
+                        <span>ORDER ({cart.length})</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -621,9 +698,9 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
             </div>
 
             {/* Footer Strip */}
-            <div className="bg-[#09153a] px-4 py-1.5 text-[8px] text-blue-200 font-silk flex justify-between items-center border-t-2 border-slate-950 shrink-0">
-              <span>CATEGORIES: Languages • Frontend • Backend • Cloud & DevOps • AI/ML • Databases • Tools</span>
-              <span>B / ESC: Close Mart</span>
+            <div className="bg-[#09153a] px-3 sm:px-4 py-1 sm:py-1.5 text-[7px] sm:text-[8px] text-blue-200 font-silk flex justify-between items-center border-t-2 border-slate-950 shrink-0">
+              <span className="truncate">7 CATEGORIES • {categories.reduce((acc, c) => acc + c.items.length, 0)} SKILLS</span>
+              <span className="shrink-0 ml-2">ESC / X: Close</span>
             </div>
           </>
         )}
@@ -632,28 +709,28 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
         {/* MODE 2: WRITE MESSAGE & CONFIRM POKÉMON RETRO EMAIL ORDER */}
         {/* ======================================================== */}
         {viewMode === 'checkout' && (
-          <div className="p-3 md:p-5 overflow-y-auto flex-1 flex flex-col gap-4">
+          <div className="p-2.5 sm:p-4 md:p-5 overflow-y-auto flex-1 flex flex-col gap-3 sm:gap-4">
             {/* Top Bar with Back button */}
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-800 shrink-0">
               <button
                 onClick={() => {
                   soundManager.playSelect();
                   setViewMode('shop');
                 }}
-                className="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 sm:px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold flex items-center gap-1.5 cursor-pointer"
               >
                 <ArrowLeft className="w-3 h-3" />
-                <span>◄ BACK TO SKILLS MART</span>
+                <span>◄ BACK TO MART</span>
               </button>
 
-              <span className="text-xs font-bold text-yellow-300 tracking-wider">
-                CONFIRM INQUIRY & DISPATCH DISK
+              <span className="text-[10px] sm:text-xs font-bold text-yellow-300 tracking-wider">
+                CONFIRM INQUIRY & DISPATCH
               </span>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
               {/* Left Column: Client Note Input Form */}
-              <div className="lg:col-span-5 bg-[#111927] border-4 border-[#1e293b] rounded-lg p-4 space-y-3">
+              <div className="lg:col-span-5 bg-[#111927] border-2 sm:border-4 border-[#1e293b] rounded-lg p-3 sm:p-4 space-y-2.5 sm:space-y-3">
                 <div className="text-xs font-bold text-yellow-400 border-b border-slate-800 pb-1.5 flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5" />
                   <span>STEP 1: WRITE YOUR MESSAGE</span>
@@ -665,7 +742,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                     type="text"
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
-                    placeholder="e.g. Satoshi Tajiri / Engineering Recruiter"
+                    placeholder="e.g. Satoshi Tajiri / Recruiter"
                     className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white placeholder:text-slate-600 font-silk focus:border-yellow-400 focus:outline-hidden"
                   />
                 </div>
@@ -687,7 +764,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                     type="text"
                     value={clientRole}
                     onChange={(e) => setClientRole(e.target.value)}
-                    placeholder="e.g. Tech Lead at Startup / Enterprise Recruiter"
+                    placeholder="e.g. Engineering Lead / Enterprise Recruiter"
                     className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white placeholder:text-slate-600 font-silk focus:border-yellow-400 focus:outline-hidden"
                   />
                 </div>
@@ -695,7 +772,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                 <div className="space-y-1">
                   <label className="text-[9px] text-slate-400 font-silk block">Message / Opportunity Note</label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     value={clientMessage}
                     onChange={(e) => setClientMessage(e.target.value)}
                     placeholder="Write details about the project, role, or collaboration..."
@@ -703,88 +780,88 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   />
                 </div>
 
-                <div className="bg-yellow-950/60 border border-yellow-500/40 rounded p-2.5 text-[9px] text-yellow-200 font-silk space-y-1">
+                <div className="bg-yellow-950/60 border border-yellow-500/40 rounded p-2 text-[8px] sm:text-[9px] text-yellow-200 font-silk space-y-1">
                   <div>📬 <b>Graphic HTML Mail Format:</b> Generates a stylized Pokémon mail layout with graphic Pokéball seal, routing stamps, and side-by-side categorized tables.</div>
                   <div className="text-yellow-300 font-bold">✨ Use &quot;COPY GRAPHICAL MAIL (HTML)&quot; to paste directly into Gmail, Outlook, or Apple Mail as full editable graphic cards!</div>
                 </div>
               </div>
 
               {/* Right Column: Live Pokémon Pixel-Game Styled Mail Preview */}
-              <div className="lg:col-span-7 flex flex-col gap-3">
+              <div className="lg:col-span-7 flex flex-col gap-2.5 sm:gap-3">
                 <div className="text-xs font-bold text-yellow-400 flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
-                    <span>STEP 2: GRAPHICAL POKÉMON MAIL PREVIEW</span>
+                    <span>STEP 2: GRAPHICAL MAIL PREVIEW</span>
                   </span>
-                  <span className="text-[9px] font-silk text-slate-400">{cart.length} SKILLS ORDERED</span>
+                  <span className="text-[8px] sm:text-[9px] font-silk text-slate-400">{cart.length} SKILLS ORDERED</span>
                 </div>
 
                 {/* The Classic Pokémon Game Graphic Letter Sheet */}
-                <div className="bg-[#fcfbf7] text-slate-900 border-4 border-[#1e293b] rounded-xl shadow-2xl flex-1 flex flex-col justify-between overflow-y-auto max-h-[400px]">
+                <div className="bg-[#fcfbf7] text-slate-900 border-2 sm:border-4 border-[#1e293b] rounded-xl shadow-2xl flex-1 flex flex-col justify-between overflow-y-auto max-h-[300px] sm:max-h-[360px] md:max-h-[400px]">
                   
                   {/* Retro Airmail Border Ribbon */}
                   <div className="h-2 w-full bg-[repeating-linear-gradient(45deg,#ef4444,#ef4444_12px,#ffffff_12px,#ffffff_24px,#3b82f6_24px,#3b82f6_36px,#ffffff_36px,#ffffff_48px)] shrink-0" />
 
-                  <div className="p-4 space-y-3.5">
+                  <div className="p-2.5 sm:p-4 space-y-2.5 sm:space-y-3.5">
                     {/* Graphical Top Header with Pokéball Seal & Postage Stamp */}
-                    <div className="bg-[#1e3a8a] text-white p-3 rounded-lg border-2 border-slate-900 flex items-center justify-between shadow-sm">
-                      <div className="flex items-center gap-3">
+                    <div className="bg-[#1e3a8a] text-white p-2 sm:p-3 rounded-lg border-2 border-slate-900 flex items-center justify-between shadow-sm">
+                      <div className="flex items-center gap-2 sm:gap-3">
                         {/* Graphical Pixel Pokéball Seal */}
-                        <div className="w-9 h-9 rounded-full bg-gradient-to-b from-red-600 from-50% via-slate-950 via-50% to-white to-55% border-2 border-slate-950 relative flex items-center justify-center shrink-0 shadow-xs">
-                          <div className="w-3.5 h-3.5 rounded-full bg-white border-2 border-slate-950 flex items-center justify-center">
-                            <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                        <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-b from-red-600 from-50% via-slate-950 via-50% to-white to-55% border-2 border-slate-950 relative flex items-center justify-center shrink-0 shadow-xs">
+                          <div className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-white border-2 border-slate-950 flex items-center justify-center">
+                            <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-slate-900" />
                           </div>
                         </div>
 
                         <div>
-                          <div className="text-xs font-black tracking-wider text-yellow-300">
+                          <div className="text-[11px] sm:text-xs font-black tracking-wider text-yellow-300">
                             PALLET CLOUD POKÉ MART
                           </div>
-                          <div className="text-[8px] text-blue-200 font-silk">
+                          <div className="text-[7px] sm:text-[8px] text-blue-200 font-silk">
                             SPECIAL REQUISITION PARCEL • SILPH CO. POSTAL
                           </div>
                         </div>
                       </div>
 
-                      <div className="bg-slate-950/80 border border-yellow-400/80 rounded px-2 py-1 text-right shrink-0">
-                        <div className="text-[8px] text-yellow-300 font-bold font-silk">PALLET TOWN</div>
-                        <div className="text-[7px] text-slate-300 font-mono">SERIES 2026</div>
+                      <div className="bg-slate-950/80 border border-yellow-400/80 rounded px-1.5 sm:px-2 py-0.5 sm:py-1 text-right shrink-0">
+                        <div className="text-[7px] sm:text-[8px] text-yellow-300 font-bold font-silk">PALLET TOWN</div>
+                        <div className="text-[6px] sm:text-[7px] text-slate-300 font-mono">SERIES 2026</div>
                       </div>
                     </div>
 
                     {/* Routing Dossier Box */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white p-2.5 rounded-lg border border-slate-300 text-[10px]">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-white p-2 sm:p-2.5 rounded-lg border border-slate-300 text-[10px]">
                       <div className="space-y-0.5">
                         <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider block">FROM (SENDER):</span>
-                        <div className="font-bold text-slate-900">{clientName || 'Prospective Partner'}</div>
-                        <div className="text-slate-600 truncate">{clientRole}</div>
-                        <div className="text-blue-600 font-mono text-[9px]">{clientEmail || 'email not provided'}</div>
+                        <div className="font-bold text-slate-900 text-[11px]">{clientName || 'Prospective Partner'}</div>
+                        <div className="text-slate-600 truncate text-[10px]">{clientRole}</div>
+                        <div className="text-blue-600 font-mono text-[8px] sm:text-[9px] truncate">{clientEmail || 'email not provided'}</div>
                       </div>
 
-                      <div className="space-y-0.5 border-t sm:border-t-0 sm:border-l border-slate-200 pt-1 sm:pt-0 sm:pl-2.5">
+                      <div className="space-y-0.5 border-t sm:border-t-0 sm:border-l border-slate-200 pt-1.5 sm:pt-0 sm:pl-2.5">
                         <span className="text-[8px] font-bold text-slate-500 uppercase tracking-wider block">TO (RECIPIENT):</span>
-                        <div className="font-bold text-slate-900">Aritro Saha (Tech Lead / Gym Leader)</div>
-                        <div className="text-slate-600">Associate Software Developer</div>
-                        <div className="text-blue-600 font-mono text-[9px]">aritrosaha2025@gmail.com</div>
+                        <div className="font-bold text-slate-900 text-[11px]">Aritro Saha (Tech Lead)</div>
+                        <div className="text-slate-600 text-[10px]">Associate Software Developer</div>
+                        <div className="text-blue-600 font-mono text-[8px] sm:text-[9px]">aritrosaha2025@gmail.com</div>
                       </div>
                     </div>
 
                     {/* Client Message Callout */}
                     <div>
-                      <div className="text-[9px] font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <div className="text-[8px] sm:text-[9px] font-bold text-slate-600 uppercase tracking-wider mb-1 flex items-center gap-1">
                         <Mail className="w-3 h-3 text-slate-500" />
                         <span>REQUISITION INQUIRY & MESSAGE:</span>
                       </div>
-                      <div className="p-3 bg-amber-50 rounded-lg border-l-4 border-amber-500 border-t border-r border-b border-amber-200 text-xs leading-relaxed text-slate-800 font-sans shadow-xs">
+                      <div className="p-2 sm:p-3 bg-amber-50 rounded-lg border-l-4 border-amber-500 border-t border-r border-b border-amber-200 text-xs leading-relaxed text-slate-800 font-sans shadow-xs">
                         &ldquo;{clientMessage || 'Looking forward to connecting with you!'}&rdquo;
                       </div>
                     </div>
 
                     {/* Skills Ordered Section - Displayed side-by-side in categorized graphical cards */}
                     <div>
-                      <div className="text-[9px] font-bold text-slate-600 uppercase tracking-wider mb-2 flex items-center justify-between">
+                      <div className="text-[8px] sm:text-[9px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 sm:mb-2 flex items-center justify-between">
                         <span>🎒 ORDERED TECHNICAL SKILLS ({cart.length} ITEMS):</span>
-                        <span className="text-[8px] text-slate-500 font-silk">CATEGORIZED GRID</span>
+                        <span className="text-[7px] sm:text-[8px] text-slate-500 font-silk">CATEGORIZED GRID</span>
                       </div>
 
                       {Object.keys(groupedCart).length === 0 ? (
@@ -792,20 +869,20 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                           (No specific skills selected - general full-stack engineering inquiry)
                         </div>
                       ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {Object.entries(groupedCart).map(([category, items]) => {
                             const Icon = getCategoryIcon(category);
                             return (
                               <div
                                 key={category}
-                                className="bg-white p-2.5 rounded-lg border-2 border-slate-200 shadow-xs space-y-1.5"
+                                className="bg-white p-2 rounded-lg border-2 border-slate-200 shadow-xs space-y-1"
                               >
-                                <div className="text-[10px] font-bold text-blue-900 uppercase tracking-wide border-b border-slate-200 pb-1 flex items-center justify-between">
-                                  <span className="flex items-center gap-1.5">
-                                    <Icon className="w-3.5 h-3.5 text-blue-600" />
+                                <div className="text-[9px] sm:text-[10px] font-bold text-blue-900 uppercase tracking-wide border-b border-slate-200 pb-1 flex items-center justify-between">
+                                  <span className="flex items-center gap-1">
+                                    <Icon className="w-3 h-3 text-blue-600" />
                                     <span>{category}</span>
                                   </span>
-                                  <span className="text-[8px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded-full font-bold">
+                                  <span className="text-[8px] bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded-full font-bold">
                                     {items.length}
                                   </span>
                                 </div>
@@ -813,12 +890,12 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                                   {items.map((i) => (
                                     <div
                                       key={i.name}
-                                      className="text-[10px] text-slate-800 flex items-center justify-between bg-slate-50 px-2 py-1 rounded border border-slate-200/80"
+                                      className="text-[9px] sm:text-[10px] text-slate-800 flex items-center justify-between bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200/80"
                                     >
-                                      <span className="flex items-center gap-1 font-sans font-semibold">
+                                      <span className="flex items-center gap-1 font-sans font-semibold truncate pr-1">
                                         <span className="text-amber-500 text-xs">★</span> {i.name}
                                       </span>
-                                      <span className="text-[8px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 font-silk">
+                                      <span className="text-[7px] sm:text-[8px] text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200 font-silk shrink-0">
                                         {i.level}
                                       </span>
                                     </div>
@@ -832,12 +909,12 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                     </div>
 
                     {/* Certified Seal Footer */}
-                    <div className="border-t border-dashed border-slate-300 pt-2 flex items-center justify-between text-[8px] text-slate-500 font-silk">
+                    <div className="border-t border-dashed border-slate-300 pt-2 flex items-center justify-between text-[7px] sm:text-[8px] text-slate-500 font-silk">
                       <div>
                         AUTHENTIC PALLET CLOUD RPG DISPATCH<br />
                         Bristol Myers Squibb Alumni • Hack4Bengal 3.0 Champion
                       </div>
-                      <div className="px-2 py-1 border border-emerald-600 bg-emerald-50 text-emerald-700 rounded font-bold rotate-[-1deg]">
+                      <div className="px-1.5 py-0.5 border border-emerald-600 bg-emerald-50 text-emerald-700 rounded font-bold rotate-[-1deg]">
                         ✓ VERIFIED MART SEAL
                       </div>
                     </div>
@@ -848,10 +925,10 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1">
                   <button
                     onClick={copyRichHtmlToClipboard}
-                    className="px-3.5 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-md transition-all"
+                    className="w-full sm:w-auto px-3 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-98"
                     title="Copies editable graphical HTML card for pasting into Gmail, Outlook, or Apple Mail"
                   >
                     <Copy className="w-3.5 h-3.5" />
@@ -860,7 +937,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
 
                   <button
                     onClick={handleSendMail}
-                    className="px-5 py-2 rounded bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-xs font-bold flex items-center gap-2 shadow-xl cursor-pointer transform hover:scale-102 transition-all"
+                    className="w-full sm:w-auto px-4 py-2 rounded bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-2 shadow-xl cursor-pointer transform hover:scale-102 active:scale-98 transition-all"
                   >
                     <Send className="w-4 h-4" />
                     <span>LAUNCH EMAIL CLIENT ►</span>
