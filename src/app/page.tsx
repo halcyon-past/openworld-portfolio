@@ -21,7 +21,16 @@ import { soundManager } from '@/game/audio/SoundManager';
 import { Direction } from '@/game/engine/types';
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        return sessionStorage.getItem('openworld_game_started') !== 'true';
+      } catch {
+        return true;
+      }
+    }
+    return true;
+  });
   const [isRecruiterMode, setIsRecruiterMode] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [showScanlines, setShowScanlines] = useState(true);
@@ -37,75 +46,59 @@ export default function Home() {
 
   const [recruiterOrigin, setRecruiterOrigin] = useState<'home' | 'game'>('game');
 
-  // Mobile Back Button / Browser Navigation History Controller
-  const overlayHistoryCountRef = useRef<number>(0);
-  const isProgrammaticBackRef = useRef<boolean>(false);
+  // Sync Overlay State from URL Hash
+  // URL Hash is natively supported across all mobile browsers on Back button/gesture
+  // and does NOT cause Next.js App Router to reset or re-mount the component!
+  const syncOverlaysFromHash = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const rawHash = window.location.hash.replace(/^#/, '').trim();
 
-  // Push an overlay state to history so system Back button closes the overlay
-  const pushOverlayHistory = useCallback((overlayName: string) => {
-    if (typeof window !== 'undefined') {
-      window.history.pushState({ openworld_overlay: overlayName }, '');
-      overlayHistoryCountRef.current++;
+    if (!rawHash) {
+      // Back button navigated to base URL -> close any open overlays!
+      soundManager.playCancel();
+      setActiveModal(null);
+      gameEngine.isModalActive = false;
+      setActiveDialogue(null);
+      gameEngine.isDialogueActive = false;
+      setIsRecruiterMode(false);
+    } else if (rawHash === 'recruiter') {
+      soundManager.playSelect();
+      setIsRecruiterMode(true);
+    } else if (rawHash === 'dialogue') {
+      gameEngine.isDialogueActive = true;
+    } else {
+      // Modal name (startmenu, pokedex, trainercard, bag, townmap, save, settings, contact, arcade)
+      soundManager.playSelect();
+      setActiveModal(rawHash);
+      gameEngine.isModalActive = true;
     }
   }, []);
 
-  // Pop all open overlays from browser history programmatically when closed via on-screen buttons
-  const popAllOverlayHistory = useCallback(() => {
-    if (typeof window !== 'undefined' && overlayHistoryCountRef.current > 0) {
-      const count = overlayHistoryCountRef.current;
-      overlayHistoryCountRef.current = 0;
-      isProgrammaticBackRef.current = true;
-      window.history.go(-count);
-    }
-  }, []);
-
-  // Listen to popstate (Mobile Back Button / Android Hardware Back / Browser Back)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // Stamp initial history state
-    window.history.replaceState({ openworld_root: true }, '');
+    window.addEventListener('hashchange', syncOverlaysFromHash);
+    window.addEventListener('popstate', syncOverlaysFromHash);
 
-    const handlePopState = (event: PopStateEvent) => {
-      // If this popstate was triggered by our own programmatic close, ignore
-      if (isProgrammaticBackRef.current) {
-        isProgrammaticBackRef.current = false;
-        return;
-      }
+    // Initial check if page loaded with a modal hash
+    if (window.location.hash) {
+      syncOverlaysFromHash();
+    }
 
-      // User pressed the mobile / browser back button!
-      const overlay = event.state?.openworld_overlay;
-
-      if (overlay) {
-        // Stepped back to a parent overlay (e.g. from Pokédex back to Start Menu)
-        soundManager.playSelect();
-        if (overlay === 'dialogue') {
-          gameEngine.isDialogueActive = true;
-        } else if (overlay === 'recruiter') {
-          setIsRecruiterMode(true);
-        } else {
-          setActiveModal(overlay);
-          gameEngine.isModalActive = true;
-        }
-        overlayHistoryCountRef.current = Math.max(1, overlayHistoryCountRef.current - 1);
-      } else {
-        // Stepped back to root: close any open modal/dialogue/recruiter view and return to game
-        soundManager.playCancel();
-        setActiveModal(null);
-        gameEngine.isModalActive = false;
-        setActiveDialogue(null);
-        gameEngine.isDialogueActive = false;
-        setIsRecruiterMode(false);
-        soundManager.startBGM();
-        overlayHistoryCountRef.current = 0;
-      }
+    return () => {
+      window.removeEventListener('hashchange', syncOverlaysFromHash);
+      window.removeEventListener('popstate', syncOverlaysFromHash);
     };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
+  }, [syncOverlaysFromHash]);
 
   const handleStartGame = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('openworld_game_started', 'true');
+      } catch {
+        // ignore
+      }
+    }
     setIsLoading(false);
     setIsRecruiterMode(false);
   };
@@ -114,21 +107,32 @@ export default function Home() {
     setRecruiterOrigin(origin);
     setIsLoading(false);
     setIsRecruiterMode(true);
-    if (origin === 'game') {
-      pushOverlayHistory('recruiter');
+    if (origin === 'game' && typeof window !== 'undefined') {
+      if (window.location.hash !== '#recruiter') {
+        window.location.hash = 'recruiter';
+      }
     }
-  }, [pushOverlayHistory]);
+  }, []);
 
   const handleCloseRecruiter = useCallback(() => {
     setIsRecruiterMode(false);
-    popAllOverlayHistory();
+    if (typeof window !== 'undefined' && window.location.hash) {
+      window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+    }
     if (recruiterOrigin === 'home') {
+      if (typeof window !== 'undefined') {
+        try {
+          sessionStorage.removeItem('openworld_game_started');
+        } catch {
+          // ignore
+        }
+      }
       setIsLoading(true);
       soundManager.stopBGM();
     } else {
       soundManager.startBGM();
     }
-  }, [popAllOverlayHistory, recruiterOrigin]);
+  }, [recruiterOrigin]);
 
   const handleToggleMute = () => {
     const muted = soundManager.toggleMute();
@@ -142,29 +146,41 @@ export default function Home() {
   const handleOpenModal = useCallback((modal: string) => {
     gameEngine.isModalActive = true;
     setActiveModal(modal);
-    pushOverlayHistory(modal);
-  }, [pushOverlayHistory]);
+    if (typeof window !== 'undefined') {
+      if (window.location.hash !== `#${modal}`) {
+        window.location.hash = modal;
+      }
+    }
+  }, []);
 
   const handleCloseModal = useCallback(() => {
     gameEngine.isModalActive = false;
     setActiveModal(null);
-    popAllOverlayHistory();
-  }, [popAllOverlayHistory]);
+    if (typeof window !== 'undefined' && window.location.hash) {
+      window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+    }
+  }, []);
 
   const handleDialogue = useCallback(
     (dialogue: { speaker: string; lines: string[]; avatar?: string }) => {
       gameEngine.isDialogueActive = true;
       setActiveDialogue(dialogue);
-      pushOverlayHistory('dialogue');
+      if (typeof window !== 'undefined') {
+        if (window.location.hash !== '#dialogue') {
+          window.location.hash = 'dialogue';
+        }
+      }
     },
-    [pushOverlayHistory]
+    []
   );
 
   const handleCloseDialogue = useCallback(() => {
     gameEngine.isDialogueActive = false;
     setActiveDialogue(null);
-    popAllOverlayHistory();
-  }, [popAllOverlayHistory]);
+    if (typeof window !== 'undefined' && window.location.hash) {
+      window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+    }
+  }, []);
 
   const handleWildEncounter = useCallback((text: string) => {
     setWildEncounterText(text);
