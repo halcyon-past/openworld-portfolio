@@ -22,7 +22,8 @@ import {
   Wrench,
   CheckCircle2,
   Copy,
-  Mail
+  Mail,
+  Loader2
 } from 'lucide-react';
 
 interface BagModalProps {
@@ -55,6 +56,8 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
     'Hi Aritro! We were impressed by your open-world portfolio and systems work. We would like to discuss engineering opportunities.'
   );
   const [isCopied, setIsCopied] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [sendSuccessMode, setSendSuccessMode] = useState<'api' | 'mailto'>('api');
 
   const categories = PORTFOLIO_DATA.skillPockets;
   const currentCategory: SkillPocket = categories[selectedCategoryIdx] || categories[0];
@@ -314,12 +317,65 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
     `.trim();
   };
 
-  const handleSendMail = () => {
+  const handleSendMail = async () => {
     soundManager.playFanfare();
+    setIsSending(true);
+
+    const html = generatePokemonHtmlMail();
+    const plain = generateMailPlainText();
+
+    // 1. Copy rich graphical HTML + plaintext to clipboard in background as immediate convenience
+    try {
+      if (typeof window !== 'undefined' && navigator.clipboard && window.ClipboardItem) {
+        const blobHtml = new Blob([html], { type: 'text/html' });
+        const blobPlain = new Blob([plain], { type: 'text/plain' });
+        const item = new ClipboardItem({
+          'text/html': blobHtml,
+          'text/plain': blobPlain
+        });
+        await navigator.clipboard.write([item]);
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(html);
+      }
+    } catch {
+      // Ignored
+    }
+
+    // 2. Call direct backend API to deliver graphical HTML mail
+    try {
+      const res = await fetch('/api/send-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: clientName.trim(),
+          email: clientEmail.trim(),
+          role: clientRole.trim(),
+          message: clientMessage.trim(),
+          htmlContent: html,
+          plainContent: plain,
+          cartCount: cart.length
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.mode === 'api') {
+        setIsSending(false);
+        setSendSuccessMode('api');
+        setViewMode('success');
+        return;
+      }
+    } catch (e) {
+      console.warn('Direct API email dispatch failed, falling back to mail client:', e);
+    }
+
+    // 3. Fallback: If no server API key configured or network blocked, open client mailto
+    setIsSending(false);
+    setSendSuccessMode('mailto');
     const mailtoSubject = encodeURIComponent(
       `[Tech Mart Order] Skills Inquiry from ${clientName.trim() || 'Engineering Client'}`
     );
-    const mailtoBody = encodeURIComponent(generateMailPlainText());
+    const mailtoBody = encodeURIComponent(plain);
     window.location.href = `mailto:aritrosaha2025@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
     setViewMode('success');
   };
@@ -928,7 +984,8 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1">
                   <button
                     onClick={copyRichHtmlToClipboard}
-                    className="w-full sm:w-auto px-3 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-98"
+                    disabled={isSending}
+                    className="w-full sm:w-auto px-3 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-md transition-all active:scale-98 disabled:opacity-50"
                     title="Copies editable graphical HTML card for pasting into Gmail, Outlook, or Apple Mail"
                   >
                     <Copy className="w-3.5 h-3.5" />
@@ -937,10 +994,20 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
 
                   <button
                     onClick={handleSendMail}
-                    className="w-full sm:w-auto px-4 py-2 rounded bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-2 shadow-xl cursor-pointer transform hover:scale-102 active:scale-98 transition-all"
+                    disabled={isSending}
+                    className="w-full sm:w-auto px-5 py-2 rounded bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-[11px] sm:text-xs font-bold flex items-center justify-center gap-2 shadow-xl cursor-pointer transform hover:scale-102 active:scale-98 transition-all disabled:opacity-75 disabled:cursor-wait"
                   >
-                    <Send className="w-4 h-4" />
-                    <span>LAUNCH EMAIL CLIENT ►</span>
+                    {isSending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>DISPATCHING ORDER...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>DISPATCH ORDER DIRECTLY ►</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
@@ -962,13 +1029,24 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
             </h2>
 
             <p className="text-xs text-blue-200 max-w-md font-silk leading-relaxed">
-              Your default email client has been opened with your Pokémon styled message and categorized technical skills order to <b>aritrosaha2025@gmail.com</b>.
+              {sendSuccessMode === 'api'
+                ? 'Your Pokémon styled talent order has been transmitted directly to Aritro with complete graphical layout, selected skills, and inquiry details.'
+                : 'Your default email client has been launched with your inquiry and the rich graphical Pokémon mail has been copied to your clipboard ready to paste.'}
             </p>
 
-            <div className="bg-[#111927] border-2 border-slate-700 p-3 rounded-lg max-w-md w-full text-left text-[9px] text-slate-300 font-mono space-y-1">
+            <div className="bg-[#111927] border-2 border-slate-700 p-3.5 rounded-lg max-w-md w-full text-left text-[9px] sm:text-[10px] text-slate-300 font-mono space-y-1.5 shadow-inner">
+              <div className="text-yellow-400 font-bold border-b border-slate-800 pb-1">
+                PARCEL MANIFEST & ROUTING:
+              </div>
               <div>• Destination: Aritro Saha (Associate Software Developer)</div>
-              <div>• Total Skills Ordered: {cart.length} Skills</div>
-              <div>• Status: Email client invoked successfully</div>
+              <div>• Target Inbox: <span className="text-blue-400">aritrosaha2025@gmail.com</span></div>
+              <div>• Skills Requisitioned: <span className="text-emerald-400 font-bold">{cart.length} Skills</span></div>
+              <div>
+                • Dispatch Mode:{' '}
+                <span className="text-yellow-300 font-bold">
+                  {sendSuccessMode === 'api' ? 'Direct API Transmission (Instant)' : 'Email Client Pre-Fill'}
+                </span>
+              </div>
             </div>
 
             <div className="flex gap-3 pt-2">
@@ -977,7 +1055,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   soundManager.playSelect();
                   setViewMode('shop');
                 }}
-                className="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold cursor-pointer"
+                className="px-4 py-2 rounded bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold cursor-pointer transition-colors"
               >
                 RETURN TO SHOP
               </button>
@@ -987,7 +1065,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   soundManager.playCancel();
                   onClose();
                 }}
-                className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer"
+                className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold cursor-pointer transition-colors"
               >
                 CLOSE MART
               </button>

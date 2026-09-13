@@ -90,8 +90,10 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
   - Full graphical layout featuring a diagonal airmail chevron border ribbon, retro Silph Co. Pallet Town postage seal, graphical red/white Pokéball emblem, and routing dossier.
   - Project inquiry message callout box.
   - Ordered skills organized in clean **side-by-side categorized cards** with type badges, level pills, and star ratings.
-- **One-Click Rich HTML Clipboard Copy (`COPY GRAPHICAL MAIL (HTML)`)**: Copies the rendered layout as a native rich HTML table directly onto the system clipboard. When pasted into **Gmail, Apple Mail, Outlook, or Thunderbird**, it appears as a fully visible, editable graphical card directly in the body of the email rather than a non-editable image or attachment!
-- **Email Client Quick Launcher**: Opens your default email client (`mailto:`) with pre-addressed recipient `aritrosaha2025@gmail.com` and structured subject line.
+- **Direct 1-Click Graphical Email Transmission**:
+  - Clicking **`DISPATCH ORDER DIRECTLY ►`** sends the complete graphical HTML email directly to `aritrosaha2025@gmail.com` via the backend endpoint (`/api/send-order`).
+  - Seamlessly falls back to launching the user's email client (`mailto:`) with pre-filled destination, subject, and auto-copied rich graphical HTML onto the clipboard if an offline or unconfigured environment is encountered.
+- **One-Click Rich HTML Clipboard Copy (`COPY GRAPHICAL MAIL (HTML)`)**: Copies the rendered layout as a native rich HTML table directly onto the system clipboard for pasting directly into Gmail, Outlook, or Apple Mail.
 
 ---
 
