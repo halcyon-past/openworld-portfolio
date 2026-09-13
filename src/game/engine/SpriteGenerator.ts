@@ -1889,69 +1889,86 @@ export class SpriteGenerator {
   }
 
   /**
-   * Generates a 2.5D Mega Jumbotron Outdoor Town Screen (96x64 px)
-   * Displays rotating project previews, animated scanlines, neon bezels, and live status lights
+   * Generates a 2.5D Mega Jumbotron Outdoor Town Screen (128x96 px)
+   * High-definition 4-tile wide stadium display showing live rotating project showcases
    */
   public getMegaJumbotronTV(): HTMLCanvasElement {
-    const key = 'bldg_jumbotron_frame';
+    const key = 'bldg_jumbotron_frame_hd_128';
     if (this.cache.has(key)) return this.cache.get(key)!;
 
-    const [c, ctx] = this.createCanvas(96, 72);
+    const [c, ctx] = this.createCanvas(128, 96);
 
-    // 1. Heavy Industrial Ground Shadow
+    // 1. Heavy Industrial Ground Shadow (grounded at y: 88..94)
     ctx.fillStyle = 'rgba(15, 23, 42, 0.45)';
     ctx.beginPath();
-    ctx.ellipse(48, 66, 44, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(64, 90, 58, 6, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. Heavy Dual Support Steel Pillars
+    // 2. Heavy Dual Support Steel Pillars (row 14: y: 64..92)
+    // Left Pillar (x: 24..38)
     ctx.fillStyle = '#334155';
-    ctx.fillRect(18, 52, 10, 16);
-    ctx.fillRect(68, 52, 10, 16);
+    ctx.fillRect(24, 66, 14, 26);
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(24, 52, 4, 16);
-    ctx.fillRect(74, 52, 4, 16);
-    // Steel bolts
+    ctx.fillRect(32, 66, 6, 26);
+    // Steel base plate & bolts
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(22, 88, 18, 4);
     ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(19, 62, 2, 2);
-    ctx.fillRect(25, 62, 2, 2);
-    ctx.fillRect(69, 62, 2, 2);
-    ctx.fillRect(75, 62, 2, 2);
+    ctx.fillRect(25, 76, 3, 3);
+    ctx.fillRect(33, 76, 3, 3);
 
-    // 3. Main Monitor Chassis / Heavy Bezel
+    // Right Pillar (x: 90..104)
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(90, 66, 14, 26);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(98, 66, 6, 26);
+    // Steel base plate & bolts
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(88, 88, 18, 4);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(91, 76, 3, 3);
+    ctx.fillRect(99, 76, 3, 3);
+
+    // Cross-truss support beam between pillars
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(38, 72, 52, 4);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(38, 73, 52, 2);
+
+    // 3. Main Monitor Chassis / Heavy Metallic Bezel (124x68 px, y: 2..70)
     ctx.fillStyle = '#090d16';
     ctx.beginPath();
-    ctx.roundRect(3, 3, 90, 50, 4);
+    ctx.roundRect(2, 2, 124, 68, 5);
     ctx.fill();
 
-    // Bezel metallic border highlight
+    // Metallic Outer Bezel highlight
     ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // Top Brand Bar: "⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡"
+    // Top Header Banner: "⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡"
     ctx.fillStyle = '#0284c7';
-    ctx.fillRect(5, 5, 86, 5);
+    ctx.fillRect(5, 4, 118, 7);
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 4.5px monospace';
-    ctx.fillText('⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡', 8, 9);
+    ctx.font = 'bold 5.5px monospace';
+    ctx.fillText('⚡ PALLET CLOUD TV • LIVE SHOWCASE ⚡', 12, 10);
 
     // Live ON-AIR blinking LED housing
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
-    ctx.arc(86, 7.5, 2, 0, Math.PI * 2);
+    ctx.arc(116, 7.5, 2.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Inner Screen Housing Border (Screen area: 5, 11, 86, 40)
+    // Inner Display Recess Housing (Screen area: x: 6, y: 12, w: 116, h: 52)
     ctx.fillStyle = '#000000';
-    ctx.fillRect(5, 11, 86, 40);
+    ctx.fillRect(6, 12, 116, 52);
 
-    // Dual stereo speakers underneath display
+    // Dual stereo speakers underneath display (y: 65)
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(6, 51, 84, 2);
-    for (let x = 8; x < 88; x += 4) {
+    ctx.fillRect(6, 65, 116, 3);
+    for (let x = 10; x < 118; x += 4) {
       ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x, 51, 2, 2);
+      ctx.fillRect(x, 65, 2, 3);
     }
 
     this.cache.set(key, c);

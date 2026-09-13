@@ -66,6 +66,7 @@ export class GameEngine {
   private keysPressed: Set<string> = new Set();
   private targetTile: Position | null = null;
   private currentPath: Position[] = [];
+  private lastBumpTime: number = 0;
 
   // Live Jumbotron TV Showcase State
   public tvIndex: number = 0;
@@ -700,7 +701,11 @@ export class GameEngine {
             this.currentPath.shift();
           }
         } else {
-          soundManager.playBump();
+          const now = performance.now();
+          if (now - this.lastBumpTime > 300) {
+            soundManager.playBump();
+            this.lastBumpTime = now;
+          }
           this.targetTile = null;
           this.currentPath = [];
         }
@@ -951,10 +956,10 @@ export class GameEngine {
    * Renders the live project showcase content inside the outdoor Mega Jumbotron TV
    */
   private renderTvScreen(ctx: CanvasRenderingContext2D) {
-    const screenX = 10 * TILE_SIZE + 5;  // 165
-    const screenY = 12 * TILE_SIZE + 11; // 203
-    const screenW = 86;
-    const screenH = 40;
+    const screenX = 11 * TILE_SIZE + 6;  // 358
+    const screenY = 12 * TILE_SIZE + 12; // 396
+    const screenW = 116;
+    const screenH = 52;
 
     const proj = this.showcaseProjects[this.tvIndex];
     if (!proj) return;
@@ -967,7 +972,7 @@ export class GameEngine {
 
     // Screen clipping with rounded corners
     ctx.beginPath();
-    ctx.roundRect(screenX, screenY, screenW, screenH, 2);
+    ctx.roundRect(screenX, screenY, screenW, screenH, 3);
     ctx.clip();
 
     // 1. Draw Project Thumbnail Image or High-Tech Circuit Gradient
@@ -980,9 +985,9 @@ export class GameEngine {
       ctx.fillStyle = grad;
       ctx.fillRect(screenX, screenY, screenW, screenH);
 
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
       ctx.lineWidth = 1;
-      for (let x = screenX; x < screenX + screenW; x += 10) {
+      for (let x = screenX; x < screenX + screenW; x += 12) {
         ctx.beginPath();
         ctx.moveTo(x, screenY);
         ctx.lineTo(x, screenY + screenH);
@@ -991,7 +996,7 @@ export class GameEngine {
     }
 
     // 2. High-Contrast Bottom Broadcast Banner (deep glass overlay)
-    const bannerH = 15;
+    const bannerH = 18;
     ctx.fillStyle = 'rgba(7, 11, 22, 0.94)';
     ctx.fillRect(screenX, screenY + screenH - bannerH, screenW, bannerH);
     ctx.fillStyle = '#38bdf8';
@@ -999,44 +1004,44 @@ export class GameEngine {
 
     // Project Title (Clear bold typography)
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 6.5px sans-serif';
-    const displayTitle = proj.title.length > 17 ? proj.title.slice(0, 15) + '..' : proj.title;
-    ctx.fillText(displayTitle, screenX + 3, screenY + screenH - 8);
+    ctx.font = 'bold 8px system-ui, -apple-system, sans-serif';
+    const displayTitle = proj.title.length > 20 ? proj.title.slice(0, 18) + '..' : proj.title;
+    ctx.fillText(displayTitle, screenX + 4, screenY + screenH - 10);
 
     // Project Tech Highlight Badge (Golden tag)
     ctx.fillStyle = '#f59e0b';
-    ctx.font = 'bold 5px sans-serif';
-    ctx.fillText(proj.badge, screenX + 3, screenY + screenH - 2.5);
+    ctx.font = 'bold 6.5px monospace';
+    ctx.fillText(proj.badge, screenX + 4, screenY + screenH - 3);
 
     // 3. Top Status Header: Channel Pill & Live Indicator
     const isBlinkOn = Math.floor(performance.now() / 450) % 2 === 0;
 
     // Channel badge left
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    ctx.fillRect(screenX + 2, screenY + 2, 28, 6.5);
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+    ctx.fillRect(screenX + 3, screenY + 3, 34, 8);
     ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 4.5px sans-serif';
-    ctx.fillText(`CH 0${this.tvIndex + 1}/0${this.showcaseProjects.length}`, screenX + 4, screenY + 6.8);
+    ctx.font = 'bold 5.5px monospace';
+    ctx.fillText(`CH 0${this.tvIndex + 1}/0${this.showcaseProjects.length}`, screenX + 5, screenY + 9);
 
     // Live badge right
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    ctx.fillRect(screenX + screenW - 24, screenY + 2, 22, 6.5);
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+    ctx.fillRect(screenX + screenW - 28, screenY + 3, 25, 8);
     if (isBlinkOn) {
       ctx.fillStyle = '#ef4444';
       ctx.beginPath();
-      ctx.arc(screenX + screenW - 20, screenY + 5.2, 1.5, 0, Math.PI * 2);
+      ctx.arc(screenX + screenW - 23, screenY + 7, 2, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 4.5px sans-serif';
-    ctx.fillText('LIVE', screenX + screenW - 16, screenY + 6.8);
+    ctx.font = 'bold 5.5px monospace';
+    ctx.fillText('LIVE', screenX + screenW - 18, screenY + 9);
 
     // 4. Slide Countdown Progress Bar
     const progress = Math.min(1, this.tvTimer / 5.0);
     ctx.fillStyle = '#0284c7';
-    ctx.fillRect(screenX, screenY + screenH - 1.5, screenW, 1.5);
+    ctx.fillRect(screenX, screenY + screenH - 2, screenW, 2);
     ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(screenX, screenY + screenH - 1.5, Math.floor(screenW * progress), 1.5);
+    ctx.fillRect(screenX, screenY + screenH - 2, Math.floor(screenW * progress), 2);
 
     ctx.restore();
     ctx.imageSmoothingEnabled = false;
