@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const { name, email, role, message, htmlContent, plainContent, cartCount } = await request.json();
 
     const apiKey = process.env.RESEND_API_KEY;
-    const toEmail = process.env.ORDER_RECIPIENT_EMAIL || 'aritrosaha2025@gmail.com';
+    const toEmail = process.env.ORDER_RECIPIENT_EMAIL || 'titanssuperior@gmail.com';
     const fromEmail = process.env.ORDER_SENDER_EMAIL || 'PokeMart Orders <onboarding@resend.dev>';
 
     // If Resend API Key is set in environment, send real email directly via Resend

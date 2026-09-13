@@ -58,6 +58,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [sendSuccessMode, setSendSuccessMode] = useState<'api' | 'mailto'>('api');
+  const [sendErrorMsg, setSendErrorMsg] = useState<string | null>(null);
 
   const categories = PORTFOLIO_DATA.skillPockets;
   const currentCategory: SkillPocket = categories[selectedCategoryIdx] || categories[0];
@@ -320,6 +321,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
   const handleSendMail = async () => {
     soundManager.playFanfare();
     setIsSending(true);
+    setSendErrorMsg(null);
 
     const html = generatePokemonHtmlMail();
     const plain = generateMailPlainText();
@@ -364,20 +366,30 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
         setSendSuccessMode('api');
         setViewMode('success');
         return;
+      } else if (!data.success) {
+        setIsSending(false);
+        setSendErrorMsg(data.error || 'Failed to dispatch email directly.');
+        return;
       }
     } catch (e) {
-      console.warn('Direct API email dispatch failed, falling back to mail client:', e);
+      console.error('Direct API email dispatch network error:', e);
+      setIsSending(false);
+      setSendErrorMsg('Network error connecting to email dispatcher.');
+      return;
     }
 
-    // 3. Fallback: If no server API key configured or network blocked, open client mailto
     setIsSending(false);
-    setSendSuccessMode('mailto');
+    setSendSuccessMode('api');
+    setViewMode('success');
+  };
+
+  const handleManualEmailClient = () => {
+    soundManager.playSelect();
     const mailtoSubject = encodeURIComponent(
       `[Tech Mart Order] Skills Inquiry from ${clientName.trim() || 'Engineering Client'}`
     );
-    const mailtoBody = encodeURIComponent(plain);
-    window.location.href = `mailto:aritrosaha2025@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
-    setViewMode('success');
+    const mailtoBody = encodeURIComponent(generateMailPlainText());
+    window.location.href = `mailto:titanssuperior@gmail.com?subject=${mailtoSubject}&body=${mailtoBody}`;
   };
 
   const copyRichHtmlToClipboard = async () => {
@@ -979,6 +991,26 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   {/* Bottom Airmail Border Ribbon */}
                   <div className="h-2 w-full bg-[repeating-linear-gradient(45deg,#3b82f6,#3b82f6_12px,#ffffff_12px,#ffffff_24px,#ef4444_24px,#ef4444_36px,#ffffff_36px,#ffffff_48px)] shrink-0" />
                 </div>
+
+                {/* Error Banner if direct transmission fails */}
+                {sendErrorMsg && (
+                  <div className="bg-rose-950/80 border-2 border-rose-500 rounded p-2.5 text-xs text-rose-200 font-silk flex flex-col gap-1.5 shadow-md animate-shake">
+                    <div className="flex items-center gap-1.5 font-bold text-rose-300">
+                      <X className="w-4 h-4 text-rose-400 shrink-0" />
+                      <span>DIRECT DISPATCH NOTICE: {sendErrorMsg}</span>
+                    </div>
+                    <div className="text-[10px] text-rose-300/80">
+                      Resend requires emails to be sent to your account email (<code className="text-white bg-slate-900 px-1 py-0.5 rounded">titanssuperior@gmail.com</code>). You can also launch your local email client below:
+                    </div>
+                    <button
+                      onClick={handleManualEmailClient}
+                      className="self-start px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-yellow-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer border border-slate-600"
+                    >
+                      <Mail className="w-3 h-3" />
+                      <span>LAUNCH EMAIL CLIENT AS FALLBACK</span>
+                    </button>
+                  </div>
+                )}
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1">
