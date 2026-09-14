@@ -11,6 +11,7 @@ import {
   Briefcase,
   MapPin,
   Gamepad2,
+  Zap,
 } from 'lucide-react';
 
 interface TopHUDProps {
@@ -61,7 +62,18 @@ export const TopHUD: React.FC<TopHUDProps> = ({
           className="px-2.5 py-1 rounded bg-blue-600/80 hover:bg-blue-500 text-white text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
         >
           <User className="w-3 h-3" />
-          <span>ABOUT ME</span>
+          <span>AI LAB</span>
+        </button>
+
+        <button
+          onClick={() => {
+            soundManager.playWildAlert();
+            onOpenModal('gymbattle');
+          }}
+          className="px-2.5 py-1 rounded bg-amber-500/90 hover:bg-amber-400 text-slate-950 text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+        >
+          <Zap className="w-3 h-3 text-slate-950" />
+          <span>GYM BATTLE</span>
         </button>
 
         <button

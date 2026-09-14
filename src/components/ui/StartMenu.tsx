@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { soundManager } from '@/game/audio/SoundManager';
-import { BookOpen, User, Briefcase, MapPin, Gamepad2, Save, Settings, X } from 'lucide-react';
+import { BookOpen, User, Briefcase, MapPin, Gamepad2, Save, Settings, X, Zap } from 'lucide-react';
 
 interface StartMenuProps {
   onSelect: (menuItem: string) => void;
@@ -14,6 +14,7 @@ export const StartMenu: React.FC<StartMenuProps> = ({ onSelect, onClose }) => {
 
   const menuItems = [
     { id: 'pokedex', label: 'POKÉDEX', desc: 'Projects & Innovations', icon: BookOpen, color: 'text-red-500' },
+    { id: 'gymbattle', label: 'SILICON GYM', desc: 'Boss Battle Leader Aritro', icon: Zap, color: 'text-amber-400' },
     { id: 'trainercard', label: 'TRAINER CARD', desc: 'About Me & 8 Badges', icon: User, color: 'text-sky-500' },
     { id: 'bag', label: 'BAG', desc: 'Skills & Tech Stack', icon: Briefcase, color: 'text-amber-500' },
     { id: 'townmap', label: 'TOWN MAP', desc: 'Fast Travel & Warps', icon: MapPin, color: 'text-emerald-500' },

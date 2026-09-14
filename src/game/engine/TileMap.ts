@@ -217,10 +217,11 @@ export class TileMap {
         x: 16,
         y: 26,
         type: 'gym',
-        targetModal: 'trainercard',
+        targetModal: 'gymbattle',
         dialogueText: [
           "Silicon Gym - Bristol Myers Squibb Arena!",
-          "Leader: Aritro Saha (Associate Software Developer & Hack4Bengal 3.0 Champion)."
+          "Leader: Aritro Saha (Associate Software Developer & Hack4Bengal 3.0 Champion).",
+          "Prepare your engineering team for battle!"
         ]
       },
       // Sign 1: House

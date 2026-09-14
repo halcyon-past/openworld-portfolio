@@ -15,6 +15,7 @@ import { SaveModal } from '@/components/modals/SaveModal';
 import { SettingsModal } from '@/components/modals/SettingsModal';
 import { ContactModal } from '@/components/modals/ContactModal';
 import { DeveloperArcadeModal } from '@/components/arcade/DeveloperArcadeModal';
+import { GymBattleModal } from '@/components/battle/GymBattleModal';
 import { RecruiterDossierView } from '@/components/recruiter/RecruiterDossierView';
 import { gameEngine } from '@/game/engine/GameEngine';
 import { soundManager } from '@/game/audio/SoundManager';
@@ -318,6 +319,14 @@ export default function Home() {
       {/* Developer Arcade Modal */}
       {activeModal === 'arcade' && (
         <DeveloperArcadeModal onClose={handleCloseModal} />
+      )}
+
+      {/* Silicon Gym Boss Battle Modal */}
+      {activeModal === 'gymbattle' && (
+        <GymBattleModal
+          onClose={handleCloseModal}
+          onOpenRecruiter={() => handleOpenRecruiter('game')}
+        />
       )}
 
       {/* Virtual On-Screen Gamepad for Mobile */}

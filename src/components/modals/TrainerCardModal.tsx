@@ -27,7 +27,7 @@ export const TrainerCardModal: React.FC<TrainerCardModalProps> = ({ onClose }) =
         <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-600 text-white px-4 py-2.5 border-b-4 border-slate-900 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-amber-300" />
-            <span className="text-xs md:text-sm font-bold tracking-wider">OFFICIAL TRAINER CARD</span>
+            <span className="text-xs md:text-sm font-bold tracking-wider">AI RESEARCH LAB • TRAINER DOSSIER</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-[10px] text-sky-200 font-silk">IDNo. {PORTFOLIO_DATA.trainer.idNo}</span>
@@ -208,8 +208,8 @@ export const TrainerCardModal: React.FC<TrainerCardModalProps> = ({ onClose }) =
 
         {/* Footer controls prompt */}
         <div className="bg-slate-300 px-4 py-1.5 text-[8px] text-slate-700 font-silk flex justify-between items-center border-t-2 border-slate-900 shrink-0">
-          <span>Official Bristol Myers Squibb Developer License</span>
-          <span>B / ESC: Close Card</span>
+          <span>Pallet Cloud AI Research Lab Mainframe • Bristol Myers Squibb</span>
+          <span>B / ESC: Close Terminal</span>
         </div>
 
       </div>

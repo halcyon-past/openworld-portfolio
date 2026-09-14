@@ -786,6 +786,134 @@ class SoundManager {
     }
   }
 
+  /** Pokémon Battle: Normal attack hit impact */
+  public playBattleHit() {
+    if (this.isMuted || this.isSfxMuted) return;
+    this.initContext();
+    if (!this.ctx || !this.sfxGain) return;
+
+    try {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(220, t);
+      osc.frequency.exponentialRampToValueAtTime(60, t + 0.12);
+
+      gain.gain.setValueAtTime(0.22, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+
+      osc.start(t);
+      osc.stop(t + 0.12);
+    } catch {
+      // ignore
+    }
+  }
+
+  /** Pokémon Battle: "It's super effective!" explosive hit */
+  public playBattleSuperEffective() {
+    if (this.isMuted || this.isSfxMuted) return;
+    this.initContext();
+    if (!this.ctx || !this.sfxGain) return;
+
+    try {
+      const t = this.ctx.currentTime;
+      // High pitch attack beam + heavy bass impact
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(880, t);
+      osc.frequency.exponentialRampToValueAtTime(120, t + 0.22);
+
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + 0.22);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+
+      osc.start(t);
+      osc.stop(t + 0.22);
+    } catch {
+      // ignore
+    }
+  }
+
+  /** Pokémon Battle: Stat Buff / Architecture Boost chime */
+  public playBattleBuff() {
+    if (this.isMuted || this.isSfxMuted) return;
+    this.initContext();
+    if (!this.ctx || !this.sfxGain) return;
+
+    try {
+      const notes = [440, 554.37, 659.25, 880, 1108.73];
+      const now = this.ctx.currentTime;
+      notes.forEach((freq, i) => {
+        if (!this.ctx || !this.sfxGain) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const t = now + i * 0.05;
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, t);
+
+        gain.gain.setValueAtTime(0.16, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGain);
+
+        osc.start(t);
+        osc.stop(t + 0.1);
+      });
+    } catch {
+      // ignore
+    }
+  }
+
+  /** Pokémon Battle: Master Ball Catch / Hire Fanfare */
+  public playBallCatch() {
+    if (this.isMuted || this.isSfxMuted) return;
+    this.initContext();
+    if (!this.ctx || !this.sfxGain) return;
+
+    try {
+      // 3 rhythmic wiggles then star click
+      const now = this.ctx.currentTime;
+      const wiggles = [0, 0.4, 0.8];
+      wiggles.forEach((offset) => {
+        if (!this.ctx || !this.sfxGain) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const t = now + offset;
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, t);
+        osc.frequency.exponentialRampToValueAtTime(659.25, t + 0.08);
+
+        gain.gain.setValueAtTime(0.18, t);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+
+        osc.connect(gain);
+        gain.connect(this.sfxGain);
+
+        osc.start(t);
+        osc.stop(t + 0.15);
+      });
+
+      // Victory chime at t + 1.2s
+      setTimeout(() => {
+        this.playFanfare();
+      }, 1200);
+    } catch {
+      // ignore
+    }
+  }
+
   /** Victory / Item Received 4-note retro fanfare */
   public playFanfare() {
     if (this.isMuted) return;
