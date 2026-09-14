@@ -105,6 +105,12 @@ export default function Home() {
   };
 
   const handleOpenRecruiter = useCallback((origin: 'home' | 'game' = 'game') => {
+    // Cleanly close any modal and dialogue states
+    gameEngine.isModalActive = false;
+    gameEngine.isDialogueActive = false;
+    setActiveModal(null);
+    setActiveDialogue(null);
+
     setRecruiterOrigin(origin);
     setIsLoading(false);
     setIsRecruiterMode(true);

@@ -829,7 +829,6 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                   <button
                     onClick={() => {
                       soundManager.playSelect();
-                      onClose();
                       onOpenRecruiter?.();
                     }}
                     className="flex-1 py-2 px-3 rounded bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg cursor-pointer"
