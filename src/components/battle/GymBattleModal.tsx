@@ -155,7 +155,14 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
   const [isVictory, setIsVictory] = useState<boolean>(false);
   const [shakeTarget, setShakeTarget] = useState<'none' | 'opponent' | 'player'>('none');
   const [screenFlash, setScreenFlash] = useState<boolean>(false);
-  const [isCatching, setIsCatching] = useState<boolean>(false);
+  
+  // Dynamic Attack & Capture VFX states
+  const [playerAttackAnim, setPlayerAttackAnim] = useState<boolean>(false);
+  const [leaderAttackAnim, setLeaderAttackAnim] = useState<boolean>(false);
+  const [activeProjectile, setActiveProjectile] = useState<string | null>(null);
+  const [leaderProjectile, setLeaderProjectile] = useState<string | null>(null);
+  const [ballState, setBallState] = useState<'idle' | 'flying' | 'wiggling' | 'caught'>('idle');
+  const [isSuckingAritro, setIsSuckingAritro] = useState<boolean>(false);
 
   useEffect(() => {
     soundManager.playWildAlert();
@@ -176,7 +183,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
     }
   }, [isVictory]);
 
-  // Execute Player Attack
+  // Execute Player Attack with full animation sequence
   const handlePlayerAttack = (move: PlayerMove) => {
     if (isAnimating || isVictory) return;
     setIsAnimating(true);
@@ -185,8 +192,18 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
     soundManager.playSelect();
     setBattleLog(move.flavor);
 
+    // 1. Recruiter bot lunges forward
+    setPlayerAttackAnim(true);
+    setTimeout(() => setPlayerAttackAnim(false), 500);
+
+    // 2. Spawn move projectile flying across the field to Gym Leader
     setTimeout(() => {
-      // Audio & Shake Impact
+      setActiveProjectile(move.id);
+      setTimeout(() => setActiveProjectile(null), 650);
+    }, 200);
+
+    // 3. Impact on Gym Leader Aritro
+    setTimeout(() => {
       if (move.power >= 50) {
         soundManager.playBattleSuperEffective();
       } else {
@@ -218,26 +235,39 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
       // Opponent Counter-Turn
       setTimeout(() => {
         handleOpponentCounter(move.counterMoveIdx);
-      }, 1400);
-    }, 900);
+      }, 1300);
+    }, 850);
   };
 
-  // Opponent Specific Counter Attack
+  // Opponent Specific Counter Attack with animations
   const handleOpponentCounter = (moveIdx: number) => {
     const counterMove = OPPONENT_COUNTER_MOVES[moveIdx] || OPPONENT_COUNTER_MOVES[0];
-    soundManager.playBattleHit();
     setBattleLog(counterMove.flavor);
 
-    setShakeTarget('player');
-    setTimeout(() => setShakeTarget('none'), 350);
+    // 1. Leader lunges forward
+    setLeaderAttackAnim(true);
+    setTimeout(() => setLeaderAttackAnim(false), 500);
 
-    const enemyDmg = Math.max(12, Math.round(counterMove.power * 0.65 + Math.random() * 6));
-    setPlayerHp((prev) => Math.max(15, prev - enemyDmg));
-
+    // 2. Leader fires counter projectile towards player
     setTimeout(() => {
-      setBattleLog(`"${counterMove.description}" (Recruiter took ${enemyDmg} damage!)`);
-      setIsAnimating(false);
-    }, 1000);
+      setLeaderProjectile(counterMove.type);
+      setTimeout(() => setLeaderProjectile(null), 650);
+    }, 200);
+
+    // 3. Impact on Recruiter Partner
+    setTimeout(() => {
+      soundManager.playBattleHit();
+      setShakeTarget('player');
+      setTimeout(() => setShakeTarget('none'), 350);
+
+      const enemyDmg = Math.max(12, Math.round(counterMove.power * 0.65 + Math.random() * 6));
+      setPlayerHp((prev) => Math.max(15, prev - enemyDmg));
+
+      setTimeout(() => {
+        setBattleLog(`"${counterMove.description}" (Recruiter took ${enemyDmg} damage!)`);
+        setIsAnimating(false);
+      }, 900);
+    }, 850);
   };
 
   // Victory Handler
@@ -276,30 +306,45 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
     setBattleLog('Hack4Bengal 3.0 Champion Trophy displayed! PAWsitive pet health platform lore recalled!');
   };
 
-  // [RECRUIT]: Instant Master Ball / Job Offer Animation Catch
+  // [RECRUIT]: Master Offer Ball Throw + Capture Animation + Capture Suck Effect
   const handleRecruitMasterBall = () => {
     if (isAnimating || isVictory) return;
     setIsAnimating(true);
-    setIsCatching(true);
     setBattleMenu('main');
     soundManager.playSelect();
-    setBattleLog('Recruiter dispatched the MASTER JOB OFFER BALL!');
+    setBattleLog('Recruiter hurled the MASTER JOB OFFER BALL!');
+
+    // 1. Recruiter lunges throwing ball
+    setPlayerAttackAnim(true);
+    setTimeout(() => setPlayerAttackAnim(false), 400);
+
+    // 2. Ball arcs through air towards Aritro
+    setBallState('flying');
 
     setTimeout(() => {
+      // 3. Ball lands on Aritro: Leader glows and gets sucked into ball with beam
       soundManager.playBattleBuff();
-      setBattleLog('Checking cultural, technical, and compensation alignment...');
+      setIsSuckingAritro(true);
+      setBattleLog('The Master Offer Ball opened! Executive alignment beam locks on!');
 
       setTimeout(() => {
+        // 4. Aritro captured inside, ball lands and starts wiggling
+        setBallState('wiggling');
+        setBattleLog('Checking cultural, technical, and compensation alignment...');
         soundManager.playBallCatch();
-        setBattleLog('Wiggle... Wiggle... Wiggle... Click!');
 
+        // 5. Wiggle clicks
         setTimeout(() => {
-          setIsCatching(false);
-          setBattleLog('Gotcha! Aritro Saha accepted your offer & joined your Engineering Organization!');
-          handleVictoryAchievement();
-        }, 1800);
-      }, 1200);
-    }, 1000);
+          setBattleLog('Wiggle... Wiggle... Wiggle... CLICK!');
+          setBallState('caught');
+
+          setTimeout(() => {
+            setBattleLog('Gotcha! Aritro Saha accepted your offer & joined your Engineering Organization!');
+            handleVictoryAchievement();
+          }, 1200);
+        }, 2200);
+      }, 850);
+    }, 900);
   };
 
   return (
@@ -388,10 +433,16 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
               {/* Stadium Ground Platform */}
               <div className="w-32 sm:w-44 h-8 bg-slate-800/80 border border-slate-600 rounded-[100%] shadow-[0_0_20px_rgba(59,130,246,0.3)] absolute bottom-0 translate-y-3" />
 
-              {/* Detailed Sprite with Animation */}
+              {/* Detailed Sprite with Animation & Capture FX */}
               <div
                 className={`relative w-28 h-28 sm:w-36 sm:h-36 transition-transform duration-300 ${
-                  shakeTarget === 'opponent' ? 'animate-shake' : 'animate-pulse-slow'
+                  shakeTarget === 'opponent'
+                    ? 'animate-shake'
+                    : leaderAttackAnim
+                    ? 'animate-leader-lunge'
+                    : isSuckingAritro
+                    ? 'animate-capture-suck'
+                    : 'animate-pulse-slow'
                 }`}
               >
                 <Image
@@ -402,8 +453,88 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                   unoptimized
                 />
               </div>
+
+              {/* Master Ball on Leader Platform when wiggling / caught */}
+              {(ballState === 'wiggling' || ballState === 'caught') && (
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 z-30 w-12 h-12 flex items-center justify-center ${
+                    ballState === 'wiggling' ? 'animate-ball-wiggle' : ''
+                  }`}
+                >
+                  <div className="relative w-12 h-12 drop-shadow-[0_0_15px_#ec4899]">
+                    <Image
+                      src="/assets/battle/master_offer_ball.png"
+                      alt="Master Offer Ball"
+                      fill
+                      className="object-contain"
+                      unoptimized
+                    />
+                  </div>
+                  {ballState === 'caught' && (
+                    <div className="absolute -top-3 text-amber-300 animate-bounce">
+                      <Sparkles className="w-6 h-6 fill-current" />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* ========================================================= */}
+          {/* MID ARENA: FLYING ATTACK PROJECTILES & FLYING POKÉBALL */}
+          {/* ========================================================= */}
+          {/* Player Attack Projectiles flying towards Leader */}
+          {activeProjectile && (
+            <div className="absolute left-[20%] bottom-[35%] z-20 pointer-events-none animate-projectile-fly">
+              {activeProjectile === 'sys_design' && (
+                <div className="flex items-center gap-1 bg-violet-600/90 text-violet-100 text-[10px] px-2.5 py-1 rounded-full border border-violet-300 shadow-[0_0_15px_#8b5cf6]">
+                  <Zap className="w-3.5 h-3.5 fill-current text-yellow-300 animate-spin" />
+                  <span>5M/HR STREAM</span>
+                </div>
+              )}
+              {activeProjectile === 'code_review' && (
+                <div className="flex items-center gap-1 bg-slate-900/90 text-rose-300 text-[10px] px-2.5 py-1 rounded-full border border-rose-500 shadow-[0_0_15px_#f43f5e]">
+                  <span>⚠️ ERR 500 DLQ</span>
+                </div>
+              )}
+              {activeProjectile === 'whiteboard' && (
+                <div className="flex items-center gap-1 bg-amber-600/90 text-white text-[10px] px-2.5 py-1 rounded-full border border-amber-300 shadow-[0_0_15px_#f59e0b]">
+                  <span>⚔️ O(N log N)</span>
+                </div>
+              )}
+              {activeProjectile === 'comp_offer' && (
+                <div className="flex items-center gap-1 bg-emerald-600/90 text-white text-[10px] px-2.5 py-1 rounded-full border border-emerald-300 shadow-[0_0_15px_#10b981]">
+                  <Award className="w-3.5 h-3.5 text-yellow-200" />
+                  <span>LEADERSHIP OFFER</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Leader Counter Attack Projectiles flying towards Recruiter */}
+          {leaderProjectile && (
+            <div className="absolute right-[22%] top-[30%] z-20 pointer-events-none animate-leader-projectile-fly">
+              <div className="flex items-center gap-1 bg-sky-600/90 text-white text-[10px] px-2.5 py-1 rounded-full border border-sky-300 shadow-[0_0_15px_#38bdf8]">
+                <Zap className="w-3.5 h-3.5 fill-current text-amber-300" />
+                <span>SERVERLESS BURST</span>
+              </div>
+            </div>
+          )}
+
+          {/* Master Offer Ball Flying Arc across Arena */}
+          {ballState === 'flying' && (
+            <div className="absolute left-[20%] bottom-[25%] z-30 pointer-events-none animate-ball-arc w-12 h-12">
+              <div className="relative w-12 h-12 drop-shadow-[0_0_20px_#ec4899]">
+                <Image
+                  src="/assets/battle/master_offer_ball.png"
+                  alt="Master Offer Ball"
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+            </div>
+          )}
 
           {/* ========================================================= */}
           {/* BOTTOM HALF: RECRUITER SPRITE & STATUS HUD */}
@@ -416,7 +547,11 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
 
               <div
                 className={`relative w-28 h-28 sm:w-36 sm:h-36 transition-transform duration-300 ${
-                  shakeTarget === 'player' ? 'animate-shake' : ''
+                  shakeTarget === 'player'
+                    ? 'animate-shake'
+                    : playerAttackAnim
+                    ? 'animate-attack-lunge'
+                    : ''
                 }`}
               >
                 <Image
@@ -473,21 +608,23 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
         {/* ========================================================= */}
         {/* LOWER SECTION: GBA BATTLE LOG & 4 EXACT BUTTONS */}
         {/* ========================================================= */}
-        <div className="bg-[#0f172a] border-t-4 border-slate-900 p-3 sm:p-4 grid grid-cols-1 md:grid-cols-12 gap-3 shrink-0 min-h-[140px]">
+        <div className="bg-[#0f172a] border-t-4 border-slate-900 p-3 sm:p-4 grid grid-cols-1 md:grid-cols-12 gap-2.5 sm:gap-3 shrink-0">
           
-          {/* Left: Dialogue / Battle Announcer Box */}
-          <div className="md:col-span-6 bg-slate-900 border-2 border-slate-700 rounded-lg p-3 text-white flex flex-col justify-between shadow-inner">
-            <div className="text-[10px] text-amber-300 font-bold border-b border-slate-800 pb-1 flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-amber-400" />
+          {/* Left: Dialogue / Battle Announcer Box with safe overflow handling */}
+          <div className="md:col-span-6 bg-slate-900 border-2 border-slate-700 rounded-lg p-2.5 sm:p-3 text-white flex flex-col justify-between shadow-inner h-[120px] sm:h-[135px]">
+            <div className="text-[10px] text-amber-300 font-bold border-b border-slate-800 pb-1 flex items-center gap-1.5 shrink-0">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>BATTLE ANNOUNCER:</span>
             </div>
-            <p className="text-xs sm:text-sm font-silk leading-relaxed text-slate-200 pt-1.5 flex-1 flex items-center">
-              {battleLog}
-            </p>
+            <div className="overflow-y-auto flex-1 pr-1 pt-1.5 scrollbar-thin">
+              <p className="text-[11px] sm:text-xs font-silk leading-relaxed text-slate-200 break-words">
+                {battleLog}
+              </p>
+            </div>
           </div>
 
           {/* Right: GBA Action Decision Menu */}
-          <div className="md:col-span-6 flex flex-col justify-center">
+          <div className="md:col-span-6 flex flex-col justify-center min-h-[120px] sm:min-h-[135px]">
             
             {/* OPTION 2 - MAIN 4-BUTTON MENU: [FIGHT], [BAG], [POKÉMON], [OFFER / RECRUIT] */}
             {battleMenu === 'main' && !isVictory && (
@@ -498,7 +635,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                     soundManager.playSelect();
                     setBattleMenu('fight');
                   }}
-                  className="p-2.5 sm:p-3 rounded-lg bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-red-400"
+                  className="p-2 sm:p-2.5 rounded-lg bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-red-400"
                 >
                   <span>⚔️ FIGHT</span>
                 </button>
@@ -509,7 +646,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                     soundManager.playSelect();
                     setBattleMenu('bag');
                   }}
-                  className="p-2.5 sm:p-3 rounded-lg bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-amber-400"
+                  className="p-2 sm:p-2.5 rounded-lg bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-amber-400"
                 >
                   <span>🎒 BAG</span>
                 </button>
@@ -520,38 +657,38 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                     soundManager.playSelect();
                     setBattleMenu('pokemon');
                   }}
-                  className="p-2.5 sm:p-3 rounded-lg bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-blue-400"
+                  className="p-2 sm:p-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-blue-400"
                 >
-                  <span>🛡️ POKÉMON / BADGES</span>
+                  <span>🛡️ POKÉMON</span>
                 </button>
 
                 <button
                   disabled={isAnimating}
                   onClick={handleRecruitMasterBall}
-                  className="p-2.5 sm:p-3 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-emerald-400"
+                  className="p-2 sm:p-2.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5 border border-emerald-400"
                 >
-                  <span>✨ OFFER / RECRUIT</span>
+                  <span>✨ RECRUIT</span>
                 </button>
               </div>
             )}
 
             {/* SUB-MENU 1: [FIGHT] - 4 ATTACK ACTIONS */}
             {battleMenu === 'fight' && !isVictory && (
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <div className="grid grid-cols-2 gap-1.5">
                   {PLAYER_MOVES.map((move) => (
                     <button
                       key={move.id}
                       disabled={isAnimating}
                       onClick={() => handlePlayerAttack(move)}
-                      className="p-2 rounded bg-slate-800 hover:bg-blue-900/80 text-left border border-slate-700 hover:border-blue-400 transition-all cursor-pointer active:scale-98 disabled:opacity-50"
+                      className="p-1.5 sm:p-2 rounded bg-slate-800 hover:bg-blue-900/80 text-left border border-slate-700 hover:border-blue-400 transition-all cursor-pointer active:scale-98 disabled:opacity-50"
                     >
-                      <div className="text-[10px] sm:text-xs font-bold text-white flex justify-between">
-                        <span>{move.name}</span>
-                        <span className="text-[8px] text-amber-300">{move.type}</span>
+                      <div className="text-[9px] sm:text-[10px] font-bold text-white flex justify-between items-center gap-1">
+                        <span className="truncate">{move.name}</span>
+                        <span className="text-[7px] sm:text-[8px] text-amber-300 shrink-0 font-silk">{move.type}</span>
                       </div>
-                      <div className="text-[8px] text-slate-400 font-silk truncate">
-                        Power: {move.power} • PP: {move.pp}/{move.maxPp}
+                      <div className="text-[7px] sm:text-[8px] text-slate-400 font-silk mt-0.5 truncate">
+                        Pwr {move.power} • PP {move.pp}/{move.maxPp}
                       </div>
                     </button>
                   ))}
@@ -564,53 +701,53 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                   }}
                   className="text-[9px] text-slate-400 hover:text-white font-silk text-right cursor-pointer pt-0.5"
                 >
-                  ◄ Back to Battle Commands
+                  ◄ Back to Commands
                 </button>
               </div>
             )}
 
             {/* SUB-MENU 2: [BAG] - TACTICAL ITEMS */}
             {battleMenu === 'bag' && !isVictory && (
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
                   {/* Coffee */}
                   <button
                     disabled={coffeeCount <= 0 || isAnimating}
                     onClick={handleDrinkCoffee}
-                    className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-left cursor-pointer disabled:opacity-40"
+                    className="p-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-left cursor-pointer disabled:opacity-40"
                   >
-                    <div className="text-[10px] font-bold text-amber-300 flex items-center gap-1">
-                      <Coffee className="w-3 h-3" />
-                      <span>Dark Roast Coffee</span>
+                    <div className="text-[9px] font-bold text-amber-300 flex items-center gap-1">
+                      <Coffee className="w-3 h-3 shrink-0" />
+                      <span className="truncate">Dark Coffee</span>
                     </div>
-                    <div className="text-[8px] text-slate-400 font-silk">Heal 100% ({coffeeCount} Left)</div>
+                    <div className="text-[8px] text-slate-400 font-silk truncate">Heal ({coffeeCount} Left)</div>
                   </button>
 
                   {/* Senior Role Req */}
                   <button
                     disabled={roleReqUsed || isAnimating}
                     onClick={handlePresentRoleReq}
-                    className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-left cursor-pointer disabled:opacity-40"
+                    className="p-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-left cursor-pointer disabled:opacity-40"
                   >
-                    <div className="text-[10px] font-bold text-sky-300 flex items-center gap-1">
-                      <FileText className="w-3 h-3" />
-                      <span>Senior Role Req</span>
+                    <div className="text-[9px] font-bold text-sky-300 flex items-center gap-1">
+                      <FileText className="w-3 h-3 shrink-0" />
+                      <span className="truncate">Senior Req</span>
                     </div>
-                    <div className="text-[8px] text-slate-400 font-silk">
-                      {roleReqUsed ? 'Active (Boosted)' : 'Boost Agreement Rate'}
+                    <div className="text-[8px] text-slate-400 font-silk truncate">
+                      {roleReqUsed ? 'Active (Boosted)' : 'Boost Rate'}
                     </div>
                   </button>
 
                   {/* Hack4Bengal Trophy */}
                   <button
                     onClick={handleShowTrophy}
-                    className="p-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-left cursor-pointer"
+                    className="p-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded text-left cursor-pointer"
                   >
-                    <div className="text-[10px] font-bold text-amber-400 flex items-center gap-1">
-                      <Trophy className="w-3 h-3" />
-                      <span>Hack4Bengal Trophy</span>
+                    <div className="text-[9px] font-bold text-amber-400 flex items-center gap-1">
+                      <Trophy className="w-3 h-3 shrink-0" />
+                      <span className="truncate">Champion Cup</span>
                     </div>
-                    <div className="text-[8px] text-slate-400 font-silk">1st Place Victor Lore</div>
+                    <div className="text-[8px] text-slate-400 font-silk truncate">1st Place Lore</div>
                   </button>
                 </div>
 
@@ -621,17 +758,17 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                   }}
                   className="text-[9px] text-slate-400 hover:text-white font-silk text-right cursor-pointer pt-0.5"
                 >
-                  ◄ Back to Battle Commands
+                  ◄ Back to Commands
                 </button>
               </div>
             )}
 
             {/* SUB-MENU 3: [POKÉMON] - INSPECT 8 GYM BADGES OF HONOR */}
             {battleMenu === 'pokemon' && !isVictory && (
-              <div className="flex flex-col gap-1.5">
-                <div className="text-[9px] font-bold text-sky-300 flex items-center justify-between border-b border-slate-800 pb-1">
-                  <span>ARITRO&apos;S 8 GYM BADGES OF HONOR:</span>
-                  <span className="text-[8px] text-slate-400 font-silk">Click to inspect</span>
+              <div className="flex flex-col gap-1">
+                <div className="text-[9px] font-bold text-sky-300 flex items-center justify-between border-b border-slate-800 pb-0.5">
+                  <span>8 GYM BADGES:</span>
+                  <span className="text-[8px] text-slate-400 font-silk">Click badge</span>
                 </div>
 
                 <div className="grid grid-cols-4 sm:grid-cols-8 gap-1">
@@ -645,12 +782,12 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                       className="p-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-400 flex flex-col items-center cursor-pointer"
                     >
                       <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center border border-white"
+                        className="w-4 h-4 rounded-full flex items-center justify-center border border-white"
                         style={{ backgroundColor: b.iconColor }}
                       >
-                        <Sparkles className="w-2.5 h-2.5 text-white" />
+                        <Sparkles className="w-2 h-2 text-white" />
                       </div>
-                      <span className="text-[7px] text-slate-300 truncate w-full text-center mt-0.5">
+                      <span className="text-[6px] text-slate-300 truncate w-full text-center mt-0.5 font-silk">
                         {b.name.split(' ')[0]}
                       </span>
                     </button>
@@ -658,8 +795,8 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                 </div>
 
                 {selectedBadge && (
-                  <div className="p-1.5 bg-slate-900 border border-amber-400/60 rounded text-[9px] text-slate-300 font-silk">
-                    <span className="font-bold text-amber-300">{selectedBadge.name}</span> ({selectedBadge.gymCity}): {selectedBadge.description}
+                  <div className="p-1 bg-slate-900 border border-amber-400/60 rounded text-[8px] text-slate-300 font-silk max-h-[38px] overflow-y-auto">
+                    <span className="font-bold text-amber-300">{selectedBadge.name}:</span> {selectedBadge.description}
                   </div>
                 )}
 
@@ -670,7 +807,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                   }}
                   className="text-[9px] text-slate-400 hover:text-white font-silk text-right cursor-pointer pt-0.5"
                 >
-                  ◄ Back to Battle Commands
+                  ◄ Back to Commands
                 </button>
               </div>
             )}

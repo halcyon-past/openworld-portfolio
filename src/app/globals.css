@@ -124,3 +124,154 @@
 .animate-retro-blink {
   animation: retroBlink 0.9s infinite;
 }
+
+/* GBA Battle Animations */
+@keyframes battleAttackLunge {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  30% {
+    transform: translate(28px, -24px) scale(1.08);
+  }
+  60% {
+    transform: translate(36px, -32px) scale(1.12);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes battleLeaderAttack {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  30% {
+    transform: translate(-28px, 20px) scale(1.08);
+  }
+  60% {
+    transform: translate(-34px, 26px) scale(1.1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes projectileFly {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    transform: translate(320px, -180px) scale(1.3);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(350px, -200px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes leaderProjectileFly {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-320px, 180px) scale(1.3);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-350px, 200px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes masterBallArc {
+  0% {
+    transform: translate(0, 0) scale(0.8) rotate(0deg);
+    opacity: 1;
+  }
+  45% {
+    transform: translate(160px, -220px) scale(1.2) rotate(360deg);
+    opacity: 1;
+  }
+  85% {
+    transform: translate(310px, -145px) scale(1) rotate(720deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(310px, -145px) scale(1) rotate(720deg);
+    opacity: 1;
+  }
+}
+
+@keyframes ballWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-24deg);
+  }
+  40% {
+    transform: rotate(24deg);
+  }
+  60% {
+    transform: rotate(-18deg);
+  }
+  80% {
+    transform: rotate(18deg);
+  }
+}
+
+@keyframes captureSuck {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: brightness(1) drop-shadow(0 0 0px transparent);
+  }
+  40% {
+    transform: scale(1.1) translateY(-10px);
+    filter: brightness(2.5) drop-shadow(0 0 25px #ec4899);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0) translateY(40px);
+    filter: brightness(4) drop-shadow(0 0 40px #ec4899);
+    opacity: 0;
+  }
+}
+
+.animate-attack-lunge {
+  animation: battleAttackLunge 0.5s ease-out;
+}
+
+.animate-leader-lunge {
+  animation: battleLeaderAttack 0.5s ease-out;
+}
+
+.animate-projectile-fly {
+  animation: projectileFly 0.65s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+}
+
+.animate-leader-projectile-fly {
+  animation: leaderProjectileFly 0.65s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+}
+
+.animate-ball-arc {
+  animation: masterBallArc 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-ball-wiggle {
+  animation: ballWiggle 0.6s ease-in-out infinite;
+}
+
+.animate-capture-suck {
+  animation: captureSuck 0.8s ease-in forwards;
+}
+
