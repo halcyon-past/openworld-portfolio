@@ -82,6 +82,11 @@ export class TileMap {
       }
     }
 
+    // 4b. Elevated Cliff Plateau wild grass at top of stairs (x: 25..33, y: 1)
+    for (let x = 25; x <= 33; x++) {
+      this.grid[1][x] = { type: 'tallgrass', solid: false };
+    }
+
     // 5. Scenic South-West Lake / Ocean
     for (let x = 1; x <= 4; x++) {
       for (let y = 21; y <= 28; y++) {
@@ -570,7 +575,7 @@ export class TileMap {
 
     // Decorative natural trees (framed around town plaza and fountain)
     const decorativeTrees: [number, number][] = [
-      [9, 3], [16, 3], [28, 3],
+      [9, 3], [16, 3], [25, 3],
       [2, 13], [22, 13],
       [8, 22], [22, 22], [28, 24]
     ];

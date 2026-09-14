@@ -72,36 +72,102 @@ export class SpriteGenerator {
     if (this.cache.has(key)) return this.cache.get(key)!;
 
     const [c, ctx] = this.createCanvas(TILE_SIZE, TILE_SIZE);
+    // Draw base grass ground texture
     ctx.drawImage(this.getGrassTile(), 0, 0);
 
-    const sway = (frame % 2) * 2;
+    const sway = (frame % 2 === 1) ? 1 : -1;
 
-    // Layer 1: Dark background wild grass silhouettes
-    ctx.fillStyle = '#14532d';
-    for (let x = 2; x < TILE_SIZE - 2; x += 5) {
-      ctx.fillRect(x + sway, 6, 3, 26);
-      ctx.fillRect(x - 1 + sway, 10, 2, 22);
-    }
+    // Palette: Authentic GBA Pokemon Emerald / FireRed wild grass
+    const cShadow = '#0f3c1a'; // Dark root shadow / under-blade outline
+    const cMid    = '#22af4e'; // Rich emerald blade body
+    const cLight  = '#54e082'; // Bright sunlit blade spine
+    const cMint   = '#bbf7d0'; // Diamond tip dew/glint
+    const cGold   = '#fef08a'; // Pollen / buttercup flower
 
-    // Layer 2: Vibrant wild blade stalks with tapered tips
-    ctx.fillStyle = '#15803d';
-    for (let x = 1; x < TILE_SIZE - 2; x += 5) {
-      ctx.fillRect(x + sway, 8, 3, 24);
-      ctx.fillRect(x + 1 + sway, 4, 2, 6);
-      ctx.fillRect(x + 2 + sway, 2, 1, 4);
-    }
+    // Helper to draw a natural GBA blade cluster fan
+    const drawCluster = (cx: number, baseY: number, heights: number[], swayOffset: number) => {
+      // Root shadow mound
+      ctx.fillStyle = cShadow;
+      ctx.beginPath();
+      ctx.ellipse(cx, baseY - 1, 8, 3, 0, 0, Math.PI * 2);
+      ctx.fill();
 
-    // Layer 3: Sunlit blade highlights & seed pods
-    ctx.fillStyle = '#4ade80';
-    for (let x = 2; x < TILE_SIZE - 3; x += 5) {
-      ctx.fillRect(x + sway, 4, 1, 8);
-      ctx.fillRect(x + 1 + sway, 2, 1, 3);
-    }
+      const blades = [
+        { ox: -6, oy: -2, h: heights[0], lean: -2 },
+        { ox: -3, oy: -1, h: heights[1], lean: -1 },
+        { ox: 0, oy: 0, h: heights[2], lean: 0 },
+        { ox: 3, oy: -1, h: heights[3], lean: 1 },
+        { ox: 6, oy: -2, h: heights[4], lean: 2 },
+      ];
 
-    ctx.fillStyle = '#bbf7d0';
-    for (let x = 3; x < TILE_SIZE - 4; x += 6) {
-      ctx.fillRect(x + sway, 1, 2, 2); // Pollen / flower tip
+      for (const b of blades) {
+        const bx = cx + b.ox;
+        const by = baseY + b.oy;
+        const tx = bx + b.lean * 2 + swayOffset;
+        const ty = by - b.h;
+        const w = Math.abs(b.ox) <= 3 ? 2 : 1;
+
+        // Dark back/shadow polygon
+        ctx.fillStyle = cShadow;
+        ctx.beginPath();
+        ctx.moveTo(bx - w, by);
+        ctx.lineTo(tx - 1, ty);
+        ctx.lineTo(tx + 1, ty);
+        ctx.lineTo(bx + w, by);
+        ctx.closePath();
+        ctx.fill();
+
+        // Midtone vibrant blade face
+        ctx.fillStyle = cMid;
+        ctx.beginPath();
+        ctx.moveTo(bx - w + 1, by);
+        ctx.lineTo(tx, ty);
+        ctx.lineTo(bx + w - 1, by);
+        ctx.closePath();
+        ctx.fill();
+
+        // Sunlit spine highlight
+        ctx.fillStyle = cLight;
+        ctx.fillRect(tx, ty + 1, 1, Math.max(2, Math.floor(b.h * 0.6)));
+
+        // Dewdrop diamond tip
+        ctx.fillStyle = cMint;
+        ctx.fillRect(tx, ty, 1, 1);
+      }
+    };
+
+    // Layer 1: Back row tufts (roots around y: 15)
+    drawCluster(7, 15, [7, 10, 13, 11, 8], sway);
+    drawCluster(23, 15, [8, 11, 14, 10, 7], -sway);
+
+    // Layer 2: Front row tufts (roots around y: 31)
+    drawCluster(9, 31, [9, 13, 16, 12, 8], sway);
+    drawCluster(24, 31, [8, 12, 16, 13, 9], -sway);
+
+    // Side seamless boundary blades (prevents grid cutoffs between adjacent tiles)
+    ctx.fillStyle = cShadow;
+    ctx.fillRect(0, 7, 2, 10);
+    ctx.fillRect(TILE_SIZE - 2, 6, 2, 10);
+    ctx.fillRect(0, 20, 2, 11);
+    ctx.fillRect(TILE_SIZE - 2, 19, 2, 11);
+
+    ctx.fillStyle = cLight;
+    ctx.fillRect(0, 8 + sway, 1, 6);
+    ctx.fillRect(TILE_SIZE - 1, 7 - sway, 1, 6);
+    ctx.fillRect(0, 21 + sway, 1, 7);
+    ctx.fillRect(TILE_SIZE - 1, 20 - sway, 1, 7);
+
+    // Delicate golden buttercups & dewdrops
+    ctx.fillStyle = cGold;
+    if (frame % 2 === 0) {
+      ctx.fillRect(15, 8, 2, 2);
+      ctx.fillRect(16, 24, 2, 2);
+    } else {
+      ctx.fillRect(16, 8, 2, 2);
+      ctx.fillRect(15, 24, 2, 2);
     }
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(frame % 2 === 0 ? 15 : 16, 8, 1, 1);
 
     this.cache.set(key, c);
     return c;
