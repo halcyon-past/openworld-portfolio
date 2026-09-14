@@ -131,8 +131,8 @@ const OPPONENT_COUNTER_MOVES: OpponentMove[] = [
 ];
 
 export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenRecruiter }) => {
-  // Option 2: True GBA 4-button menu: FIGHT, BAG, POKÉMON, RECRUIT
-  const [battleMenu, setBattleMenu] = useState<'main' | 'fight' | 'bag' | 'pokemon'>('main');
+  // Option 2: True GBA 4-button menu: FIGHT, BAG, BADGES, RECRUIT
+  const [battleMenu, setBattleMenu] = useState<'main' | 'fight' | 'bag' | 'badges'>('main');
 
   // Opponent: Gym Leader Aritro Lv. 99
   const [opponentHp, setOpponentHp] = useState<number>(160);
@@ -659,11 +659,11 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                   disabled={isAnimating}
                   onClick={() => {
                     soundManager.playSelect();
-                    setBattleMenu('pokemon');
+                    setBattleMenu('badges');
                   }}
                   className="p-2 sm:p-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 border border-blue-400"
                 >
-                  <span>🛡️ POKÉMON</span>
+                  <span>🛡️ BADGES</span>
                 </button>
 
                 <button
@@ -773,8 +773,8 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
               </div>
             )}
 
-            {/* SUB-MENU 3: [POKÉMON] - INSPECT 8 GYM BADGES OF HONOR */}
-            {battleMenu === 'pokemon' && !isVictory && (
+            {/* SUB-MENU 3: [BADGES] - INSPECT 8 GYM BADGES OF HONOR */}
+            {battleMenu === 'badges' && !isVictory && (
               <div className="flex flex-col gap-1">
                 <div className="text-[8px] sm:text-[9px] font-bold text-sky-300 flex items-center justify-between border-b border-slate-800 pb-0.5">
                   <span>8 GYM BADGES:</span>
