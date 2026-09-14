@@ -117,11 +117,11 @@ const OPPONENT_COUNTER_MOVES: OpponentMove[] = [
     flavor: 'Aritro countered with LeetCode Knight Precision!',
   },
   {
-    name: 'Clinical Decision LLM Sync',
-    type: 'Psychic',
-    power: 20,
-    description: 'Reduced NSCLC clinical review turnaround by 30% at Bristol Myers Squibb!',
-    flavor: 'Aritro synced his Clinical Decision Support LLM!',
+    name: 'Executive Sign-Off & Tech Vision',
+    type: 'Dragon',
+    power: 22,
+    description: 'Aritro reviewed the scope, tech roadmap, and growth trajectory. Mutual interest peaked!',
+    flavor: 'Aritro reviewed the tech stack & delivered an inspired engineering roadmap!',
   },
 ];
 
