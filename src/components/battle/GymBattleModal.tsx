@@ -295,7 +295,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
 
         setTimeout(() => {
           setIsCatching(false);
-          setBattleLog('Gotcha! Aritro Saha joined your Engineering Organization as Associate Software Engineer!');
+          setBattleLog('Gotcha! Aritro Saha accepted your offer & joined your Engineering Organization!');
           handleVictoryAchievement();
         }, 1800);
       }, 1200);
@@ -357,7 +357,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
               </div>
 
               <div className="text-[8px] text-slate-300 font-silk mt-0.5">
-                Associate Software Developer @ BMS
+                Software Engineer & Systems Architect @ BMS
               </div>
 
               {/* HP Bar */}
@@ -684,7 +684,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                     <span>SILICON ENTERPRISE BADGE WON!</span>
                   </div>
                   <p className="text-[9px] sm:text-[10px] text-emerald-200 font-silk">
-                    Leader Aritro agreed to collaborate! Bristol Myers Squibb Associate Developer joins your engineering network.
+                    Leader Aritro agreed to collaborate! High-impact Software Engineer & Systems Architect joins your engineering network.
                   </p>
                 </div>
 
