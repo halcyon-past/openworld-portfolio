@@ -357,7 +357,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
               </div>
 
               <div className="text-[8px] text-slate-300 font-silk mt-0.5">
-                Software Engineer & Systems Architect @ BMS
+                Software Engineer
               </div>
 
               {/* HP Bar */}
@@ -684,7 +684,7 @@ export const GymBattleModal: React.FC<GymBattleModalProps> = ({ onClose, onOpenR
                     <span>SILICON ENTERPRISE BADGE WON!</span>
                   </div>
                   <p className="text-[9px] sm:text-[10px] text-emerald-200 font-silk">
-                    Leader Aritro agreed to collaborate! High-impact Software Engineer & Systems Architect joins your engineering network.
+                    Leader Aritro agreed to collaborate! Software Engineer joins your engineering network.
                   </p>
                 </div>
 
