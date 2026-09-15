@@ -7,15 +7,54 @@
 [![Canvas 2D](https://img.shields.io/badge/HTML5-Canvas_2D-E34F26?style=flat-square&logo=html5)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 [![Web Audio API](https://img.shields.io/badge/Audio-Web_Audio_API-orange?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
 
-An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pallet Cloud**. Explore interactive buildings, view live projects broadcasting on a high-definition town square **Mega Jumbotron TV**, visit the **Innovation Pokédex Center**, challenge the **Silicon Gym**, play retro minigames in the **Developer Arcade**, or toggle instantly to an executive **Recruiter Dossier** mode.
+An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pallet Cloud**. Explore interactive buildings, view live projects broadcasting on a high-definition town square **Mega Jumbotron TV**, visit the **Innovation Pokédex Center**, challenge **Gym Leader Aritro** in a classic turn-based Pokémon Boss Battle at the **Silicon Gym**, play retro minigames in the **Developer Arcade**, or toggle instantly to an executive **Recruiter Dossier** mode.
 
 ---
 
 ## 🌟 Key Highlights & Features
 
+### ⚔️ Silicon Gym: Turn-Based Pokémon Boss Battle Against Leader Aritro
+Entering the Silicon Gym transports you into an authentic **GBA-style battle arena** (`GymBattleModal`) with classic HP meters, custom pixel battle sprites, attack lunges, elemental projectiles, and a battle decision engine:
+- **Opponent**: **Gym Leader Aritro** (Software Engineer at Bristol Myers Squibb, Lv. 99).
+- **Player Team**: **Recruiter Squad** (`/assets/recruiter_back_clean.webp`), equipped with tactical hiring moves.
+- **Classic 4-Action Decision Menu**:
+  1. **`[FIGHT]`**: Select tactical interview attacks designed with full visible names, types, power, and accuracy:
+     - **SYSTEM DESIGN CHALLENGE** (*Psychic*, PWR: 48) — Probes high-throughput streaming architectures (5M+ records/hr).
+     - **CODE REVIEW TRAP** (*Dark*, PWR: 42) — Audits production error handling, memory leaks, and dead-letter queues.
+     - **LIVE CODING WHITEBOARD** (*Fighting*, PWR: 56) — Algorithmic graph complexity and runtime puzzles.
+     - **COMPETITIVE OFFER PACKAGE** (*Normal*, PWR: 60) — Exciting high-impact engineering leadership package.
+  2. **`[BAG]`**: Use tactical recruiter items:
+     - **Dark Roast Coffee** (x2) — Heals +40 HP to keep the interview squad energized.
+     - **Senior Role Req** (x1) — Proves competitive seniority and organizational scope.
+     - **Hack4Bengal Trophy** — Flash the 1st Place hackathon trophy to showcase proven build capability.
+  3. **`[BADGES]`**: Inspect Aritro's **8 Gym Badges of Honor** with interactive descriptions and specialty lore:
+     - *Enterprise Badge* (Distributed Systems & ETL Architecture)
+     - *Cloud Architect Badge* (AWS & GCP Scalable Infrastructure)
+     - *Algorithm Knight Badge* (LeetCode 1868 Peak & O(N log N) Mastery)
+     - *Hackathon Champion Badge* (Hack4Bengal 3.0 Winner)
+     - *Full Stack Master Badge* (Next.js, TypeScript & React Real-Time UIs)
+     - *Data Engineering Badge* (Databricks, Spark & PySpark Processing)
+     - *AI Innovation Badge* (LLM Multi-Agent Orchestration & Gemini APIs)
+     - *Resilience Badge* (Zero-Crash Quarantine Dead-Letter Pipelines)
+  4. **`[RECRUIT]`**: Throws a Master Ball with parabolic trajectory, capture wobble animations, confetti fanfare, and immediate victory screen awarding the **Silicon Enterprise Badge** with a 1-click transition to the **Executive Dossier & Resume**.
+- **Dynamic Leader Counter-Moves**:
+  - *AWS Serverless Architecture* (Electric)
+  - *Quarantine Dead-Letter DLQ* (Steel)
+  - *LeetCode Knight Strike 1868* (Fighting)
+  - *Executive Sign-Off & Tech Vision* (Dragon)
+- **Fluid Combat Animations**: Forward attack lunges, flying spell projectiles, screen impact flashes, health bar transitions, and responsive layout calibrated for desktop and mobile displays.
+
+---
+
 ### 🕹️ Custom 2.5D Retro Game Engine
 - **Hardware-Accelerated 60 FPS Canvas**: Built completely from scratch using native HTML5 Canvas 2D without heavy external game engines.
 - **Dynamic 2.5D Perspective**: Depth-sorted rendering via Painter's algorithm with realistic occlusion between player, buildings, trees, and NPCs.
+- **Lush Pokémon Route 1 Wild Grass**:
+  - Procedurally generated authentic GBA Pokémon Emerald / FireRed wild grass tufts (`SpriteGenerator.ts`).
+  - Layered deep-root shadow mounds (`#0f3c1a`), rich emerald blade bodies (`#22af4e`), sunlit spine highlights (`#54e082`), dewdrop diamond tips (`#bbf7d0`), and golden buttercup florets (`#fef08a`).
+  - Animated wind sway and seamless tile borders across wild grass zones.
+  - **Elevated Cliff Plateau Wild Grass**: Wild grass placed across the upper plateau cliff (`y: 1, x: 25..33`) accessible by climbing the stone stairs (`x: 27..28, y: 2`).
+  - **Wild Exception Encounters**: Stepping through wild grass triggers random developer surprise events (Uncaught Exception, Legacy Monolith, Memory Leak, Hack4Bengal Challenge, Beatbox Solo).
 - **Precise 1-to-1 Collision & Navigation**:
   - Tight, accurate collision bounding boxes aligned to exact object bases.
   - Zero invisible blocker walls—wide, unobstructed pathways across the entire map.
@@ -61,13 +100,14 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
 
 | Landmark | Grid Location | Footprint | Description |
 | :--- | :--- | :--- | :--- |
+| **🏢 Silicon Gym (BMS Arena)** | `x: 14..18, y: 22..25` | 5x4 Building | Challenge Gym Leader Aritro in a turn-based Pokémon battle, inspect 8 Gym Badges, or recruit directly. |
 | **⚡ Mega Jumbotron TV** | `x: 11..14, y: 12..14` | 3x1 Pillars (`y: 14`) | High-definition outdoor display showcasing rotating project previews. Walk up to row 15 and press **[A]** to cycle channels! |
 | **🔴 Innovation Pokédex Center** | `x: 5..8, y: 14..16` | 4x3 Building | Inspect Aritro's full-stack & distributed creations with Pokémon-style battle stats, radar graphs, live links, and PyPI badges. |
-| **🏢 Silicon Gym (BMS Arena)** | `x: 14..18, y: 22..25` | 5x4 Building | Explore enterprise systems engineering at Bristol Myers Squibb, distributed ETL pipelines, and 8 Gym Badges of Honor. |
-| **🔵 Skill & Tech Stack Mart** | `x: 17..20, y: 14..16` | 4x3 Building | Full-fledged Poké Mart store where recruiters and engineers can browse skills by category, add items to their Cart, compose a project message, and generate an authentic Pokémon pixel-styled mail order. |
+| **🔵 Skill & Tech Stack Mart** | `x: 17..20, y: 14..16` | 4x3 Building | Full-fledged Poké Mart store where recruiters and engineers can browse skills by category, add items to Cart, compose a project message, and generate an authentic Pokémon pixel-styled mail order. |
 | **🔬 AI Research Lab** | `x: 19..23, y: 4..6` | 5x3 Building | Access the lab mainframe to view the Trainer Card, LeetCode Knight stats (1868 peak, 630+ solved), CGPA, and research publications. |
 | **🏠 Aritro's Residence** | `x: 3..6, y: 4..6` | 4x3 Building | Contact terminal, social links (GitHub, LinkedIn, LeetCode, X), SiliconSync blog feed, and beatbox studio. |
 | **🕹️ Developer Arcade Corner** | `x: 26..29, y: 14..16` | 4x3 Building | Playable retro minigames: *Developer Speed Test* (typing benchmark) and *Minimalist Python Snake*. |
+| **⛰️ Elevated Cliff Plateau** | `x: 25..34, y: 1..2` | 2.5D Elevation | Ascend the stone stairs (`x: 27..28, y: 2`) onto the scenic cliff overlooking town with wild tall grass patches. |
 | **⛲ Pallet Cloud Wishing Fountain** | `x: 11..12, y: 5..6` | 2x1 Basin (`y: 6`) | Animated marble fountain with procedural water droplet spray and concentric pool ripples. Toss in 100 PokéDollars for a CI/CD blessing! |
 | **🦆 Swimming Lake Ducks** | `x: 1..4, y: 21..28` | Animated Wildlife | Cute pixel-art yellow ducklings and emerald mallards swimming leisurely in the southwestern lake with gentle bobbing and wake ripples. |
 | **🪑 Scenic Rest Benches** | Multiple Locations | 1x1 Each | Cozy wooden benches in Town Square (`9, 13`), Northern Garden (`14, 5`), and Lakeshore Overlook (`5, 23`) for taking a breather. |
@@ -90,18 +130,19 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
   - Full graphical layout featuring a diagonal airmail chevron border ribbon, retro Silph Co. Pallet Town postage seal, graphical red/white Pokéball emblem, and routing dossier.
   - Project inquiry message callout box.
   - Ordered skills organized in clean **side-by-side categorized cards** with type badges, level pills, and star ratings.
-- **Direct 1-Click Graphical Email Transmission**:
-  - Clicking **`DISPATCH ORDER DIRECTLY ►`** sends the complete graphical HTML email directly to `aritrosaha2025@gmail.com` via the backend endpoint (`/api/send-order`).
-  - Seamlessly falls back to launching the user's email client (`mailto:`) with pre-filled destination, subject, and auto-copied rich graphical HTML onto the clipboard if an offline or unconfigured environment is encountered.
+- **Automated Direct Transmission & Receipt Copies**:
+  - Dispatches directly to `aritrosaha2025@gmail.com` and sends an automated formatted receipt copy to the recruiter's email from `orders@aritro.cloud` via `/api/send-order`.
+  - Seamlessly falls back to `mailto:` with pre-filled metadata and auto-copied HTML table on offline environments.
 - **One-Click Rich HTML Clipboard Copy (`COPY GRAPHICAL MAIL (HTML)`)**: Copies the rendered layout as a native rich HTML table directly onto the system clipboard for pasting directly into Gmail, Outlook, or Apple Mail.
 
 ---
 
 ### 📄 Executive Recruiter Dossier Mode
 For hiring managers and recruiters who prefer a fast, streamlined review:
-- **One-Click Instant Toggle**: Switch between the 2.5D game world and an executive portfolio dossier view at any time.
+- **One-Click Instant Toggle**: Switch between the 2.5D game world and an executive portfolio dossier view at any time from the HUD or Start Menu.
 - **Direct Resume Download**: Instant access to Aritro's latest software engineering resume.
 - **Enterprise Highlights**: Bristol Myers Squibb experience, Hack4Bengal 3.0 championship breakdown, and technical stack summary.
+- **URL Hash & Back Navigation**: Integrated hash routing (`#dossier`, `#gymbattle`, etc.) ensuring browser back buttons close modals gracefully without reloading the intro screen.
 - **SEO & Metadata Optimization**: Fully configured OpenGraph cards, Twitter preview cards, dynamic `sitemap.xml`, and `robots.txt`.
 
 ---
@@ -176,7 +217,7 @@ npm run start
 ## 👤 About the Author
 
 **Aritro Saha (Megh)**
-- **Role**: Associate Software Developer at Bristol Myers Squibb
+- **Role**: Software Engineer at Bristol Myers Squibb
 - **Specialization**: Resilient Distributed Pipelines, Cloud Architecture (AWS/GCP), AI Clinician Decision Support Systems, and Next.js / TypeScript Web Applications
 - **Achievements**:
   - 🏆 **Hack4Bengal 3.0 Winner** (Built *PAWsitive*)
