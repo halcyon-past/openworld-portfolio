@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     template: "%s | Aritro Saha Portfolio",
   },
   description:
-    "Play through the interactive open-world retro Pokémon RPG portfolio of Aritro Saha (Associate Software Engineer at Bristol Myers Squibb & Hack4Bengal 3.0 Winner). Explore full-stack and data science projects, skills, 8 Gym Badges, and playable minigames.",
+    "Play through the interactive open-world retro Pokémon RPG portfolio of Aritro Saha (Software Engineer 1 at Bristol Myers Squibb & Hack4Bengal 3.0 Winner). Explore full-stack and data science projects, skills, 8 Gym Badges, and playable minigames.",
   applicationName: "Aritro Saha Pokémon RPG Portfolio",
   authors: [{ name: "Aritro Saha", url: "https://linkedin.com/in/aritro-saha" }],
   creator: "Aritro Saha",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     "Pokemon Developer Portfolio",
     "RPG Portfolio",
     "Interactive Portfolio",
-    "Associate Software Engineer",
+    "Software Engineer 1",
     "Bristol Myers Squibb",
     "Hack4Bengal Winner",
     "PAWsitive",
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
         url: "/assets/profile.webp",
         width: 800,
         height: 800,
-        alt: "Aritro Saha - Associate Software Developer at Bristol Myers Squibb",
+        alt: "Aritro Saha - Software Engineer 1 at Bristol Myers Squibb",
       },
     ],
   },
@@ -125,7 +125,7 @@ const jsonLd = {
       "@id": `${SITE_URL}/#person`,
       name: "Aritro Saha",
       alternateName: ["Megh", "Aritro"],
-      jobTitle: "Associate Software Engineer",
+      jobTitle: "Software Engineer 1",
       worksFor: {
         "@type": "Organization",
         name: "Bristol Myers Squibb",
@@ -142,7 +142,7 @@ const jsonLd = {
       ],
       hasOccupation: {
         "@type": "Occupation",
-        name: "Associate Software Engineer",
+        name: "Software Engineer 1",
         description:
           "Enterprise LLM workflows, medical diagnostic decision support, and serverless data engineering at Bristol Myers Squibb.",
       },
@@ -159,7 +159,7 @@ const jsonLd = {
         "https://ijirt.org/article?manuscript=180711",
       ],
       description:
-        "Associate Software Engineer at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, and AI engineering.",
+        "Software Engineer 1 at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, and AI engineering.",
       knowsAbout: [
         "Python",
         "TypeScript",

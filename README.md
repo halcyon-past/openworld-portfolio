@@ -15,7 +15,7 @@ An immersive, retro Pokémon-inspired open-world developer portfolio set in **Pa
 
 ### ⚔️ Silicon Gym: Turn-Based Pokémon Boss Battle Against Leader Aritro
 Entering the Silicon Gym transports you into an authentic **GBA-style battle arena** (`GymBattleModal`) with classic HP meters, custom pixel battle sprites, attack lunges, elemental projectiles, and a battle decision engine:
-- **Opponent**: **Gym Leader Aritro** (Software Engineer at Bristol Myers Squibb, Lv. 99).
+- **Opponent**: **Gym Leader Aritro** (Software Engineer 1 at Bristol Myers Squibb, Lv. 99).
 - **Player Team**: **Recruiter Squad** (`/assets/recruiter_back_clean.webp`), equipped with tactical hiring moves.
 - **Classic 4-Action Decision Menu**:
   1. **`[FIGHT]`**: Select tactical interview attacks designed with full visible names, types, power, and accuracy:
@@ -217,7 +217,7 @@ npm run start
 ## 👤 About the Author
 
 **Aritro Saha (Megh)**
-- **Role**: Software Engineer at Bristol Myers Squibb
+- **Role**: Software Engineer 1 at Bristol Myers Squibb
 - **Specialization**: Resilient Distributed Pipelines, Cloud Architecture (AWS/GCP), AI Clinician Decision Support Systems, and Next.js / TypeScript Web Applications
 - **Achievements**:
   - 🏆 **Hack4Bengal 3.0 Winner** (Built *PAWsitive*)

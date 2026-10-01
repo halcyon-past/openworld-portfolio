@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Aritro Saha | Pokémon RPG Portfolio',
     short_name: 'Aritro RPG',
     id: 'aritro-saha-rpg-portfolio',
-    description: 'Interactive open-world Pokémon RPG portfolio of Aritro Saha (Associate Software Developer @ BMS).',
+    description: 'Interactive open-world Pokémon RPG portfolio of Aritro Saha (Software Engineer 1 @ BMS).',
     start_url: '/',
     display: 'standalone',
     orientation: 'any',

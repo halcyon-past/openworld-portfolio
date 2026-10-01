@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         url: '/assets/profile.webp',
         width: 800,
         height: 800,
-        alt: 'Aritro Saha - Associate Software Engineer at Bristol Myers Squibb',
+        alt: 'Aritro Saha - Software Engineer 1 at Bristol Myers Squibb',
       },
     ],
   },
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Aritro Saha | Professional Software Engineering Dossier',
     description:
-      'Comprehensive software engineering resume and portfolio of Aritro Saha (Associate Software Engineer at Bristol Myers Squibb).',
+      'Comprehensive software engineering resume and portfolio of Aritro Saha (Software Engineer 1 at Bristol Myers Squibb).',
     images: ['/assets/profile.webp'],
   },
 };

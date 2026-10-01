@@ -513,10 +513,10 @@ export class GameEngine {
         avatar: 'clerk'
       },
       dialogue_gymlead: {
-        speaker: 'Aritro Saha (Associate Developer @ BMS)',
+        speaker: 'Aritro Saha (Software Engineer 1 @ BMS)',
         lines: [
           "Welcome to the Silicon Gym!",
-          "I'm an Associate Software Developer at Bristol Myers Squibb.",
+          "I'm a Software Engineer 1 at Bristol Myers Squibb.",
           "I specialize in bridging the gap between resilient backend logic, machine learning, and intuitive design.",
           "Check out my 8 Gym Badges of Honor on my Trainer Card!"
         ],

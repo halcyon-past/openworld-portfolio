@@ -346,9 +346,9 @@ export default function Home() {
       {/* Semantic Crawlable Content for Search Engines (Googlebot) & Assistive Technologies */}
       <article className="sr-only">
         <header>
-          <h1>Aritro Saha | Associate Software Engineer at Bristol Myers Squibb & Full-Stack AI Developer</h1>
+          <h1>Aritro Saha | Software Engineer 1 at Bristol Myers Squibb & Full-Stack AI Developer</h1>
           <p>
-            Official portfolio and interactive Pokémon RPG open world of Aritro Saha (Megh). Associate Software Engineer at Bristol Myers Squibb (BMS), Hack4Bengal 3.0 Winner, LeetCode Knight (Peak Rating: 1868, Top 6% globally), and Electronics and Computer Engineering graduate from Vellore Institute of Technology (VIT Chennai, CGPA: 8.53/10.0).
+            Official portfolio and interactive Pokémon RPG open world of Aritro Saha (Megh). Software Engineer 1 at Bristol Myers Squibb (BMS), Hack4Bengal 3.0 Winner, LeetCode Knight (Peak Rating: 1868, Top 6% globally), and Electronics and Computer Engineering graduate from Vellore Institute of Technology (VIT Chennai, CGPA: 8.53/10.0).
           </p>
           <nav>
             <a href="/dossier">View Full Text Resume & Professional Engineering Dossier</a>
@@ -419,7 +419,7 @@ export default function Home() {
           <h2>Professional Work Experience</h2>
           <ul>
             <li>
-              <strong>Bristol Myers Squibb (BMS) — Associate Software Engineer</strong> (July 2025 – Present | Hyderabad, India)
+              <strong>Bristol Myers Squibb (BMS) — Software Engineer 1</strong> (July 2025 – Present | Hyderabad, India)
               <p>
                 Architected internal medical diagnostic assistant for Non-Small Cell Lung Cancer (NSCLC) accelerating clinician review throughput by 30%. Streamlined Databricks ETL/ELT pipelines cutting release cycles by 40+ engineering hours. Delivered self-service enterprise LLM marketplace microservice adopted across 20+ functional groups. Scaled data ingestion pipelines to 5M+ events/hour using AWS Lambda, Glue, and DynamoDB.
               </p>

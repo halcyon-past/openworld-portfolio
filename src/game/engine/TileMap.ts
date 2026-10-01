@@ -225,7 +225,7 @@ export class TileMap {
         targetModal: 'gymbattle',
         dialogueText: [
           "Silicon Gym - Bristol Myers Squibb Arena!",
-          "Leader: Aritro Saha (Associate Software Developer & Hack4Bengal 3.0 Champion).",
+          "Leader: Aritro Saha (Software Engineer 1 & Hack4Bengal 3.0 Champion).",
           "Prepare your engineering team for battle!"
         ]
       },

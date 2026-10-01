@@ -73,7 +73,7 @@ export const PORTFOLIO_DATA = {
   trainer: {
     name: "Aritro Saha",
     alias: "Megh",
-    title: "Associate Software Engineer",
+    title: "Software Engineer 1",
     company: "Bristol Myers Squibb",
     idNo: "2025-BMS",
     level: 99,
@@ -85,7 +85,7 @@ export const PORTFOLIO_DATA = {
     phone: "+919043150635",
     email: "aritrosaha2025@gmail.com",
     avatar: "/assets/profile.webp",
-    bio: "Associate Software Engineer at Bristol Myers Squibb with a strong background in distributed data pipelines, cloud architecture (AWS/GCP), and AI clinical decision support systems. LeetCode Knight (Peak Rating: 1868, 630+ solved, Top 6% globally), Hack4Bengal 3.0 Winner, and VIT Chennai graduate.",
+    bio: "Software Engineer 1 at Bristol Myers Squibb with a strong background in distributed data pipelines, cloud architecture (AWS/GCP), and AI clinical decision support systems. LeetCode Knight (Peak Rating: 1868, 630+ solved, Top 6% globally), Hack4Bengal 3.0 Winner, and VIT Chennai graduate.",
     quote: "Every exception caught is a step closer to zero-crash production.",
     cgpa: "8.53 / 10.0",
     leetcode: {
@@ -260,7 +260,7 @@ export const PORTFOLIO_DATA = {
   experience: [
     {
       id: "bms",
-      role: "Associate Software Engineer",
+      role: "Software Engineer 1",
       company: "Bristol Myers Squibb",
       location: "Hyderabad, India",
       duration: "Jul 2025 – Present",
@@ -329,7 +329,7 @@ export const PORTFOLIO_DATA = {
       id: "bms",
       name: "Enterprise Dev",
       gymCity: "BMS Silicon Gym",
-      leaderTitle: "Associate Software Engineer",
+      leaderTitle: "Software Engineer 1",
       description: "Bristol Myers Squibb: Scaled AWS Lambda to 5M+ records/hr, Databricks accelerators, and NSCLC AI assistants.",
       iconColor: "#3b82f6",
       unlocked: true

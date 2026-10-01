@@ -164,7 +164,7 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({
                 </span>
               </div>
               <p className="text-base text-indigo-300 font-medium">
-                Associate Software Engineer @ Bristol Myers Squibb
+                Software Engineer 1 @ Bristol Myers Squibb
               </p>
             </div>
 

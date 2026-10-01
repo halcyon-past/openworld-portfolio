@@ -114,7 +114,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onStartGame, onOpe
           ARITRO SAHA
         </h1>
         <p className="text-xs md:text-sm text-sky-300 tracking-wider mb-6 font-silk">
-          ASSOCIATE SOFTWARE ENGINEER @ BMS
+          SOFTWARE ENGINEER 1 @ BMS
         </p>
 
         {!isLoaded ? (
