@@ -8,7 +8,6 @@ import {
   Gamepad2,
   ExternalLink,
   Mail,
-  Phone,
   Globe,
   Briefcase,
   GraduationCap,
@@ -174,14 +173,6 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({
 
             {/* Quick Contact Chips */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
-              <a
-                href="tel:+919043150635"
-                className="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-medium flex items-center gap-1.5 transition-colors"
-              >
-                <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                <span>+91 9043150635</span>
-              </a>
-
               <a
                 href="mailto:aritrosaha2025@gmail.com"
                 className="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/40 text-xs font-medium flex items-center gap-1.5 transition-colors"

@@ -82,7 +82,6 @@ export const PORTFOLIO_DATA = {
     pokedexCaught: 6,
     badgesCount: 8,
     location: "Pallet Cloud, Tech Region",
-    phone: "+919043150635",
     email: "aritrosaha2025@gmail.com",
     avatar: "/assets/profile.webp",
     bio: "Software Engineer 1 at Bristol Myers Squibb with a strong background in distributed data pipelines, cloud architecture (AWS/GCP), and AI clinical decision support systems. LeetCode Knight (Peak Rating: 1868, 630+ solved, Top 6% globally), Hack4Bengal 3.0 Winner, and VIT Chennai graduate.",
