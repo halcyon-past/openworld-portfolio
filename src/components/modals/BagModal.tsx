@@ -59,6 +59,7 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
   const [isSending, setIsSending] = useState(false);
   const [sendSuccessMode, setSendSuccessMode] = useState<'api' | 'mailto'>('api');
   const [sendErrorMsg, setSendErrorMsg] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
   const [senderCopyStatus, setSenderCopyStatus] = useState<{
     sent: boolean;
     email: string | null;
@@ -397,9 +398,27 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
   };
 
   const handleSendMail = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const trimmedEmail = clientEmail.trim();
+
+    if (!trimmedEmail) {
+      setEmailError('Email address is required.');
+      setSendErrorMsg('Please provide a valid email address so Aritro can reply and send your receipt.');
+      soundManager.playCancel();
+      return;
+    }
+
+    if (!emailRegex.test(trimmedEmail)) {
+      setEmailError('Please enter a valid email address (e.g. name@company.com).');
+      setSendErrorMsg('The email address format is invalid. Please enter a valid email address.');
+      soundManager.playCancel();
+      return;
+    }
+
+    setEmailError(null);
+    setSendErrorMsg(null);
     soundManager.playFanfare();
     setIsSending(true);
-    setSendErrorMsg(null);
 
     const html = generatePokemonHtmlMail();
     const plain = generateMailPlainText();
@@ -901,16 +920,54 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-[9px] text-slate-400 font-silk block">Your Email (for replies & instant receipt copy)</label>
+                    <label className="text-[9px] text-slate-400 font-silk block">
+                      Your Email <span className="text-rose-400 font-bold">*</span> (for replies & instant receipt copy)
+                    </label>
                     <span className="text-[8px] text-emerald-400 font-silk">Auto-receives copy 📬</span>
                   </div>
                   <input
                     type="email"
                     value={clientEmail}
-                    onChange={(e) => setClientEmail(e.target.value)}
+                    onChange={(e) => {
+                      setClientEmail(e.target.value);
+                      if (emailError) {
+                        const val = e.target.value.trim();
+                        if (!val) {
+                          setEmailError('Email address is required.');
+                        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                          setEmailError('Please enter a valid email address.');
+                        } else {
+                          setEmailError(null);
+                          setSendErrorMsg(null);
+                        }
+                      }
+                    }}
+                    onBlur={() => {
+                      const val = clientEmail.trim();
+                      if (!val) {
+                        setEmailError('Email address is required.');
+                      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+                        setEmailError('Please enter a valid email address (e.g. name@company.com).');
+                      } else {
+                        setEmailError(null);
+                        if (sendErrorMsg?.includes('email')) {
+                          setSendErrorMsg(null);
+                        }
+                      }
+                    }}
                     placeholder="e.g. recruiter@company.com"
-                    className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-white placeholder:text-slate-600 font-silk focus:border-yellow-400 focus:outline-hidden"
+                    className={`w-full bg-slate-900 border rounded px-2.5 py-1.5 text-xs text-white placeholder:text-slate-600 font-silk focus:outline-hidden transition-colors ${
+                      emailError
+                        ? 'border-rose-500 focus:border-rose-400 focus:ring-1 focus:ring-rose-500'
+                        : 'border-slate-700 focus:border-yellow-400'
+                    }`}
                   />
+                  {emailError && (
+                    <p className="text-[9px] text-rose-400 font-silk flex items-center gap-1 mt-0.5 animate-fadeIn">
+                      <span>⚠</span>
+                      <span>{emailError}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-1">
@@ -1079,10 +1136,10 @@ export const BagModal: React.FC<BagModalProps> = ({ onClose }) => {
                   <div className="bg-rose-950/80 border-2 border-rose-500 rounded p-2.5 text-xs text-rose-200 font-silk flex flex-col gap-1.5 shadow-md animate-shake">
                     <div className="flex items-center gap-1.5 font-bold text-rose-300">
                       <X className="w-4 h-4 text-rose-400 shrink-0" />
-                      <span>DIRECT DISPATCH NOTICE: {sendErrorMsg}</span>
+                      <span>DISPATCH NOTICE: {sendErrorMsg}</span>
                     </div>
                     <div className="text-[10px] text-rose-300/80">
-                      Resend requires emails to be sent to your account email (<code className="text-white bg-slate-900 px-1 py-0.5 rounded">titanssuperior@gmail.com</code>). You can also launch your local email client below:
+                      You can adjust your email details above or launch your default email client directly:
                     </div>
                     <button
                       onClick={handleManualEmailClient}
