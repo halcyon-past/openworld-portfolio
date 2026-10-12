@@ -343,7 +343,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Semantic Crawlable Content for Search Engines (Googlebot) & Assistive Technologies */}
+      {/* Semantic Crawlable Content for Search Engines (Googlebot), AI Crawlers & Assistive Technologies */}
       <article className="sr-only">
         <header>
           <h1>Aritro Saha | Software Engineer 1 at Bristol Myers Squibb & Full-Stack AI Developer</h1>
@@ -353,13 +353,15 @@ export default function Home() {
           <nav>
             <a href="/dossier">View Full Text Resume & Professional Engineering Dossier</a>
             <a href="/">Play Interactive 2D Pokémon RPG Game Portfolio</a>
+            <a href="/llms.txt">LLM Summary Index (llms.txt)</a>
+            <a href="/llms-full.txt">Complete Technical Knowledge Base for AI & LLMs (llms-full.txt)</a>
           </nav>
         </header>
 
         <section>
           <h2>Core Specialties & Technical Domains</h2>
           <p>
-            Specialized in resilient backend systems, distributed Python architectures, LLM workflow automation (LangGraph, Gemini, Bedrock), high-throughput data engineering (AWS Lambda, Glue, Databricks Spark, DynamoDB), and interactive web experiences (Next.js, TypeScript, Three.js).
+            Specialized in resilient backend systems, distributed Python architectures, native macOS utilities (Swift 6.0, AppKit, Apple Vision), LLM workflow automation (LangGraph, Gemini, Bedrock), high-throughput data engineering (AWS Lambda, Glue, Databricks Spark, DynamoDB), and interactive web experiences (Next.js, TypeScript, Three.js).
           </p>
         </section>
 
@@ -372,6 +374,7 @@ export default function Home() {
                 Native macOS menu bar utility built with Swift 6.0, AppKit, SwiftUI, and Apple Vision Framework. Captures screen regions straight into NSPasteboard memory and runs OCR and barcode recognition on the Apple Neural Engine in under 50ms with zero temporary files, zero network calls, and zero external dependencies.
               </p>
               <a href="https://byakugan-scan.aritro.cloud">Byakugan Scan Official Website</a>
+              <a href="https://byakugan-scan.aritro.cloud/support">Byakugan Scan Documentation & Support</a>
               <a href="https://github.com/halcyon-past/byakugan-scan">Byakugan Scan GitHub Source Code</a>
             </li>
             <li>
@@ -380,6 +383,7 @@ export default function Home() {
                 Published open-source library on PyPI and Conda-Forge. Zero external dependencies, thread-safe execution isolation, dead-letter queue diagnostics, and resilient batch data pipelines.
               </p>
               <a href="https://pypi.org/project/quarantine-py/">Quarantine on PyPI</a>
+              <a href="https://quarantine-py.aritro.cloud">Quarantine Documentation</a>
               <a href="https://github.com/halcyon-past/quarantine">Quarantine GitHub Source Code</a>
             </li>
             <li>
@@ -459,17 +463,19 @@ export default function Home() {
 
         <section>
           <h2>Full Technology Stack</h2>
-          <p>Languages: Python, TypeScript, JavaScript, SQL, C++, C, HTML5, CSS3.</p>
-          <p>Web & Backend: Next.js, React, FastAPI, Node.js, Express, Three.js, Tailwind CSS, WebSockets, REST APIs.</p>
-          <p>AI & Data Science: LangGraph, Google Gemini API, PyTorch, MediaPipe, Pandas, NumPy, OpenCV, RAG Pipelines.</p>
+          <p>Languages: Python, TypeScript, JavaScript, Swift 6.0, SQL, C++, C, HTML5, CSS3.</p>
+          <p>Web, macOS & Backend: Next.js, React, FastAPI, Node.js, Express, AppKit, SwiftUI, Three.js, Tailwind CSS, WebSockets, REST APIs.</p>
+          <p>AI & Data Science: LangGraph, Google Gemini API, Apple Vision Framework, Apple Neural Engine, PyTorch, MediaPipe, Pandas, NumPy, OpenCV, RAG Pipelines.</p>
           <p>Cloud & DevOps: Amazon Web Services (AWS Lambda, S3, DynamoDB, Glue, Bedrock, SageMaker), Google Cloud Platform (Cloud Run, Pub/Sub), Databricks Apache Spark, Docker, Git, GitHub Actions, CI/CD, Azure DevOps.</p>
         </section>
 
         <section>
           <h2>Contact & Professional Links</h2>
           <p>Email: <a href="mailto:aritrosaha2025@gmail.com">aritrosaha2025@gmail.com</a></p>
+          <p>Primary Website: <a href="https://www.aritro.cloud">https://www.aritro.cloud</a></p>
           <p>LinkedIn: <a href="https://linkedin.com/in/aritro-saha">https://linkedin.com/in/aritro-saha</a></p>
           <p>GitHub: <a href="https://github.com/halcyon-past">https://github.com/halcyon-past</a></p>
+          <p>LeetCode: <a href="https://leetcode.com/u/AritroSaha/">https://leetcode.com/u/AritroSaha/</a></p>
           <p>YouTube: <a href="https://www.youtube.com/@veripyed">https://www.youtube.com/@veripyed</a></p>
         </section>
       </article>

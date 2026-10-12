@@ -53,10 +53,15 @@ export const metadata: Metadata = {
     "Software Engineer 1",
     "Bristol Myers Squibb",
     "Hack4Bengal Winner",
+    "Byakugan Scan",
+    "macOS Screen OCR",
     "PAWsitive",
     "Quarantine Python",
+    "quarantine-py",
     "Structurify",
     "Luffy Laser Dodge",
+    "KrishnaVision",
+    "GlideConnect",
     "Next.js Portfolio",
     "Full Stack Developer",
     "Data Science Engineer",
@@ -116,7 +121,7 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD Structured Data for Googlebot and search engines (Rich Snippets: Person, ProfilePage, ItemList, BreadcrumbList, WebSite)
+// JSON-LD Structured Data for Googlebot and AI Search Engines (Rich Snippets: Person, ProfilePage, ItemList, FAQPage, BreadcrumbList, WebSite)
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -124,7 +129,7 @@ const jsonLd = {
       "@type": "Person",
       "@id": `${SITE_URL}/#person`,
       name: "Aritro Saha",
-      alternateName: ["Megh", "Aritro"],
+      alternateName: ["Megh", "Aritro", "halcyon-past"],
       jobTitle: "Software Engineer 1",
       worksFor: {
         "@type": "Organization",
@@ -150,24 +155,45 @@ const jsonLd = {
       image: `${SITE_URL}/assets/profile.webp`,
       email: "aritrosaha2025@gmail.com",
       sameAs: [
+        "https://www.aritro.cloud",
+        "https://openworld.aritro.cloud",
         "https://linkedin.com/in/aritro-saha",
         "https://github.com/halcyon-past",
+        "https://leetcode.com/u/AritroSaha/",
         "https://www.youtube.com/@veripyed",
         "https://instagram.com/halcyon-past",
         "https://siliconsync.aritro.cloud",
+        "https://byakugan-scan.aritro.cloud",
         "https://pypi.org/project/quarantine-py/",
+        "https://quarantine-py.aritro.cloud",
         "https://ijirt.org/article?manuscript=180711",
       ],
+      subjectOf: [
+        {
+          "@type": "CreativeWork",
+          name: "Aritro Saha OpenWorld Portfolio LLM Summary (llms.txt)",
+          url: `${SITE_URL}/llms.txt`,
+          encodingFormat: "text/plain",
+        },
+        {
+          "@type": "CreativeWork",
+          name: "Aritro Saha Complete Technical Knowledge Base (llms-full.txt)",
+          url: `${SITE_URL}/llms-full.txt`,
+          encodingFormat: "text/plain",
+        },
+      ],
       description:
-        "Software Engineer 1 at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, and AI engineering.",
+        "Software Engineer 1 at Bristol Myers Squibb and Hack4Bengal 3.0 Winner specializing in resilient full-stack systems, Python distributed architectures, native macOS utilities, and AI engineering.",
       knowsAbout: [
         "Python",
         "TypeScript",
+        "Swift 6.0",
         "Next.js",
         "React",
         "FastAPI",
         "LangGraph",
         "Google Gemini API",
+        "Apple Vision Framework",
         "Three.js",
         "Cloud Architecture",
         "Google Cloud Platform (GCP)",
@@ -197,6 +223,8 @@ const jsonLd = {
           item: {
             "@type": "SoftwareApplication",
             name: "Byakugan Scan",
+            operatingSystem: "macOS 14.0 or later",
+            applicationCategory: "UtilitiesApplication",
             description: "Native macOS menu bar utility for instant, in-memory screen OCR, QR code, and barcode recognition powered by Apple Vision and Neural Engine in under 50ms.",
             url: "https://byakugan-scan.aritro.cloud",
             sameAs: "https://github.com/halcyon-past/byakugan-scan",
@@ -208,6 +236,7 @@ const jsonLd = {
           item: {
             "@type": "SoftwareApplication",
             name: "Quarantine (Python Package)",
+            applicationCategory: "DeveloperApplication",
             description: "Fault-tolerant loop execution and exception isolation library in Python published to PyPI and Conda-Forge.",
             url: "https://pypi.org/project/quarantine-py/",
             sameAs: "https://github.com/halcyon-past/quarantine",
@@ -219,6 +248,7 @@ const jsonLd = {
           item: {
             "@type": "SoftwareApplication",
             name: "Structurify",
+            applicationCategory: "BusinessApplication",
             description: "Scalable AI pipeline converting unstructured documents into relational formats utilizing GCP Cloud Run, Pub/Sub, LangGraph, and Next.js.",
             url: "https://structurify.aritro.cloud",
             sameAs: "https://github.com/halcyon-past/Structurify",
@@ -230,6 +260,7 @@ const jsonLd = {
           item: {
             "@type": "SoftwareApplication",
             name: "Luffy Laser Dodge",
+            applicationCategory: "GameApplication",
             description: "Interactive 3D browser reflex game utilizing Google MediaPipe WASM face tracking and Three.js procedural rigged animations.",
             url: "https://onepiece.aritro.cloud/",
             sameAs: "https://github.com/halcyon-past/Luffy-Laser-Dodge",
@@ -254,12 +285,43 @@ const jsonLd = {
           item: {
             "@type": "SoftwareApplication",
             name: "PAWsitive",
+            applicationCategory: "HealthApplication",
             description: "1st Place Winner at Hack4Bengal 3.0. Animal healthcare and emergency blood donor coordination platform.",
             url: "https://www.bepawsitive.xyz",
             sameAs: "https://github.com/halcyon-past/PAW-sitive",
           },
         },
       ],
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${SITE_URL}/#faq`,
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Who is Aritro Saha?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Aritro Saha (also known as Megh) is a Software Engineer 1 at Bristol Myers Squibb (BMS), Hack4Bengal 3.0 Grand Champion (1st place among 400+ developers), LeetCode Knight (peak rating 1868, top 6% globally), and B.Tech graduate in Electronics and Computer Engineering from VIT Chennai (8.53 CGPA)."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "What is Aritro Saha's OpenWorld Pokémon RPG Portfolio?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "OpenWorld Portfolio (https://openworld.aritro.cloud) is an interactive 2.5D retro Pokémon RPG developer portfolio built from scratch with Next.js 16, React 19, and a custom 60 FPS HTML5 Canvas 2D engine. Visitors can explore Pallet Cloud, challenge Gym Leader Aritro (Lv. 99) in a turn-based battle, inspect projects in the Innovation Pokédex Center, or switch to the Executive Recruiter Dossier at https://openworld.aritro.cloud/dossier."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "What notable open-source software and projects has Aritro Saha built?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Aritro Saha is the creator of Byakugan Scan (a native Swift 6.0 macOS menu bar utility for <50ms in-memory screen OCR, QR code, and barcode scanning using Apple Vision), Quarantine (quarantine-py on PyPI, a zero-dependency Python dead-letter queue and fault-tolerant loop library), Structurify (an event-driven GCP/LangGraph document-to-SQL AI pipeline), Luffy Laser Dodge (a 3D webcam head-tracking game), KrishnaVision (published IJIRT research on contactless gesture HCI), and PAWsitive (Hack4Bengal 3.0 1st place winner)."
+          }
+        }
+      ]
     },
     {
       "@type": "BreadcrumbList",
@@ -313,6 +375,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${pressStart.variable} ${silkscreen.variable} h-full`}>
       <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Summary (llms.txt)" />
+        <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLM Full Knowledge Base (llms-full.txt)" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

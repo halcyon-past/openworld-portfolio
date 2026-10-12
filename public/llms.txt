@@ -1,0 +1,30 @@
+# Aritro Saha (Megh) — Interactive Pokémon RPG Open-World Portfolio (`openworld.aritro.cloud`)
+
+> Interactive 2.5D retro Pokémon-inspired open-world developer portfolio and professional engineering dossier of Aritro Saha, a Software Engineer 1 at Bristol Myers Squibb (BMS) and Hack4Bengal 3.0 Grand Champion specializing in resilient backend systems, distributed Python architectures, high-throughput data pipelines, native macOS utilities, and applied AI.
+
+- **Canonical OpenWorld Portfolio**: [https://openworld.aritro.cloud/](https://openworld.aritro.cloud/)
+- **Executive Recruiter Dossier & Resume View**: [https://openworld.aritro.cloud/dossier](https://openworld.aritro.cloud/dossier)
+- **Full LLM Knowledge Base**: [https://openworld.aritro.cloud/llms-full.txt](https://openworld.aritro.cloud/llms-full.txt)
+- **Primary Minimal Portfolio**: [https://www.aritro.cloud/](https://www.aritro.cloud/)
+- **Resume PDF**: [https://openworld.aritro.cloud/Aritro-Saha-Software-Engineer-Resume.pdf](https://openworld.aritro.cloud/Aritro-Saha-Software-Engineer-Resume.pdf)
+- **GitHub**: [https://github.com/halcyon-past](https://github.com/halcyon-past)
+- **LinkedIn**: [https://linkedin.com/in/aritro-saha](https://linkedin.com/in/aritro-saha)
+- **LeetCode (Knight, Peak 1868)**: [https://leetcode.com/u/AritroSaha/](https://leetcode.com/u/AritroSaha/)
+- **Daily AI News Publication (SiliconSync)**: [https://siliconsync.aritro.cloud/](https://siliconsync.aritro.cloud/)
+- **YouTube (Veripyed)**: [https://www.youtube.com/@veripyed](https://www.youtube.com/@veripyed)
+- **Email**: [mailto:aritrosaha2025@gmail.com](mailto:aritrosaha2025@gmail.com)
+
+## Core Pages & Views
+
+- [Pallet Cloud — 2.5D Pokémon RPG Open World](https://openworld.aritro.cloud/): Playable 60 FPS HTML5 Canvas open-world town featuring the Innovation Pokédex Center, Silicon Gym Boss Battle (vs. Gym Leader Aritro Lv. 99), Poké Mart Tech Stack Requisition, Mega Jumbotron TV, AI Research Lab, Developer Arcade, and voice-acted NPCs.
+- [Executive Recruiter Dossier (`/dossier`)](https://openworld.aritro.cloud/dossier): High-contrast, recruiter-ready single-page engineering dossier detailing Aritro Saha's work experience at Bristol Myers Squibb, Bajaj Finserv Health, and Wipro, 8 Gym Badges, project architecture, academic background at VIT Chennai, and direct contact dispatch.
+
+## Featured Projects & Open-Source Software
+
+- [Byakugan Scan](https://byakugan-scan.aritro.cloud): Native macOS menu bar utility built in Swift 6.0 for instant (<50ms), in-memory screen OCR, QR code decoding, and 13+ barcode symbologies powered by Apple Vision on the Apple Neural Engine with zero temporary files and zero network calls. ([Website](https://byakugan-scan.aritro.cloud) | [Docs](https://byakugan-scan.aritro.cloud/support) | [GitHub](https://github.com/halcyon-past/byakugan-scan))
+- [Quarantine (`quarantine-py`)](https://pypi.org/project/quarantine-py/): Zero-dependency Python fault-tolerance and dead-letter queue library for loops and batch pipelines with atomic on-disk isolation, circuit breakers, and CLI replay/debugging. ([PyPI](https://pypi.org/project/quarantine-py/) | [Docs](https://quarantine-py.aritro.cloud) | [GitHub](https://github.com/halcyon-past/quarantine))
+- [Structurify](https://structurify.aritro.cloud): Event-driven cloud AI pipeline transforming unstructured spreadsheets and documents into strict relational schemas using GCP Cloud Run, Pub/Sub, LangGraph, Google Gemini, and Next.js. ([Live App](https://structurify.aritro.cloud) | [GitHub](https://github.com/halcyon-past/Structurify))
+- [Luffy Laser Dodge](https://onepiece.aritro.cloud/): Interactive 3D browser reflex game controlled by real-time webcam head tracking using Google MediaPipe WASM and Three.js procedural bone animations at 60 FPS. ([Play Game](https://onepiece.aritro.cloud/) | [GitHub](https://github.com/halcyon-past/Luffy-Laser-Dodge))
+- [KrishnaVision (GlideConnect)](https://ijirt.org/article?manuscript=180711): Published peer-reviewed research (IJIRT Paper ID 180711) on a contactless multimodal virtual interface achieving 97.3% gesture classification accuracy at 22ms latency with a Google Gemini voice assistant. ([Paper](https://ijirt.org/article?manuscript=180711) | [GitHub](https://github.com/halcyon-past/Glide-Connect))
+- [PAWsitive](https://www.bepawsitive.xyz): 1st Place Grand Champion at Hack4Bengal 3.0 (among 400+ developers) — emergency pet blood donor coordination network, veterinary clinic locator, and AI triage platform. ([Live App](https://www.bepawsitive.xyz) | [GitHub](https://github.com/halcyon-past/PAW-sitive))
+- [OpenWorld Portfolio](https://openworld.aritro.cloud/): Custom 2.5D retro Pokémon RPG portfolio built from scratch with Next.js 16, React 19, TypeScript, HTML5 Canvas 2D, Web Audio API chiptune synthesis, and ElevenLabs neural voiceovers. ([Live World](https://openworld.aritro.cloud/) | [GitHub](https://github.com/halcyon-past/openworld-portfolio))

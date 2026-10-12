@@ -1,22 +1,37 @@
 import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = 'https://openworld.aritro.cloud';
+
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
-      },
-      {
-        userAgent: 'Googlebot',
-        allow: '/',
-      },
-      {
-        userAgent: 'Bingbot',
-        allow: '/',
+        userAgent: [
+          '*',
+          'GPTBot',
+          'OAI-SearchBot',
+          'ChatGPT-User',
+          'ClaudeBot',
+          'Claude-Web',
+          'anthropic-ai',
+          'PerplexityBot',
+          'Perplexity-User',
+          'Google-Extended',
+          'Googlebot',
+          'Bingbot',
+          'Applebot',
+          'Applebot-Extended',
+          'Meta-ExternalAgent',
+          'Amazonbot',
+          'YouBot',
+          'DuckAssistBot',
+          'cohere-ai',
+          'CCBot',
+        ],
+        allow: ['/', '/dossier', '/llms.txt', '/llms-full.txt'],
       },
     ],
-    sitemap: 'https://openworld.aritro.cloud/sitemap.xml',
-    host: 'https://openworld.aritro.cloud',
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   };
 }
