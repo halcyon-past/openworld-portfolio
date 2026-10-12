@@ -196,6 +196,17 @@ const jsonLd = {
           position: 1,
           item: {
             "@type": "SoftwareApplication",
+            name: "Byakugan Scan",
+            description: "Native macOS menu bar utility for instant, in-memory screen OCR, QR code, and barcode recognition powered by Apple Vision and Neural Engine in under 50ms.",
+            url: "https://byakugan-scan.aritro.cloud",
+            sameAs: "https://github.com/halcyon-past/byakugan-scan",
+          },
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          item: {
+            "@type": "SoftwareApplication",
             name: "Quarantine (Python Package)",
             description: "Fault-tolerant loop execution and exception isolation library in Python published to PyPI and Conda-Forge.",
             url: "https://pypi.org/project/quarantine-py/",
@@ -204,7 +215,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 2,
+          position: 3,
           item: {
             "@type": "SoftwareApplication",
             name: "Structurify",
@@ -215,7 +226,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 3,
+          position: 4,
           item: {
             "@type": "SoftwareApplication",
             name: "Luffy Laser Dodge",
@@ -226,7 +237,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 4,
+          position: 5,
           item: {
             "@type": "ScholarlyArticle",
             name: "KrishnaVision: Contactless Multimodal Virtual Interface",
@@ -239,7 +250,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 5,
+          position: 6,
           item: {
             "@type": "SoftwareApplication",
             name: "PAWsitive",

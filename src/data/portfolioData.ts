@@ -78,8 +78,8 @@ export const PORTFOLIO_DATA = {
     idNo: "2025-BMS",
     level: 99,
     money: "999,999",
-    pokedexSeen: 6,
-    pokedexCaught: 6,
+    pokedexSeen: 7,
+    pokedexCaught: 7,
     badgesCount: 8,
     location: "Pallet Cloud, Tech Region",
     email: "aritrosaha2025@gmail.com",
@@ -96,8 +96,36 @@ export const PORTFOLIO_DATA = {
 
   projects: [
     {
-      id: "quarantine",
+      id: "byakugan-scan",
       dexNumber: "#001",
+      title: "Byakugan Scan",
+      subtitle: "Instant In-Memory Screen OCR, QR Code & Barcode Recognition Utility for macOS",
+      description: "Instant, in-memory screen OCR, QR code, and barcode recognition utility for macOS powered by the Apple Neural Engine in under 50ms.",
+      overview: "Byakugan Scan is a native macOS menu bar utility for instant, in-memory screen OCR, QR code, and barcode recognition. Unlike conventional screenshot OCR tools that write temporary image files to disk and trigger Spotlight or media analysis daemons, Byakugan Scan captures selected screen regions directly into NSPasteboard memory as a CGImage buffer and processes them on the Apple Neural Engine in under 50ms—with zero temporary files, zero network calls, and zero external Swift package dependencies.",
+      features: [
+        "Zero-Disk In-Memory Pipeline: Captures screen selections straight into RAM via NSPasteboard and runs Apple Vision requests (VNRecognizeTextRequest and VNDetectBarcodesRequest) on the Neural Engine in under 50ms.",
+        "60/120Hz Custom AppKit Overlay: Smooth multi-display selection reticle with customizable theme accents (Byakugan Violet, Tenseigan Cyan, Sharingan Crimson, Sage Emerald, Nine-Tails Amber) and adjustable backdrop dimming.",
+        "Multi-Language OCR & Barcode Decoding: Supports automatic language detection across 13+ languages alongside QR, MicroQR, EAN-8/13, UPC-E, Code 128/39/93, PDF417, Aztec, and Data Matrix symbologies.",
+        "Floating HUD & Contextual Actions: Frosted-glass HUD toast displaying character/word counts and one-click actions to open URLs, compose emails, or dial phone numbers without cluttering Notification Center.",
+        "URL Scheme Automation & Local History: Deep-link automation via byakugan:// for Raycast, Alfred, and Shortcuts, plus a searchable local scan history with category filters and pinning."
+      ],
+      techStack: ["Swift 6.0", "AppKit", "SwiftUI", "Apple Vision Framework", "Neural Engine", "macOS 14+", "Homebrew Cask"],
+      pokemonType: ["Psychic", "Steel"],
+      color: "#8b5cf6",
+      image: "/assets/Byakugan-Scan.webp",
+      github: "https://github.com/halcyon-past/byakugan-scan",
+      liveDemo: "https://byakugan-scan.aritro.cloud",
+      docs: "https://byakugan-scan.aritro.cloud/support",
+      stats: [
+        { label: "OCR Latency (<50ms)", value: 99 },
+        { label: "Zero-Disk Privacy", value: 100 },
+        { label: "120Hz Native UI", value: 98 },
+        { label: "Vision Accuracy", value: 97 }
+      ]
+    },
+    {
+      id: "quarantine",
+      dexNumber: "#002",
       title: "Quarantine",
       subtitle: "Resilient Error-Handling & Dead-Letter Queue Library for Python ETL",
       description: "Resilient error-handling library for Python ETL pipelines with dynamic dead-letter queues preventing batch failures for loops of 10,000+ items.",
@@ -125,7 +153,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "structurify",
-      dexNumber: "#002",
+      dexNumber: "#003",
       title: "Structurify: ETL Data Pipeline",
       subtitle: "Serverless Fan-Out Architecture with LangGraph, Gemini & GCP",
       description: "Serverless fan-out architecture on GCP with Cloud Run and Pub/Sub processing up to 1M rows with 99.8% schema validation accuracy.",
@@ -151,7 +179,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "luffy-laser-dodge",
-      dexNumber: "#003",
+      dexNumber: "#004",
       title: "Luffy Laser Dodge",
       subtitle: "Interactive 3D reflex game dodging laser beams using actual head movements via webcam",
       description: "Interactive 3D reflex game dodging laser beams using physical head movements in real time via MediaPipe WASM and Three.js.",
@@ -177,7 +205,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "glide-connect",
-      dexNumber: "#004",
+      dexNumber: "#005",
       title: "GlideConnect",
       subtitle: "Virtual Mouse Control using Gesture Recognition and Voice Assistant Krishna",
       description: "Final Year VIT Capstone project featuring contactless mouse control via MediaPipe hand tracking and Gemini-powered voice assistant Krishna.",
@@ -204,7 +232,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "pawsitive",
-      dexNumber: "#005",
+      dexNumber: "#006",
       title: "PAWsitive",
       subtitle: "Centralized Platform for Pet Healthcare & Blood Donors (Hack4Bengal 3.0 Winner)",
       description: "Award-winning centralized platform for pet healthcare, blood donor coordination, and emergency vet clinic discovery.",
@@ -231,7 +259,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "siliconsync",
-      dexNumber: "#006",
+      dexNumber: "#007",
       title: "SiliconSync & Veripyed",
       subtitle: "Daily AI Engineering News Platform & Video Tech Channel",
       description: "Automated daily tech intelligence curation engine analyzing breakthroughs in LLMs, robotics, and cloud infra, paired with YouTube tutorials.",
@@ -398,6 +426,7 @@ export const PORTFOLIO_DATA = {
         { name: "Python", level: "Expert", description: "AsyncIO, PyPI author, distributed pipelines, FastAPI, Pandas, Pytest", tag: "Core" },
         { name: "JavaScript", level: "Expert", description: "ES6+, event loop, async/await, React.js, Node.js ecosystem", tag: "Web" },
         { name: "TypeScript", level: "Advanced", description: "Strict static typing, Next.js, interfaces, generics, scalable architectures", tag: "FullStack" },
+        { name: "Swift", level: "Advanced", description: "Swift 6.0, AppKit, SwiftUI, Apple Vision framework, Neural Engine macOS utilities", tag: "macOS" },
         { name: "Java", level: "Proficient", description: "Object-oriented design, enterprise backends, multithreading, Spring basics", tag: "OOP" },
         { name: "C", level: "Proficient", description: "Low-level memory management, pointers, data structures, systems fundamentals", tag: "Systems" },
         { name: "SQL", level: "Expert", description: "Complex analytical joins, query profiling, indexing, Redshift & PostgreSQL", tag: "Data" }

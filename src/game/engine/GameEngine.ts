@@ -14,6 +14,13 @@ export interface ShowcaseProject {
 
 export const SHOWCASE_PROJECTS: ShowcaseProject[] = [
   {
+    title: 'Byakugan Scan',
+    category: 'macOS Native Vision Utility',
+    imageSrc: '/assets/Byakugan-Scan.webp',
+    tagline: 'Sub-50ms in-memory OCR & QR scanner on Neural Engine',
+    badge: 'SWIFT 6 • <50MS OCR'
+  },
+  {
     title: 'Quarantine',
     category: 'Python ETL Resilience',
     imageSrc: '/assets/Quarantine.webp',
@@ -489,7 +496,7 @@ export class GameEngine {
         lines: [
           "Hello there, traveler! Welcome to Pallet Cloud!",
           "I mentor Aritro Saha in cutting-edge distributed computing and AI architectures.",
-          "He has won Hack4Bengal 3.0 and engineered tools like 'Quarantine' and 'Structurify'.",
+          "He has won Hack4Bengal 3.0 and engineered tools like 'Byakugan Scan', 'Quarantine', and 'Structurify'.",
           "Head into the Pokédex Center or Silicon Gym to inspect his achievements!"
         ],
         avatar: 'scientist'
@@ -499,7 +506,7 @@ export class GameEngine {
         lines: [
           "Welcome to the Innovation Pokédex Center!",
           "We maintain all of Aritro's full-stack and data science creations.",
-          "Inspect our main terminal to launch live demos for Quarantine, Structurify, and Luffy Laser Dodge!"
+          "Inspect our main terminal to launch live demos for Byakugan Scan, Quarantine, Structurify, and Luffy Laser Dodge!"
         ],
         avatar: 'nurse'
       },
@@ -984,6 +991,7 @@ export class GameEngine {
   private triggerGrassEncounter() {
     soundManager.playWildAlert();
     const encounters = [
+      "A wild Unreadable Screenshot appeared! Player used Byakugan Scan! Sub-50ms Neural Engine OCR extracted it instantly!",
       "A wild Uncaught Exception appeared! Player invoked Quarantine decorator! It's super effective!",
       "A wild Legacy Monolith appeared! Player used Next.js Server Components! Clean architecture established!",
       "A wild Memory Leak appeared! Player used Databricks & Pytest! The pipeline ran smoothly!",

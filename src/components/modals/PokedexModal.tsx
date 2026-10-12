@@ -237,6 +237,18 @@ export const PokedexModal: React.FC<PokedexModalProps> = ({ onClose }) => {
                 </a>
               )}
 
+              {selectedProject.docs && (
+                <a
+                  href={selectedProject.docs}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                >
+                  <FileText className="w-3 h-3" />
+                  <span>DOCS & SUPPORT</span>
+                </a>
+              )}
+
               {selectedProject.researchPaper && (
                 <a
                   href={selectedProject.researchPaper}

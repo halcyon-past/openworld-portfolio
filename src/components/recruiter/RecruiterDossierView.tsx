@@ -328,6 +328,18 @@ export const RecruiterDossierView: React.FC<RecruiterDossierViewProps> = ({
                     </a>
                   )}
 
+                  {p.docs && (
+                    <a
+                      href={p.docs}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Docs</span>
+                    </a>
+                  )}
+
                   {p.researchPaper && (
                     <a
                       href={p.researchPaper}

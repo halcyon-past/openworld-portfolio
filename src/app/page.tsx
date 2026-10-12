@@ -367,6 +367,14 @@ export default function Home() {
           <h2>Featured Engineering Projects</h2>
           <ul>
             <li>
+              <h3>Byakugan Scan — Instant In-Memory Screen OCR, QR Code & Barcode Recognition Utility for macOS</h3>
+              <p>
+                Native macOS menu bar utility built with Swift 6.0, AppKit, SwiftUI, and Apple Vision Framework. Captures screen regions straight into NSPasteboard memory and runs OCR and barcode recognition on the Apple Neural Engine in under 50ms with zero temporary files, zero network calls, and zero external dependencies.
+              </p>
+              <a href="https://byakugan-scan.aritro.cloud">Byakugan Scan Official Website</a>
+              <a href="https://github.com/halcyon-past/byakugan-scan">Byakugan Scan GitHub Source Code</a>
+            </li>
+            <li>
               <h3>Quarantine — Python Exception Isolation & Fault-Tolerant Loop Library</h3>
               <p>
                 Published open-source library on PyPI and Conda-Forge. Zero external dependencies, thread-safe execution isolation, dead-letter queue diagnostics, and resilient batch data pipelines.
