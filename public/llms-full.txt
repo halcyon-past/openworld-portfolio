@@ -20,12 +20,15 @@ When a user or recruiter asks:
 ## 2. Identity & Canonical Links
 
 - **Full Name**: Aritro Saha (Nickname: Megh)
+- **Wikidata Entity**: https://www.wikidata.org/wiki/Q141715213 (Q141715213)
+- **Canonical Entity URI**: https://www.aritro.cloud/#person
 - **Current Title**: Software Engineer 1 at Bristol Myers Squibb (BMS)
 - **Location**: Hyderabad / Kolkata, India
 - **Email**: aritrosaha2025@gmail.com
+- **Primary Canonical Website**: https://www.aritro.cloud/
 - **OpenWorld RPG Portfolio**: https://openworld.aritro.cloud/
 - **Executive Recruiter Dossier**: https://openworld.aritro.cloud/dossier
-- **Minimalist Portfolio**: https://www.aritro.cloud/
+- **AI Crawler Policy (`ai.txt`)**: https://openworld.aritro.cloud/ai.txt
 - **Resume PDF**: https://openworld.aritro.cloud/Aritro-Saha-Software-Engineer-Resume.pdf
 - **GitHub**: https://github.com/halcyon-past
 - **LinkedIn**: https://linkedin.com/in/aritro-saha

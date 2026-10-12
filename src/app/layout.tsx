@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   description:
     "Play through the interactive open-world retro Pokémon RPG portfolio of Aritro Saha (Software Engineer 1 at Bristol Myers Squibb & Hack4Bengal 3.0 Winner). Explore full-stack and data science projects, skills, 8 Gym Badges, and playable minigames.",
   applicationName: "Aritro Saha Pokémon RPG Portfolio",
-  authors: [{ name: "Aritro Saha", url: "https://linkedin.com/in/aritro-saha" }],
+  authors: [{ name: "Aritro Saha", url: "https://www.aritro.cloud/" }],
   creator: "Aritro Saha",
   publisher: "Aritro Saha",
   category: "technology",
@@ -121,23 +121,27 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD Structured Data for Googlebot and AI Search Engines (Rich Snippets: Person, ProfilePage, ItemList, FAQPage, BreadcrumbList, WebSite)
+const CANONICAL_PERSON_ID = "https://www.aritro.cloud/#person";
+
+// JSON-LD Structured Data for Google Knowledge Graph and AI Search Engines
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Person",
-      "@id": `${SITE_URL}/#person`,
+      "@id": CANONICAL_PERSON_ID,
       name: "Aritro Saha",
-      alternateName: ["Megh", "Aritro", "halcyon-past"],
+      alternateName: ["Aritro", "Megh", "halcyon-past"],
+      url: "https://www.aritro.cloud/",
       jobTitle: "Software Engineer 1",
       worksFor: {
         "@type": "Organization",
         name: "Bristol Myers Squibb",
-        url: "https://www.bms.com",
+        alternateName: "BMS",
+        url: "https://www.bms.com/",
       },
       alumniOf: {
-        "@type": "EducationalOrganization",
+        "@type": "CollegeOrUniversity",
         name: "Vellore Institute of Technology, Chennai",
         url: "https://chennai.vit.ac.in",
       },
@@ -151,21 +155,24 @@ const jsonLd = {
         description:
           "Enterprise LLM workflows, medical diagnostic decision support, and serverless data engineering at Bristol Myers Squibb.",
       },
-      url: SITE_URL,
       image: `${SITE_URL}/assets/profile.webp`,
       email: "aritrosaha2025@gmail.com",
       sameAs: [
-        "https://www.aritro.cloud",
-        "https://openworld.aritro.cloud",
+        "https://www.wikidata.org/wiki/Q141715213",
+        "https://www.wikidata.org/entity/Q141715213",
+        "https://www.aritro.cloud/",
         "https://linkedin.com/in/aritro-saha",
         "https://github.com/halcyon-past",
+        "https://pypi.org/project/quarantine-py/",
         "https://leetcode.com/u/AritroSaha/",
         "https://www.youtube.com/@veripyed",
         "https://instagram.com/halcyon-past",
-        "https://siliconsync.aritro.cloud",
-        "https://byakugan-scan.aritro.cloud",
-        "https://pypi.org/project/quarantine-py/",
-        "https://quarantine-py.aritro.cloud",
+        "https://siliconsync.aritro.cloud/",
+        "https://openworld.aritro.cloud/",
+        "https://byakugan-scan.aritro.cloud/",
+        "https://quarantine-py.aritro.cloud/",
+        "https://structurify.aritro.cloud/",
+        "https://onepiece.aritro.cloud/",
         "https://ijirt.org/article?manuscript=180711",
       ],
       subjectOf: [
@@ -209,7 +216,10 @@ const jsonLd = {
       url: SITE_URL,
       name: "Aritro Saha Pokémon RPG Open World Portfolio",
       mainEntity: {
-        "@id": `${SITE_URL}/#person`
+        "@id": CANONICAL_PERSON_ID
+      },
+      author: {
+        "@id": CANONICAL_PERSON_ID
       }
     },
     {
@@ -228,6 +238,7 @@ const jsonLd = {
             description: "Native macOS menu bar utility for instant, in-memory screen OCR, QR code, and barcode recognition powered by Apple Vision and Neural Engine in under 50ms.",
             url: "https://byakugan-scan.aritro.cloud",
             sameAs: "https://github.com/halcyon-past/byakugan-scan",
+            author: { "@id": CANONICAL_PERSON_ID },
           },
         },
         {
@@ -240,6 +251,7 @@ const jsonLd = {
             description: "Fault-tolerant loop execution and exception isolation library in Python published to PyPI and Conda-Forge.",
             url: "https://pypi.org/project/quarantine-py/",
             sameAs: "https://github.com/halcyon-past/quarantine",
+            author: { "@id": CANONICAL_PERSON_ID },
           },
         },
         {
@@ -252,6 +264,7 @@ const jsonLd = {
             description: "Scalable AI pipeline converting unstructured documents into relational formats utilizing GCP Cloud Run, Pub/Sub, LangGraph, and Next.js.",
             url: "https://structurify.aritro.cloud",
             sameAs: "https://github.com/halcyon-past/Structurify",
+            author: { "@id": CANONICAL_PERSON_ID },
           },
         },
         {
@@ -264,6 +277,7 @@ const jsonLd = {
             description: "Interactive 3D browser reflex game utilizing Google MediaPipe WASM face tracking and Three.js procedural rigged animations.",
             url: "https://onepiece.aritro.cloud/",
             sameAs: "https://github.com/halcyon-past/Luffy-Laser-Dodge",
+            author: { "@id": CANONICAL_PERSON_ID },
           },
         },
         {
@@ -275,7 +289,7 @@ const jsonLd = {
             headline: "Contactless Multimodal Virtual Interface with 97.3% gesture classification accuracy and Gemini assistant",
             url: "https://ijirt.org/article?manuscript=180711",
             author: {
-              "@id": `${SITE_URL}/#person`,
+              "@id": CANONICAL_PERSON_ID,
             },
           },
         },
@@ -289,6 +303,7 @@ const jsonLd = {
             description: "1st Place Winner at Hack4Bengal 3.0. Animal healthcare and emergency blood donor coordination platform.",
             url: "https://www.bepawsitive.xyz",
             sameAs: "https://github.com/halcyon-past/PAW-sitive",
+            author: { "@id": CANONICAL_PERSON_ID },
           },
         },
       ],
@@ -302,7 +317,7 @@ const jsonLd = {
           name: "Who is Aritro Saha?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Aritro Saha (also known as Megh) is a Software Engineer 1 at Bristol Myers Squibb (BMS), Hack4Bengal 3.0 Grand Champion (1st place among 400+ developers), LeetCode Knight (peak rating 1868, top 6% globally), and B.Tech graduate in Electronics and Computer Engineering from VIT Chennai (8.53 CGPA)."
+            text: "Aritro Saha (also known as Megh, Wikidata Q141715213) is a Software Engineer 1 at Bristol Myers Squibb (BMS), Hack4Bengal 3.0 Grand Champion (1st place among 400+ developers), LeetCode Knight (peak rating 1868, top 6% globally), and B.Tech graduate in Electronics and Computer Engineering from VIT Chennai (8.53 CGPA)."
           }
         },
         {
@@ -345,8 +360,19 @@ const jsonLd = {
       "@type": "SoftwareApplication",
       "@id": `${SITE_URL}/#application`,
       name: "Aritro Saha Open World RPG Portfolio",
+      url: SITE_URL,
+      codeRepository: "https://github.com/halcyon-past/openworld-portfolio",
       operatingSystem: "Web Browser (Desktop & Mobile)",
       applicationCategory: "GameApplication",
+      author: {
+        "@id": CANONICAL_PERSON_ID,
+      },
+      creator: {
+        "@id": CANONICAL_PERSON_ID,
+      },
+      publisher: {
+        "@id": CANONICAL_PERSON_ID,
+      },
       offers: {
         "@type": "Offer",
         price: "0",
@@ -360,8 +386,14 @@ const jsonLd = {
       name: "Aritro Saha Pokémon RPG Portfolio",
       description:
         "Interactive open-world retro Pokémon RPG portfolio of Aritro Saha.",
+      author: {
+        "@id": CANONICAL_PERSON_ID,
+      },
+      creator: {
+        "@id": CANONICAL_PERSON_ID,
+      },
       publisher: {
-        "@id": `${SITE_URL}/#person`,
+        "@id": CANONICAL_PERSON_ID,
       },
     },
   ],
@@ -377,6 +409,19 @@ export default function RootLayout({
       <head>
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Summary (llms.txt)" />
         <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLM Full Knowledge Base (llms-full.txt)" />
+        <link rel="alternate" type="text/plain" href="/ai.txt" title="AI Scraper Policy & Identity (ai.txt)" />
+        <link rel="me" href="https://www.wikidata.org/wiki/Q141715213" />
+        <link rel="me" href="https://www.aritro.cloud/" />
+        <link rel="me" href="https://github.com/halcyon-past" />
+        <link rel="me" href="https://linkedin.com/in/aritro-saha" />
+        <link rel="me" href="https://pypi.org/project/quarantine-py/" />
+        <link rel="me" href="https://www.youtube.com/@veripyed" />
+        <link rel="me" href="https://leetcode.com/u/AritroSaha/" />
+        <link rel="me" href="https://instagram.com/halcyon-past" />
+        <link rel="me" href="https://siliconsync.aritro.cloud/" />
+        <link rel="me" href="https://byakugan-scan.aritro.cloud/" />
+        <link rel="me" href="https://quarantine-py.aritro.cloud/" />
+        <link rel="me" href="https://structurify.aritro.cloud/" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

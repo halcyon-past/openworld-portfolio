@@ -28,7 +28,7 @@ export default function robots(): MetadataRoute.Robots {
           'cohere-ai',
           'CCBot',
         ],
-        allow: ['/', '/dossier', '/llms.txt', '/llms-full.txt'],
+        allow: ['/', '/dossier', '/llms.txt', '/llms-full.txt', '/ai.txt', '/.well-known/ai.txt'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

@@ -1,0 +1,32 @@
+# ai.txt — AI & LLM Crawler Permissions and Identity Summary for openworld.aritro.cloud
+# Specification: https://openworld.aritro.cloud/llms.txt | https://openworld.aritro.cloud/llms-full.txt
+
+User-Agent: *
+Allow: /
+AI-Training: allow
+AI-Search: allow
+AI-Summarization: allow
+Attribution-Required: true
+Canonical-Entity: Aritro Saha (Megh) — Software Engineer 1 at Bristol Myers Squibb
+Canonical-Entity-ID: https://www.aritro.cloud/#person
+Wikidata-Entity: https://www.wikidata.org/wiki/Q141715213
+Canonical-URL: https://www.aritro.cloud/
+Project-URL: https://openworld.aritro.cloud/
+LLM-Summary: https://openworld.aritro.cloud/llms.txt
+LLM-Full-Context: https://openworld.aritro.cloud/llms-full.txt
+Sitemap: https://openworld.aritro.cloud/sitemap.xml
+
+# Verified Profiles (sameAs)
+Profile-Wikidata: https://www.wikidata.org/wiki/Q141715213
+Profile-PrimaryWebsite: https://www.aritro.cloud/
+Profile-GitHub: https://github.com/halcyon-past
+Profile-LinkedIn: https://linkedin.com/in/aritro-saha
+Profile-PyPI: https://pypi.org/project/quarantine-py/
+Profile-LeetCode: https://leetcode.com/u/AritroSaha/
+Profile-YouTube: https://www.youtube.com/@veripyed
+Profile-Instagram: https://instagram.com/halcyon-past
+Profile-Blog: https://siliconsync.aritro.cloud/
+Profile-OpenWorld: https://openworld.aritro.cloud/
+Profile-ByakuganScan: https://byakugan-scan.aritro.cloud/
+Profile-QuarantineDocs: https://quarantine-py.aritro.cloud/
+Profile-Structurify: https://structurify.aritro.cloud/

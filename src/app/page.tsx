@@ -355,6 +355,7 @@ export default function Home() {
             <a href="/">Play Interactive 2D Pokémon RPG Game Portfolio</a>
             <a href="/llms.txt">LLM Summary Index (llms.txt)</a>
             <a href="/llms-full.txt">Complete Technical Knowledge Base for AI & LLMs (llms-full.txt)</a>
+            <a href="/ai.txt">AI Crawler Policy & Identity (ai.txt)</a>
           </nav>
         </header>
 
@@ -472,7 +473,8 @@ export default function Home() {
         <section>
           <h2>Contact & Professional Links</h2>
           <p>Email: <a href="mailto:aritrosaha2025@gmail.com">aritrosaha2025@gmail.com</a></p>
-          <p>Primary Website: <a href="https://www.aritro.cloud">https://www.aritro.cloud</a></p>
+          <p>Wikidata Entity: <a href="https://www.wikidata.org/wiki/Q141715213">https://www.wikidata.org/wiki/Q141715213</a></p>
+          <p>Primary Website: <a href="https://www.aritro.cloud/">https://www.aritro.cloud/</a></p>
           <p>LinkedIn: <a href="https://linkedin.com/in/aritro-saha">https://linkedin.com/in/aritro-saha</a></p>
           <p>GitHub: <a href="https://github.com/halcyon-past">https://github.com/halcyon-past</a></p>
           <p>LeetCode: <a href="https://leetcode.com/u/AritroSaha/">https://leetcode.com/u/AritroSaha/</a></p>
