@@ -78,8 +78,8 @@ export const PORTFOLIO_DATA = {
     idNo: "2025-BMS",
     level: 99,
     money: "999,999",
-    pokedexSeen: 7,
-    pokedexCaught: 7,
+    pokedexSeen: 8,
+    pokedexCaught: 8,
     badgesCount: 8,
     location: "Pallet Cloud, Tech Region",
     email: "aritrosaha2025@gmail.com",
@@ -124,8 +124,36 @@ export const PORTFOLIO_DATA = {
       ]
     },
     {
-      id: "quarantine",
+      id: "sutrakey",
       dexNumber: "#002",
+      title: "SutraKey",
+      subtitle: "Instant Shift+Select Radial Pie Menu for Video, Audio & Clean Document Actions on macOS",
+      description: "Native macOS menu bar utility in Swift 6.0 summoning an under-cursor radial pie menu on Shift+Select to download videos, audio, subtitles, or clean reader-mode PDFs directly into ~/Downloads with 0% idle CPU.",
+      overview: "SutraKey (सूत्र) is a native, lightweight macOS utility designed as an invisible thread connecting text selection to instant media and document actions. When you hold Shift and select any URL or text, an under-cursor radial pie menu smoothly appears, letting you download videos, extract high-bitrate audio, pull clean subtitles, scrape gallery images, or generate ad-free reader-mode PDFs directly into ~/Downloads—with 0% idle CPU and zero background bloat.",
+      features: [
+        "Exclusive Shift + Select Trigger: Uses CGEventTap with bitwise modifier evaluation (NSEvent.modifierFlags) ensuring the radial menu only summons when Shift is exclusively held, completely avoiding interference with standard Command, Option, or Control shortcuts.",
+        "60 FPS Under-Cursor Radial Menu: A frameless, transparent, non-activating NSPanel with 5 radial slices (Video MP4 via yt-dlp+ffmpeg, 320kbps MP3 Audio, Clean Subtitles, High-Res Image Gallery, Reader-Mode Clean PDF via offscreen WKWebView) and a dead-zone center for instant flick-cancelling.",
+        "Ephemeral Menu Bar Presence: Remains 100% invisible when idle; dynamically surfaces a monochrome progress indicator in the macOS menu bar only during active conversion tasks and auto-vanishes 1.5s after completion.",
+        "Frosted Glass Toast HUD: Native floating status notifications with macOS .ultraThinMaterial blur displaying transfer speeds, ETA, and one-click 'Show in Finder' buttons.",
+        "Strict Sandboxed Output & Security: Strictly confines all downloads to ~/Downloads with automatic path-traversal guards (--no-exec, --restrict-filenames)."
+      ],
+      techStack: ["Swift 6.0", "AppKit", "SwiftUI", "CGEventTap", "macOS 14+ Sonoma", "yt-dlp", "ffmpeg", "Homebrew Cask"],
+      pokemonType: ["Steel", "Flying"],
+      color: "#f59e0b",
+      image: "/assets/SutraKey.webp",
+      github: "https://github.com/halcyon-past/SutraKey",
+      liveDemo: "https://sutrakey.aritro.cloud",
+      docs: "https://sutrakey.aritro.cloud",
+      stats: [
+        { label: "Zero-Idle CPU", value: 100 },
+        { label: "Radial Response", value: 99 },
+        { label: "Conversion Speed", value: 96 },
+        { label: "Native UI Blend", value: 98 }
+      ]
+    },
+    {
+      id: "quarantine",
+      dexNumber: "#003",
       title: "Quarantine",
       subtitle: "Resilient Error-Handling & Dead-Letter Queue Library for Python ETL",
       description: "Resilient error-handling library for Python ETL pipelines with dynamic dead-letter queues preventing batch failures for loops of 10,000+ items.",
@@ -153,7 +181,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "structurify",
-      dexNumber: "#003",
+      dexNumber: "#004",
       title: "Structurify: ETL Data Pipeline",
       subtitle: "Serverless Fan-Out Architecture with LangGraph, Gemini & GCP",
       description: "Serverless fan-out architecture on GCP with Cloud Run and Pub/Sub processing up to 1M rows with 99.8% schema validation accuracy.",
@@ -179,7 +207,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "luffy-laser-dodge",
-      dexNumber: "#004",
+      dexNumber: "#005",
       title: "Luffy Laser Dodge",
       subtitle: "Interactive 3D reflex game dodging laser beams using actual head movements via webcam",
       description: "Interactive 3D reflex game dodging laser beams using physical head movements in real time via MediaPipe WASM and Three.js.",
@@ -205,7 +233,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "glide-connect",
-      dexNumber: "#005",
+      dexNumber: "#006",
       title: "GlideConnect",
       subtitle: "Virtual Mouse Control using Gesture Recognition and Voice Assistant Krishna",
       description: "Final Year VIT Capstone project featuring contactless mouse control via MediaPipe hand tracking and Gemini-powered voice assistant Krishna.",
@@ -232,7 +260,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "pawsitive",
-      dexNumber: "#006",
+      dexNumber: "#007",
       title: "PAWsitive",
       subtitle: "Centralized Platform for Pet Healthcare & Blood Donors (Hack4Bengal 3.0 Winner)",
       description: "Award-winning centralized platform for pet healthcare, blood donor coordination, and emergency vet clinic discovery.",
@@ -259,7 +287,7 @@ export const PORTFOLIO_DATA = {
     },
     {
       id: "siliconsync",
-      dexNumber: "#007",
+      dexNumber: "#008",
       title: "SiliconSync & Veripyed",
       subtitle: "Daily AI Engineering News Platform & Video Tech Channel",
       description: "Automated daily tech intelligence curation engine analyzing breakthroughs in LLMs, robotics, and cloud infra, paired with YouTube tutorials.",

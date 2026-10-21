@@ -186,7 +186,7 @@ export class TileMap {
         targetModal: 'pokedex',
         dialogueText: [
           "Welcome to the Innovation Pokédex Center!",
-          "Accessing project database: Byakugan Scan, Quarantine, Structurify, Luffy Laser Dodge, GlideConnect, PAWsitive..."
+          "Accessing project database: Byakugan Scan, SutraKey, Quarantine, Structurify, Luffy Laser Dodge, GlideConnect, PAWsitive..."
         ]
       },
       // Poké Mart door trigger (x: 19, y: 17)

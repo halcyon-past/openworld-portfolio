@@ -379,6 +379,14 @@ export default function Home() {
               <a href="https://github.com/halcyon-past/byakugan-scan">Byakugan Scan GitHub Source Code</a>
             </li>
             <li>
+              <h3>SutraKey — Instant Shift+Select Radial Pie Menu for Media & Clean Document Actions on macOS</h3>
+              <p>
+                Native macOS utility in Swift 6.0 summoning an under-cursor radial pie menu on Shift+Select to download videos, extract high-bitrate audio, pull clean subtitles, or generate ad-free reader-mode PDFs directly into ~/Downloads with 0% idle CPU and zero background bloat.
+              </p>
+              <a href="https://sutrakey.aritro.cloud">SutraKey Official Website</a>
+              <a href="https://github.com/halcyon-past/SutraKey">SutraKey GitHub Source Code</a>
+            </li>
+            <li>
               <h3>Quarantine — Python Exception Isolation & Fault-Tolerant Loop Library</h3>
               <p>
                 Published open-source library on PyPI and Conda-Forge. Zero external dependencies, thread-safe execution isolation, dead-letter queue diagnostics, and resilient batch data pipelines.

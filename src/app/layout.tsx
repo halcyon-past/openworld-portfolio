@@ -55,6 +55,9 @@ export const metadata: Metadata = {
     "Hack4Bengal Winner",
     "Byakugan Scan",
     "macOS Screen OCR",
+    "SutraKey",
+    "macOS Radial Menu",
+    "yt-dlp macOS",
     "PAWsitive",
     "Quarantine Python",
     "quarantine-py",
@@ -170,6 +173,7 @@ const jsonLd = {
         "https://siliconsync.aritro.cloud/",
         "https://openworld.aritro.cloud/",
         "https://byakugan-scan.aritro.cloud/",
+        "https://sutrakey.aritro.cloud/",
         "https://quarantine-py.aritro.cloud/",
         "https://structurify.aritro.cloud/",
         "https://onepiece.aritro.cloud/",
@@ -246,6 +250,20 @@ const jsonLd = {
           position: 2,
           item: {
             "@type": "SoftwareApplication",
+            name: "SutraKey",
+            operatingSystem: "macOS 14.0 or later",
+            applicationCategory: "UtilitiesApplication",
+            description: "Native macOS utility in Swift 6.0 summoning an under-cursor radial pie menu on Shift+Select to download videos, audio, subtitles, or clean reader-mode PDFs directly into ~/Downloads with 0% idle CPU.",
+            url: "https://sutrakey.aritro.cloud",
+            sameAs: "https://github.com/halcyon-past/SutraKey",
+            author: { "@id": CANONICAL_PERSON_ID },
+          },
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          item: {
+            "@type": "SoftwareApplication",
             name: "Quarantine (Python Package)",
             applicationCategory: "DeveloperApplication",
             description: "Fault-tolerant loop execution and exception isolation library in Python published to PyPI and Conda-Forge.",
@@ -256,7 +274,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 3,
+          position: 4,
           item: {
             "@type": "SoftwareApplication",
             name: "Structurify",
@@ -269,7 +287,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 4,
+          position: 5,
           item: {
             "@type": "SoftwareApplication",
             name: "Luffy Laser Dodge",
@@ -282,7 +300,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 5,
+          position: 6,
           item: {
             "@type": "ScholarlyArticle",
             name: "KrishnaVision: Contactless Multimodal Virtual Interface",
@@ -295,7 +313,7 @@ const jsonLd = {
         },
         {
           "@type": "ListItem",
-          position: 6,
+          position: 7,
           item: {
             "@type": "SoftwareApplication",
             name: "PAWsitive",
@@ -333,7 +351,7 @@ const jsonLd = {
           name: "What notable open-source software and projects has Aritro Saha built?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Aritro Saha is the creator of Byakugan Scan (a native Swift 6.0 macOS menu bar utility for <50ms in-memory screen OCR, QR code, and barcode scanning using Apple Vision), Quarantine (quarantine-py on PyPI, a zero-dependency Python dead-letter queue and fault-tolerant loop library), Structurify (an event-driven GCP/LangGraph document-to-SQL AI pipeline), Luffy Laser Dodge (a 3D webcam head-tracking game), KrishnaVision (published IJIRT research on contactless gesture HCI), and PAWsitive (Hack4Bengal 3.0 1st place winner)."
+            text: "Aritro Saha is the creator of Byakugan Scan (a native Swift 6.0 macOS menu bar utility for <50ms in-memory screen OCR, QR code, and barcode scanning using Apple Vision), SutraKey (a native Swift 6.0 macOS utility summoning an under-cursor radial pie menu on Shift+Select to download videos, audio, subtitles, or clean reader PDFs with 0% idle CPU), Quarantine (quarantine-py on PyPI, a zero-dependency Python dead-letter queue and fault-tolerant loop library), Structurify (an event-driven GCP/LangGraph document-to-SQL AI pipeline), Luffy Laser Dodge (a 3D webcam head-tracking game), KrishnaVision (published IJIRT research on contactless gesture HCI), and PAWsitive (Hack4Bengal 3.0 1st place winner)."
           }
         }
       ]
@@ -420,6 +438,7 @@ export default function RootLayout({
         <link rel="me" href="https://instagram.com/halcyon-past" />
         <link rel="me" href="https://siliconsync.aritro.cloud/" />
         <link rel="me" href="https://byakugan-scan.aritro.cloud/" />
+        <link rel="me" href="https://sutrakey.aritro.cloud/" />
         <link rel="me" href="https://quarantine-py.aritro.cloud/" />
         <link rel="me" href="https://structurify.aritro.cloud/" />
         <script

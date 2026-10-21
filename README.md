@@ -68,7 +68,7 @@ Entering the Silicon Gym transports you into an authentic **GBA-style battle are
 ### 📺 High-Definition Mega Jumbotron TV
 - **128x96 px Widescreen Stadium Display**: Positioned centrally in Pallet Cloud town square (`x: 11..14, y: 12..14`).
 - **Retina-Crisp Visuals**: Anti-aliased high-quality downscaling (`imageSmoothingQuality = 'high'`) with clear rounded corners (`116x52 px` active screen area).
-- **Live Rotating Project Previews**: Automatically cycles through Aritro's key engineering creations (*Byakugan Scan*, *Quarantine*, *Structurify*, *Luffy Laser Dodge*, *PAWsitive*, *GlideConnect*, *EduHelper*) with real project screenshots every 5 seconds.
+- **Live Rotating Project Previews**: Automatically cycles through Aritro's key engineering creations (*Byakugan Scan*, *SutraKey*, *Quarantine*, *Structurify*, *Luffy Laser Dodge*, *PAWsitive*, *GlideConnect*, *EduHelper*) with real project screenshots every 5 seconds.
 - **Interactive Channel Cycling**: Press **`[A]`** anywhere directly in front of the TV (`x: 11, 12, 13, y: 15`) to instantly cycle channels manually!
 - **Broadcast Lower-Third Overlay**: High-contrast frosted glass banner with bold project title typography (`bold 8px`), golden tech badges (`bold 6.5px`), `CH 01/07` status indicator, pulsing red `🔴 LIVE` pill, and animated slide countdown timer.
 
